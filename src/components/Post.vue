@@ -4,11 +4,17 @@ import axios from 'axios'
 import cmmn from '../common.js'
 import PostMemo from './PostMemo.vue';
 
+
+//TODO 컴포넌트 바깥에서 v-for 사용하게 리팩토링
+
 const url = 'http://localhost:3000';
 
 const props = defineProps({
     posts: {
         type: Object,
+    },
+    lastRefreshTime:{
+        type:Date
     }
 })
 
@@ -24,6 +30,26 @@ const posts = computed(() =>{
  return props.posts})
 
 
+ const lastRefreshTime = computed(() =>{
+    console.log(props)
+ return props.lastRefreshTime})
+
+//타이머 구현 start
+let curTime 
+const elapsedTime = ref(0)
+
+setInterval(()=>{
+    curTime = new Date()
+    elapsedTime.value = Number(Math.floor((curTime - lastRefreshTime.value)/1000))
+},500)
+
+
+const getElapsedTime = (postTime) => {
+    let secSum = Number(cmmn.convertHmsToSec(postTime)) + Number(elapsedTime.value)
+    return cmmn.convertSecToHms(secSum)
+}
+
+
  //상태 변환 및 경과시간 업데이트
 const toggleState = (seq) => {
     axios.post(`${url}/changePrgState`, {
@@ -32,7 +58,6 @@ const toggleState = (seq) => {
     then((res) => {
         console.log(res)
         if(res.data.ok){
-            alert('게시물 상태가 변경되었습니다')
         }
         else{
             alert(`다시 시도해 주세요`)
@@ -77,13 +102,14 @@ const removePost = (seq) => {
                 {{ post.BRD_CTNTS }}
             </td>
             <td @click="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</td>
-            <td >{{ post.BRD_ELAPSED_TIME }}</td>
+            <td v-if="post.BRD_PRGSS_TF"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</td>
+            <td v-else>{{ post.BRD_ELAPSED_TIME}}</td>
             <td>{{ post.BRD_WRTR }}</td>
             <td>
               <span class="material-symbols-outlined" @click="addMemo(post.BRD_SEQ)">note_add</span>
               <span class="material-symbols-outlined" @click="removePost(post.BRD_SEQ)">delete</span>
             </td>
         </tr>
-        <PostMemo v-if="post.memos.length" :memos="post.memos" />
+        <PostMemo v-if="post.memos?.length" :memos="post.memos" />
     </template>
 </template>

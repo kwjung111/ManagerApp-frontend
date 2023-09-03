@@ -12,6 +12,7 @@ const wsUrl = 'ws://localhost:3000';
 
 const curDt = ref(new Date())
 
+//현재 시각 타이머
 const timer = setInterval(() => {
     curDt.value = new Date()
 }, 500)
@@ -22,6 +23,7 @@ const postsCount = ref(null)
 const postSeqForMemo = ref(null)           //메모를 삽입할 게시물번호
 const postAddModalVisible = ref(false)
 const memoAddModalVisible = ref(false)
+const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 마지막 refresh 시간을 받음
 
 let connectState = true;
 
@@ -31,64 +33,22 @@ onMounted(() => {
 
 const refresh = async () => {
     axios.all([
-        axios.get(`${url}/posts`),          //게시물
-        axios.get(`${url}/memos`),          //댓글
+        axios.get(`${url}/postTree`),          //게시물
         axios.get(`${url}/postsCount`),    //게시물수
+        //TODO 리프레시 시간: 서버 시간 기준으로 바꾼다.
     ])
         .then((resArr) => {
             const postsData = resArr[0].data.result
-            const memosData = resArr[1].data.result
-            const postsCountData = resArr[2].data.result[0]
+            const postsCountData = resArr[1].data.result[0]
 
-            posts.value = makeTree(postsData, memosData)
+            posts.value = postsData
             postsCount.value = postsCountData
+
+            //TODO timer 관련 동작은 별도 스레드로 빼기
+            lastRefreshTime.value = new Date()
         })
 
 }
-
-
-
-//post 와 memo를 합쳐서 post 안으로 밀어넣음
-function makeTree(posts, memos) {
-    return posts.reduce((acc, cur) => {
-        let curPost = cmmn.deepCopy(cur)
-        const matchingMemos = memos.filter((memo) => { return memo.BRD_SEQ == cur.BRD_SEQ })
-        curPost.memos = matchingMemos
-        acc.push(curPost)
-        return acc
-    }, [])
-}
-
-
-/*
-const Timer = setInterval(() =>{
-    updatePostsTime()
-},1000)
-*/   
-
-//정확한 실행을 보장하지 않기 떄문에 서버와 동기화 필요.
-//date 객체 생성, 현재를 0으로 하고 date 객체와 동기화 하는 식으로..?
-//이렇게 갱신하게 되면 메모가 없어지게 된다.
-function updatePostsTime(){
-    posts.value = posts.value.reduce((acc,cur) => {
-        let curPost = cmmn.deepCopy(cur)
-        if(curPost.BRD_PRGSS_TF == true){
-            let arrTime = curPost.BRD_ELAPSED_TIME.split(':')
-            let hr = Number(arrTime[0])
-            let min = Number(arrTime[1])
-            let sec =  Number(arrTime[2])
-            let sTot = Number(hr*3600 + min*60 +sec)
-
-            sTot++
-            
-            curPost.BRD_ELAPSED_TIME = cmmn.formatSecondsAsTime(sTot)
-        }
-        acc.push(curPost)
-        return acc
-    },[])
-}
-
-
 
 //웹소켓 연결
 function connectWs() {
@@ -192,7 +152,7 @@ function toggleMemoAddModal(data=null){
                     </tr>
                 </thead>
                 <tbody v-if="posts?.length">
-                    <Post v-if="posts" :posts="posts" @addMemo="toggleMemoAddModal"/>
+                    <Post v-if="posts" :posts="posts"  :lastRefreshTime="lastRefreshTime" @addMemo="toggleMemoAddModal"/>
                 </tbody>
                 <tbody v-else>
                     <p> 아직 등록된 게시물이 없습니다!</p>
@@ -206,7 +166,7 @@ function toggleMemoAddModal(data=null){
             </template>
             <template v-if="memoAddModalVisible">
                 <div @click="toggleMemoAddModal()" class="modal-bg">
-                    <MemoAddModal :postSeq="postSeqForMemo" @closeModal="toggleMemoAddModal" />
+                    <MemoAddModal :postSeq="postSeqForMemo"  @closeModal="toggleMemoAddModal" />
                 </div>
             </template>
             <!-- 구간 end -->

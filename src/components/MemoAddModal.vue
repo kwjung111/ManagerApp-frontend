@@ -1,0 +1,95 @@
+<script setup>
+import {ref,computed} from 'vue'
+import axios from 'axios'
+
+const url = 'http://localhost:3000'
+
+const props = defineProps({
+    postSeq: {
+        type: Number
+    }
+})
+
+const postSeq = computed(() => {
+    return props.postSeq
+})
+const cntns = ref('')
+const wrtr = ref('')
+
+const emit = defineEmits(['closeModal'])
+
+const addMemo = () =>{
+    console.log(cntns.value, wrtr.value)
+    if(!validation()) return
+    axios.post(`${url}/addMemo`,{
+        postSeq:postSeq.value,
+        content:cntns.value,
+        writer:wrtr.value,
+    })
+    .then((res) =>{
+        console.log(res)
+        if(res.data.ok == true){
+        alert('등록 완료!')
+        }else{
+            alert('등록 실패')
+        }
+        closeModal()
+    })
+
+
+}
+
+const closeModal = () =>{
+    emit('closeModal')
+}
+
+const changeWrtr = (e) =>{
+    wrtr.value = e.target.value
+}
+
+const validation = () =>{
+    if(checkcntns() && 
+    checkWrtr()){
+        return true;
+    }
+}
+
+const checkWrtr = () =>{
+    if(wrtr.value) return true;
+    alert('작성자를 입력해주세요')
+    return false;
+}
+const checkcntns = () =>{
+    if(cntns.value )return true;
+    alert('내용을 입력해주세요')
+    return false;   
+}
+
+</script>
+
+<template>
+    <div class="modal-overlay">
+        <div class="modal" @click.stop=""> <!--이벤트 버블링 방지-->
+           <div style=" margin-bottom: 20px">
+           
+             <div class="input-group">
+                 <span class="input-label"> 내용 </span>
+            <label >
+                <input type="text" maxlength="50" size="40" v-model="cntns" />
+                <span style="margin-left:10px"> {{ cntns.length }}/50 자</span>
+            </label>
+        </div>
+         <div class="input-group">
+             <span class="input-label" > 작성자 </span>
+            <label>
+                <input type="text" maxlength="5" size="40" @input="changeWrtr"/>
+            </label>
+        </div>
+    </div>
+        <div class="modal-buttons">
+        <button class="modal-button" @click="addMemo()">등록하기</button>
+        <button class="modal-button" @click="closeModal()">닫기</button>
+        </div>
+        </div>
+    </div>
+</template>

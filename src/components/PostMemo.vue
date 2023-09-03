@@ -1,31 +1,24 @@
 <script setup>
-import {ref} from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
-    memos : {
-        type : Object,
+    memos: {
+        type: Object,
     }
 })
 
-const memos = ref(props.memos)
+//TODO destructuring 한 값도 갱신되는지 확인필요
+const memos = computed(() =>{
+    return props.memos
+})
 
 </script>
 
 <template>
-    <template v-for="memo in memos">
-    <tr>
-        <td colspan="7" class="comment-cell">
-            <table class="comment-table">
-                <tbody>
-                    <!-- Example comment -->
-                    <tr>
-                        <td>{{memo.MEMO_WRTR}}</td>
-                        <td>{{memo.MEMO_REG_DTM}}</td>
-                        <td>{{memo.MEMO_CTNTS}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
+    <tr v-for="memo in memos">
+        <td colspan="2" style="display:hidden"></td>
+        <td colspan="1" > <span class="material-symbols-outlined">subdirectory_arrow_right</span> </td>
+        <td class="memo-td">{{ memo.MEMO_WRTR }}</td>
+        <td class="memo-td" style="text-align:left"> {{ memo.MEMO_REG_DTM }}  :  {{ memo.MEMO_CTNTS }}</td>
     </tr>
-    </template>
 </template>

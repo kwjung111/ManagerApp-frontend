@@ -8,7 +8,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      redirect: {name:'posts'}  //TODO 서비스 추가시 고치기
     },
     {
       path:'/posts',

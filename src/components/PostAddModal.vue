@@ -61,36 +61,36 @@ const checkcntns = () =>{
 <template>
     <div class="modal-overlay">
         <div class="modal" @click.stop=""> <!--이벤트 버블링 방지-->
-           <div style=" margin-bottom: 20px">
-            <div class="input-group">
-                <span class="input-label"> 입력값 </span>
-            <label class="label-radio" >
-                <input type="radio" name="radio-group" value="2" v-model="postCd">
-                <span > 긴급</span>
-            </label>
-            <label class="label-radio">
-                <input type="radio" name="radio-group" value="1" v-model="postCd">
-                <span > 일반</span>
-            </label>
-        </div>
-             <div class="input-group">
-                 <span class="input-label"> 내용 </span>
-            <label >
-                <input type="text" maxlength="50" size="40" v-model="cntns" />
-                <span style="margin-left:10px"> {{ cntns.length }}/50 자</span>
-            </label>
-        </div>
-         <div class="input-group">
-             <span class="input-label" > 작성자 </span>
-            <label>
-                <input type="text" maxlength="5" size="40" @input="changeWrtr"/>
-            </label>
-        </div>
-    </div>
-        <div class="modal-buttons">
-        <button class="modal-button" @click="addPost()">등록하기</button>
-        <button class="modal-button" @click="closeModal()">닫기</button>
-        </div>
+            <div class="input-wrap">
+                <div class="input-group">
+                    <span class="input-label"> 입력값 </span>
+                    <label class="label-radio">
+                        <input type="radio" name="radio-group" value="1" v-model="postCd">
+                        <span > 일반</span>
+                    </label>
+                    <label class="label-radio">
+                        <input type="radio" name="radio-group" value="2" v-model="postCd">
+                        <span > 긴급</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <span class="input-label"> 내용 </span>
+                    <label class="label-text">
+                        <input type="text" maxlength="50" size="40" v-model="cntns" />
+                        <span> {{ cntns.length }}/50 자</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <span class="input-label" > 작성자 </span>
+                    <label class="label-text">
+                        <input type="text" maxlength="5" size="40" @input="changeWrtr"/>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-btn-wrap">
+                <button class="modal-btn btn-common" @click="addPost()">등록하기</button>
+                <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
+            </div>
         </div>
     </div>
 </template>

@@ -114,13 +114,13 @@ function toggleMemoAddModal(data=null){
     <header>
         <div class="header-container">
             <div class="item">
-                <p> SR LIST </p>
+                <h1> SR LIST </h1>
             </div>
             <div class="item">
                 <p>{{ curDt }}</p>
             </div>
             <div class="item">
-                <button @click="togglePostAddModal()">
+                <button class="post-add btn-common" @click="togglePostAddModal()" title="신규 SR 등록">
                     <span class="material-symbols-outlined">
                         add_box
                     </span>
@@ -129,9 +129,9 @@ function toggleMemoAddModal(data=null){
         </div>
     </header>
 
-    <body>
+    <section>
         <div class="container">
-            <div class="boxes">
+            <div class="sidebar">
                 <div class="box"><span class="box-text">최근 1주일 접수 <br><span class=strong>{{ postsCount?.recentPost }}
                         </span></span> </div>
                 <div class="box inProg"><span class="box-text">처리 중<br><span class=strong>{{ postsCount?.acting
@@ -139,25 +139,38 @@ function toggleMemoAddModal(data=null){
                 <div class="box alert"><span class="box-text">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency
                 }}</span></span></div>
             </div>
-            <table class="post-table">
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>등록일시</th>
-                        <th colspan="3">SR 내용</th>
-                        <th>상태</th>
-                        <th>경과/조치시간</th>
-                        <th>작성자</th>
-                        <th>비고</th>
-                    </tr>
-                </thead>
-                <tbody v-if="posts?.length">
-                    <Post v-if="posts" :posts="posts"  :lastRefreshTime="lastRefreshTime" @addMemo="toggleMemoAddModal"/>
-                </tbody>
-                <tbody v-else>
-                    <p> 아직 등록된 게시물이 없습니다!</p>
-                </tbody>
-            </table>
+            <div class="table-wrap">
+                <table class="post-table">
+                    <colgroup>
+                        <col class="minw-none" style="width:4%;">
+                        <col style="width:16%; min-width:100px;">
+                        <col class="minw-none" style="width:2%;">
+                        <col style="width:8%; min-width:68px;">
+                        <col style="width:25%;">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>등록일시</th>
+                            <th colspan="3">SR 내용</th>
+                            <th>상태</th>
+                            <th>경과/조치시간</th>
+                            <th>작성자</th>
+                            <th>비고</th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="posts?.length">
+                        <Post v-if="posts" :posts="posts"  :lastRefreshTime="lastRefreshTime" @addMemo="toggleMemoAddModal"/>
+                    </tbody>
+                    <tbody v-else>
+                        <p> 아직 등록된 게시물이 없습니다!</p>
+                    </tbody>
+                </table>
+            </div>
             <!-- 리팩토링 필요 구간 start-->
             <template v-if="postAddModalVisible">
                 <div @click="togglePostAddModal()" class="modal-bg">
@@ -171,5 +184,5 @@ function toggleMemoAddModal(data=null){
             </template>
             <!-- 구간 end -->
         </div>
-    </body>
+    </section>
 </template>

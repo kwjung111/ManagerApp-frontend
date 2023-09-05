@@ -1,8 +1,9 @@
 <script setup>
 import {ref,computed} from 'vue'
 import axios from 'axios'
+import Cmmn from '../common.js'
 
-const url = 'http://localhost:3000'
+const url = Cmmn.url;
 
 const postCd = ref(1)
 const cntns = ref('')

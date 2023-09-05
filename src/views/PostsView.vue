@@ -3,12 +3,12 @@
 import axios from 'axios';
 import Post from '../components/Post.vue'
 import PostAddModal from '../components/PostAddModal.vue'
-import cmmn from '../common.js'
+import Cmmn from '../common.js'
 import MemoAddModal from '../components/MemoAddModal.vue'
 import { ref, onMounted } from 'vue'
 
-const url = 'http://localhost:3000';
-const wsUrl = 'ws://localhost:3000';
+const url = Cmmn.url;
+const wsUrl = Cmmn.wsUrl;
 
 const curDt = ref(new Date())
 
@@ -163,7 +163,7 @@ function toggleMemoAddModal(data=null){
                             <th>비고</th>
                         </tr>
                     </thead>
-                    <tbody v-if="!posts?.length">
+                    <tbody v-if="posts?.length">
                         <Post v-if="posts" :posts="posts"  :lastRefreshTime="lastRefreshTime" @addMemo="toggleMemoAddModal"/>
                     </tbody>
                     <tbody v-else>

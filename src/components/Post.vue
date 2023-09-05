@@ -1,13 +1,13 @@
 <script setup>
 import { ref,computed } from 'vue'
 import axios from 'axios'
-import cmmn from '../common.js'
+import Cmmn from '../common.js'
 import PostMemo from './PostMemo.vue';
 
 
 //TODO 컴포넌트 바깥에서 v-for 사용하게 리팩토링
 
-const url = 'http://localhost:3000';
+const url = Cmmn.url;
 
 const props = defineProps({
     posts: {
@@ -45,8 +45,8 @@ setInterval(()=>{
 
 
 const getElapsedTime = (postTime) => {
-    let secSum = Number(cmmn.convertHmsToSec(postTime)) + Number(elapsedTime.value)
-    return cmmn.convertSecToHms(secSum)
+    let secSum = Number(Cmmn.convertHmsToSec(postTime)) + Number(elapsedTime.value)
+    return Cmmn.convertSecToHms(secSum)
 }
 
 

@@ -143,12 +143,12 @@ function toggleMemoAddModal(data=null){
                 <table class="post-table">
                     <colgroup>
                         <col class="minw-none" style="width:4%;">
-                        <col style="width:16%; min-width:100px;">
+                        <col style="width:15%; min-width:100px;">
                         <col class="minw-none" style="width:2%;">
                         <col style="width:8%; min-width:68px;">
                         <col style="width:25%;">
                         <col>
-                        <col>
+                        <col style="width: 12%;">
                         <col>
                         <col>
                     </colgroup>
@@ -163,11 +163,13 @@ function toggleMemoAddModal(data=null){
                             <th>비고</th>
                         </tr>
                     </thead>
-                    <tbody v-if="posts?.length">
+                    <tbody v-if="!posts?.length">
                         <Post v-if="posts" :posts="posts"  :lastRefreshTime="lastRefreshTime" @addMemo="toggleMemoAddModal"/>
                     </tbody>
                     <tbody v-else>
-                        <p> 아직 등록된 게시물이 없습니다!</p>
+                        <tr>
+                            <td class="no-db" colspan="9">아직 등록된 게시물이 없습니다 ! !</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

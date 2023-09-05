@@ -96,7 +96,7 @@ const removePost = (seq) => {
     <template v-for="post in posts">
         <tr :class="{emergency: post.BRD_POST_CD == 2}">
             <td>{{ post.BRD_SEQ }}</td>
-            <td>{{ post.BRD_REG_DTM }}</td>
+            <td>{{ post.BRD_REG_DTM.slice(0,-3) }}</td>
             <td colspan="3" class="txt-left title">
                 <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                 {{ post.BRD_CTNTS }}

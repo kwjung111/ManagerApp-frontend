@@ -8,11 +8,11 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      redirect: {name:'posts'}  //TODO 서비스 추가시 고치기
+      redirect: {name:'srList'}  //TODO 서비스 추가시 고치기
     },
     {
-      path:'/posts',
-      name: 'posts',
+      path:'/srList',
+      name: 'srList',
       component : PostsView
 
     },

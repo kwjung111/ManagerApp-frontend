@@ -20,12 +20,14 @@ const timer = setInterval(() => {
 
 const posts = ref(null)
 const postsCount = ref(null)
-const postSeqForMemo = ref(null)           //메모를 삽입할 게시물번호
+const postSeqForMemo = ref(null)                  //메모를 삽입할 게시물번호
 const postAddModalVisible = ref(false)
 const memoAddModalVisible = ref(false)
 const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 마지막 refresh 시간을 받음
+const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급
 
 let connectState = true;
+
 
 onMounted(() => {
     connectWs() //웹소켓 연결시 리프레시 수행
@@ -49,6 +51,7 @@ const refresh = async () => {
         })
 
 }
+
 
 //웹소켓 연결
 function connectWs() {
@@ -87,7 +90,7 @@ function connectWs() {
 
     ws.onclose = async (e) => {
         if(connectState == true){
-            alert('서버와의 연결이 종료되었습니다.')
+            console.log('서버와의 연결이 종료되었습니다.')
             connectState = false;
         }
         setTimeout(() => {
@@ -96,6 +99,8 @@ function connectWs() {
     },1000)}
 
 }
+
+
 
 function togglePostAddModal() {
     postAddModalVisible.value = !postAddModalVisible.value;

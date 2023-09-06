@@ -101,7 +101,7 @@ const removePost = (seq) => {
                 <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                 {{ post.BRD_CTNTS }}
             </td>
-            <td class="status" :class="{ active :post.BRD_PRGSS_TF}"  @click="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</td>
+            <td class="status" :class="{ active :post.BRD_PRGSS_TF}"  @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</td>
             <td v-if="post.BRD_PRGSS_TF"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</td>
             <td v-else>{{ post.BRD_ELAPSED_TIME}}</td>
             <td>{{ post.BRD_WRTR }}</td>

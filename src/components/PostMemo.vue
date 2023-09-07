@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
     memos: {
@@ -11,6 +11,7 @@ const props = defineProps({
 const memos = computed(() =>{
     return props.memos
 })
+
 
 </script>
 

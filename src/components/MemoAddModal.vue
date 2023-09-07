@@ -3,8 +3,8 @@ import {ref,computed} from 'vue'
 import axios from 'axios'
 import Cmmn from '../common.js'
 
-
 const url = Cmmn.url;
+const wrtrCookieKey = 'writerName';
 
 const props = defineProps({
     postSeq: {
@@ -35,6 +35,7 @@ const addMemo = () =>{
         }else{
             alert('등록 실패')
         }
+        Cmmn.setCookie(wrtrCookieKey,wrtr.value)
         closeModal()
     })
 
@@ -43,10 +44,6 @@ const addMemo = () =>{
 
 const closeModal = () =>{
     emit('closeModal')
-}
-
-const changeWrtr = (e) =>{
-    wrtr.value = e.target.value
 }
 
 const validation = () =>{
@@ -61,11 +58,14 @@ const checkWrtr = () =>{
     alert('작성자를 입력해주세요')
     return false;
 }
+
 const checkcntns = () =>{
     if(cntns.value )return true;
     alert('내용을 입력해주세요')
     return false;   
 }
+
+Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
 </script>
 
@@ -83,7 +83,7 @@ const checkcntns = () =>{
          <div class="input-group">
              <span class="input-label" > 작성자 </span>
             <label class="label-text">
-                <input type="text" maxlength="5" size="40" @input="changeWrtr"/>
+                <input type="text" maxlength="5" size="40" v-model="wrtr"/>
             </label>
         </div>
     </div>

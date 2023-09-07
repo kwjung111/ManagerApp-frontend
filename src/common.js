@@ -53,6 +53,27 @@ const cmmn = {
     if(sec < 10) sec = '0' + sec
     
     return `${hr}:${min}:${sec}`  
+  },
+
+  setCookie : (key,val) =>{
+    document.cookie=`${key} = ${val}`
+  },
+
+   //TODO 리팩토링
+   getCookie : (key) => {
+    let fullCk = document.cookie;
+    let ckArr = fullCk.split(';')
+    let ckWithKey = ckArr.find((cookie) =>{
+      return cookie.split('=')[0].trim() == key
+    })
+    if(ckWithKey) return ckWithKey.split('=')[1].trim()
+    else return null;
+  },
+  
+  // 초기화에 사용
+  applyCookieVal : (key,target) => {
+    let val = cmmn.getCookie(key)
+    if(val) target.value = val;
   }
   
 }

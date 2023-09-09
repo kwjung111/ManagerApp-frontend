@@ -16,7 +16,7 @@ const emit = defineEmits(['closeModal'])
 const addPost = () =>{
     console.log(postCd.value, cntns.value, wrtr.value)
     if(!validation()) return
-    axios.post(`${url}/add`,{
+    axios.post(`${url}/posts`,{
         postCd:postCd.value,
         content:cntns.value,
         writer:wrtr.value,

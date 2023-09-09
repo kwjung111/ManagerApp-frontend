@@ -58,6 +58,7 @@ const toggleState = (seq) => {
     then((res) => {
         console.log(res)
         if(res.data.ok){
+            //
         }
         else{
             alert(`다시 시도해 주세요`)
@@ -77,9 +78,7 @@ const checkPostProgressState = (code) => {
 
 const removePost = (seq) => {
     if (confirm(`NO.${seq} 게시물을 정말로 삭제하시겠습니까?`)) {
-        axios.post(`${url}/remove`, {
-            postSeq: seq
-        }).then((res) => {
+        axios.delete(`${url}/posts/${seq}`).then((res) => {
             console.log(res)
             if (res.data.ok) {
                 alert('삭제되었습니다!')

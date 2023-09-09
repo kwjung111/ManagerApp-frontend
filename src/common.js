@@ -1,5 +1,4 @@
 //깊은복사
-import dotenv from 'dotenv'
 
 const cmmn = {
   url : import.meta.env.VITE_BACK_URL,

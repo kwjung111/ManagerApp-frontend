@@ -23,7 +23,7 @@ const emit = defineEmits(['closeModal'])
 const addMemo = () =>{
     console.log(cntns.value, wrtr.value)
     if(!validation()) return
-    axios.post(`${url}/addMemo`,{
+    axios.post(`${url}/memos`,{
         postSeq:postSeq.value,
         content:cntns.value,
         writer:wrtr.value,

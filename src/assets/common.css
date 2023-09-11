@@ -213,16 +213,20 @@ header{
 .label-text{
     width: calc(100% - 70px);
 }
-.label-text input[type="text"]{
+.label-text input[type="text"], .label-text textarea{
     width: calc(100% - 75px);
     border: 1px solid #aaa;
     border-radius: 3px;
     line-height: 18px;
     min-height: 20px;
+    vertical-align: middle;
+}
+.label-text textarea{
+    resize: none;
 }
 .label-text > span{
-    margin: 0 0 0 10px;
-    font-size: 14px;
+    margin: 0 0 0 5px;
+    font-size: 12px;
 }
 
 .modal-btn-wrap{
@@ -316,10 +320,22 @@ header{
     background: #f9ffbe;
 }
 .post-table tr.memo td{
-    padding: 2px 10px;
+    padding: 4px 10px 2px;
+    vertical-align: top;
     font-size: 14px;
     background: transparent;
     box-shadow: none;
+}
+.post-table tr.memo td.arrow{
+    padding-top: 0;
+}
+.post-table tr.memo td > span{
+    vertical-align: top;
+}
+.post-table tr.memo td .memo-cntns{
+    display: inline-block;
+    max-width: calc(100% - 190px);
+    white-space: pre-line;
 }
 
 .emergency .title{
@@ -344,7 +360,6 @@ header{
 .btn-etc.btn-delete:hover{
     color: #ff3131;
 }
-
 .btn-delete-memo{
     padding: 3px 5px 1px;
     margin: 0 0 0 10px;
@@ -364,7 +379,6 @@ header{
     opacity: 1;
     visibility: visible;
 }
-
 
 /* responsive view */
 

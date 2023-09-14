@@ -15,6 +15,9 @@ const props = defineProps({
     },
     lastRefreshTime:{
         type:Date
+    },
+    postFilter:{
+        type:Number
     }
 })
 
@@ -30,9 +33,10 @@ const posts = computed(() =>{
  return props.posts})
 
 
- const lastRefreshTime = computed(() =>{
+
+const lastRefreshTime = computed(() =>{
     console.log(props)
- return props.lastRefreshTime})
+return props.lastRefreshTime})
 
 //타이머 구현 start
 let curTime 
@@ -89,26 +93,29 @@ const removePost = (seq) => {
         })
     }
 }
+
 </script>
 
 <template>
-    <template v-for="post in posts">
-        <tr :class="{emergency: post.BRD_POST_CD == 2}">
-            <td>{{ post.BRD_SEQ }}</td>
-            <td>{{ post.BRD_REG_DTM.slice(0,-3) }}</td>
-            <td colspan="3" class="txt-left title">
-                <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
-                {{ post.BRD_CTNTS }}
-            </td>
-            <td class="status" :class="{ active :post.BRD_PRGSS_TF}"  @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</td>
-            <td v-if="post.BRD_PRGSS_TF"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</td>
-            <td v-else>{{ post.BRD_ELAPSED_TIME}}</td>
-            <td>{{ post.BRD_WRTR }}</td>
-            <td>
-              <span class="material-symbols-outlined btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록">note_add</span>
-              <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ)" title="삭제">delete</span>
-            </td>
-        </tr>
-        <PostMemo v-if="post.memos?.length" :memos="post.memos" />
+    <template v-for="(post, i) in posts" :key="i">
+        <li :class="{emergency: post.BRD_POST_CD == 2}">
+            <div class="list-wrap">
+                <p class="col01">{{ post.BRD_SEQ }}</p>
+                <p class="col02">{{ post.BRD_REG_DTM.slice(0,-3) }}</p>
+                <p class="col03 txt-left title">
+                    <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
+                    {{ post.BRD_CTNTS }}
+                </p>
+                <p class="status col04" :class="{ active :post.BRD_PRGSS_TF}"  @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>
+                <p class="col05" v-if="post.BRD_PRGSS_TF"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</p>
+                <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>
+                <p class="col06">{{ post.BRD_WRTR }}</p>
+                <div class="col07">
+                    <span class="material-symbols-outlined btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록">note_add</span>
+                    <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ)" title="삭제">delete</span>
+                </div>
+            </div>
+            <PostMemo v-if="post.memos?.length" :memos="post.memos" />
+        </li>
     </template>
 </template>

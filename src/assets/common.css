@@ -88,7 +88,8 @@ body {
     'opsz' 24;
     vertical-align: middle;
 }
-table td.no-db{
+.table-body .no-db{
+    text-align: center;
     background: transparent;
     box-shadow: none;
 }
@@ -213,16 +214,20 @@ header{
 .label-text{
     width: calc(100% - 70px);
 }
-.label-text input[type="text"]{
+.label-text input[type="text"], .label-text textarea{
     width: calc(100% - 75px);
     border: 1px solid #aaa;
     border-radius: 3px;
     line-height: 18px;
     min-height: 20px;
+    vertical-align: middle;
+}
+.label-text textarea{
+    resize: none;
 }
 .label-text > span{
-    margin: 0 0 0 10px;
-    font-size: 14px;
+    margin: 0 0 0 5px;
+    font-size: 12px;
 }
 
 .modal-btn-wrap{
@@ -239,7 +244,7 @@ header{
 /* list view */
 .sidebar {
     position: fixed;
-    top: 150px;
+    top: 145px;
     text-align:center;
     font-size:15px;
     font-weight: 500;
@@ -248,15 +253,25 @@ header{
 }
 .sidebar .box{
     margin: 0 0 20px;
-    background-color: #f3f3f3;
-    border-radius: 8px;
-    box-shadow: 1px 3px 5px rgba(0,0,0,.25);
 }
 .box .box-text{
     display: block;
     min-width: 130px;
     padding: 10px 5px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 15px;
+    line-height: 1;
+    background-color: #f3f3f3;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 1px 3px 5px rgba(0,0,0,.25);
     box-sizing: border-box;
+    cursor: pointer;
+    transition: .3s;
+}
+.box .box-text.active, .box .box-text:hover{
+    transform: translateY(-10px);
+    box-shadow: 0px 12px 5px rgba(0,0,0,.3);
 }
 .box .box-text .strong{
     display: block;
@@ -265,10 +280,10 @@ header{
     font-weight: 700;
 }
 
-.box.alert{
+.box.alert .box-text{
     background-color: #ff3131;
 }
-.box.inProg{
+.box.inProg .box-text{
     background-color: #f9ffbe;
 }
 
@@ -279,49 +294,100 @@ header{
     margin: 0 0 0 150px;
 }
 
-.post-table{
-    width: 100%;
-    border-spacing: 5px;
-}
-.post-table col{
-    min-width:62px;
-}
-.post-table col.minw-none{
-    min-width:0;
-}
-.post-table th, .post-table td{
-    padding: 10px;
-    text-align: center;
-    vertical-align: middle;
+/* table col */
+.col01{width:3%;min-width:34px;}
+.col02{width:12%;min-width:100px;}
+.col03{flex:1;}
+.col04{width:8%;min-width:62px;}
+.col05{width:10%;min-width:100px;}
+.col06{width:8%;min-width:62px;}
+.col07{width:10%;}
+/**/
+
+/* table cell common */
+.post-table .table-head > li,
+.post-table .table-body .list-wrap > p,
+.post-table .table-body .list-wrap > div,
+.post-table .table-body .memo > p{
+    margin: 0 4px 0 0;
     font-size: 14px;
+    text-align: center;
     border-radius: 5px;
+    box-sizing: border-box;
 }
-.post-table th {
-    font-weight: 500;
+/**/
+
+.post-table .table-head{
+    display: flex;
+    margin: 0 0 5px;
+    align-items: center;
+    background: #fff;
     position: sticky;
     top: 105px;
+}
+.post-table .table-head > li{
+    padding: 10px;
+    font-weight: 500;
     background: #fff;
     box-shadow: 0px 1px 1px rgba(0,0,0,0.2);
 }
-.post-table td{
+.post-table .table-head > li:last-of-type{
+    margin: 0;
+}
+.post-table .table-body > ol > li{
+    margin: 0 0 6px;
+}
+.post-table .table-body > ol > li:last-of-type{
+    margin: 0;
+}
+.post-table .table-body .list-wrap{
+    display: flex;
+}
+.post-table .table-body .list-wrap > p, .post-table .table-body .list-wrap > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 5px 10px;
-    line-height: 18px;
+    line-height: 24px;
     background: #f5f5f5;
     box-shadow: 0px 2px 2px rgba(0,0,0,0.2);
 }
-.post-table td.status{
+.post-table .table-body .list-wrap > div{
+    margin: 0;
+}
+.post-table .table-body .list-wrap > p.txt-left{
+    justify-content: flex-start;
+}
+.post-table .table-body .list-wrap > p.status{
     cursor: pointer;
 }
-.post-table td.status.active{
+.post-table .table-body .list-wrap > p.status.active{
     background: #f9ffbe;
 }
-.post-table tr.memo td{
-    padding: 2px 10px;
-    font-size: 14px;
-    background: transparent;
-    box-shadow: none;
-}
 
+.post-table .table-body .memo{
+    display: flex;
+    align-items: flex-start;
+    padding: 4px 0 0 15%;
+}
+.post-table .table-body .memo > p{
+    padding: 6px 10px 0;
+    line-height: 18px;
+}
+.post-table .table-body .memo > p.arrow{
+    padding-top: 2px;
+}
+.post-table .table-body .memo .material-symbols-outlined{
+    font-size: 20px;
+}
+.post-table .table-body .memo > p > span{
+    display: inline-block;
+    vertical-align: top;
+}
+.post-table .table-body .memo > p .memo-cntns{
+    max-width: calc(100% - 190px);
+    white-space: pre-line;
+}
 .emergency .title{
     color:#ea0d0d;
     font-weight: 500;
@@ -344,10 +410,27 @@ header{
 .btn-etc.btn-delete:hover{
     color: #ff3131;
 }
-
+.btn-delete-memo{
+    padding: 3px 5px 1px;
+    margin: 0 0 0 10px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-weight: 500;
+    line-height: 1;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+}
+.post-table .table-body .memo:hover .btn-delete-memo{
+    opacity: 1;
+    visibility: visible;
+}
 
 /* responsive view */
-
 @media screen and (max-width:1024px) {
     .container{
         display: block;
@@ -360,7 +443,7 @@ header{
         right: 20px;
         display: flex;
         margin: 0;
-        padding: 20px 0 24px;
+        padding: 16px 0 20px;
         justify-content: center;
         border-bottom: 1px solid #ddd;
     }
@@ -383,16 +466,21 @@ header{
         margin: 0;
     }
 
-    .post-table th{
-        top: 218px;
+    .post-table .table-head{
+        top: 220px;
     }
-    .post-table th, .post-table td{
+    .post-table .table-head > li,
+    .post-table .table-body .list-wrap > p,
+    .post-table .table-body .list-wrap > div,
+    .post-table .table-body .memo > p{
         font-size: 13px;
     }
-    .post-table tr.memo td{
-        font-size: 13px;
+    .post-table .table-body .list-wrap > p, .post-table .table-body .list-wrap > div{
+        line-height: 20px;
     }
-
+    .post-table .table-body .memo{
+        padding: 3px 0 0 145px;
+    }
     .material-symbols-outlined{
         font-size: 20px !important;
     }
@@ -439,14 +527,11 @@ header{
         flex: 1;
         max-width: 130px;
     }
-    .box .box-text{
-        min-width: 0;
-    }
 
     .table-wrap{
         overflow-x: auto;
     }
-    .post-table th{
+    .post-table .table-head{
         position: relative !important;
         top: auto !important;
     }
@@ -462,9 +547,9 @@ header{
         padding: 65px 0 0;
     }
     .sidebar{
-        top: 110px;
+        top: 105px;
     }
-    .post-table th{
+    .post-table .table-head{
         top: 65px;
     }
     
@@ -476,7 +561,7 @@ header{
     .sidebar{
         top: 62px;
     }
-    .post-table th{
+    .post-table .table-head{
         top: 180px;
     }
 }

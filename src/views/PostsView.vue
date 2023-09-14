@@ -5,7 +5,7 @@ import Post from '../components/Post.vue'
 import PostAddModal from '../components/PostAddModal.vue'
 import Cmmn from '../common.js'
 import MemoAddModal from '../components/MemoAddModal.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,computed } from 'vue'
 
 const url = Cmmn.url;
 const wsUrl = Cmmn.wsUrl;
@@ -27,7 +27,6 @@ const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 �
 const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급
 
 let connectState = true;
-
 
 onMounted(() => {
     connectWs() //웹소켓 연결시 리프레시 수행
@@ -111,6 +110,39 @@ function toggleMemoAddModal(data=null){
     memoAddModalVisible.value = !memoAddModalVisible.value
 }
 
+//sidebar 클릭 이벤트
+function clickActing() {
+    postFilter.value = 1
+}
+function clickEmergency() {
+    postFilter.value = 2
+}
+function clickList() {
+    postFilter.value = 0
+}
+
+
+//게시글 필터링
+const actingFilter = computed(() => {
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1)
+})
+const emergencyFilter = computed(() => {
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
+})
+
+const filteredList = computed(() => {
+    if(postFilter.value == 1){
+        return actingFilter.value
+    }
+    else if(postFilter.value == 2){
+        return emergencyFilter.value
+    }
+    else{
+        return posts.value
+    }
+})
+
+
 
 
 </script>
@@ -137,46 +169,30 @@ function toggleMemoAddModal(data=null){
     <section>
         <div class="container">
             <div class="sidebar">
-                <div class="box"><span class="box-text">최근 1주일 접수 <br><span class=strong>{{ postsCount?.recentPost }}
-                        </span></span> </div>
-                <div class="box inProg"><span class="box-text">처리 중<br><span class=strong>{{ postsCount?.acting
-                }}</span></span></div>
-                <div class="box alert"><span class="box-text">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency
-                }}</span></span></div>
+                <div class="box"><button class="box-text" @click="clickList">최근 1주일 접수 <br><span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
+                <div class="box inProg"><button class="box-text" @click="clickActing" :class="{active: postFilter == 1}">처리 중<br><span class=strong>{{ postsCount?.acting }}</span></button></div>
+                <div class="box alert"><button class="box-text" @click="clickEmergency" :class="{active: postFilter == 2}">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency }}</span></button></div>
             </div>
             <div class="table-wrap">
-                <table class="post-table">
-                    <colgroup>
-                        <col class="minw-none" style="width:4%;">
-                        <col style="width:15%; min-width:100px;">
-                        <col class="minw-none" style="width:2%;">
-                        <col style="width:8%; min-width:68px;">
-                        <col style="width:25%;">
-                        <col>
-                        <col style="width: 12%;">
-                        <col>
-                        <col>
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>NO</th>
-                            <th>등록일시</th>
-                            <th colspan="3">SR 내용</th>
-                            <th>상태</th>
-                            <th>경과/조치시간</th>
-                            <th>작성자</th>
-                            <th>비고</th>
-                        </tr>
-                    </thead>
-                    <tbody v-if="posts?.length">
-                        <Post v-if="posts" :posts="posts"  :lastRefreshTime="lastRefreshTime" @addMemo="toggleMemoAddModal"/>
-                    </tbody>
-                    <tbody v-else>
-                        <tr>
-                            <td class="no-db" colspan="9">아직 등록된 게시물이 없습니다 ! !</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="post-table">
+                    <ul class="table-head">
+                        <li class="col01">NO</li>
+                        <li class="col02">등록일시</li>
+                        <li class="col03">SR 내용</li>
+                        <li class="col04">상태</li>
+                        <li class="col05">경과/조치시간</li>
+                        <li class="col06">작성자</li>
+                        <li class="col07">비고</li>
+                    </ul>
+                    <div class="table-body" v-if="posts?.length">
+                        <ol>
+                            <Post v-if="posts" :posts="filteredList" :lastRefreshTime="lastRefreshTime" :postFilter="postFilter" @addMemo="toggleMemoAddModal"/>
+                        </ol>
+                    </div>
+                    <div class="table-body" v-else>
+                        <p class="no-db">아직 등록된 게시물이 없습니다 ! !</p>
+                    </div>
+                </div>
             </div>
             <!-- 리팩토링 필요 구간 start-->
             <template v-if="postAddModalVisible">

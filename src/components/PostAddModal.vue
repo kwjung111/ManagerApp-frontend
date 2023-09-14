@@ -81,7 +81,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 <div class="input-group">
                     <span class="input-label"> 내용 </span>
                     <label class="label-text">
-                        <input type="text" maxlength="50" size="40" v-model="cntns" />
+                        <textarea maxlength="50" v-model="cntns"></textarea>
                         <span> {{ cntns.length }}/50 자</span>
                     </label>
                 </div>

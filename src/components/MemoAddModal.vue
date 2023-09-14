@@ -74,12 +74,12 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
         <div class="modal" @click.stop=""> <!--이벤트 버블링 방지-->
            <div class="input-wrap">
              <div class="input-group">
-                 <span class="input-label"> 내용 </span>
-            <label class="label-text">
-                <input type="text" maxlength="50" size="40" v-model="cntns" />
-                <span> {{ cntns.length }}/50 자</span>
-            </label>
-        </div>
+                <span class="input-label"> 내용 </span>
+                <label class="label-text">
+                    <textarea maxlength="100" v-model="cntns"></textarea>
+                    <span> {{ cntns.length }}/100 자</span>
+                </label>
+            </div>
          <div class="input-group">
              <span class="input-label" > 작성자 </span>
             <label class="label-text">

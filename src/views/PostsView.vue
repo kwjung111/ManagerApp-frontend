@@ -25,8 +25,6 @@ const postAddModalVisible = ref(false)
 const memoAddModalVisible = ref(false)
 const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 마지막 refresh 시간을 받음
 const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급
-const statusActing = ref(false)
-const statusEmergency = ref(false)
 
 let connectState = true;
 
@@ -115,30 +113,12 @@ function toggleMemoAddModal(data=null){
 
 //sidebar 클릭 이벤트
 function clickActing() {
-    statusActing.value = !statusActing.value
-    if(statusActing.value){
-        statusEmergency.value = false
-        postFilter.value = 1
-    }
-    else{
-        statusActing.value = false
-        postFilter.value = 0
-    }
+    postFilter.value = 1
 }
 function clickEmergency() {
-    statusEmergency.value = !statusEmergency.value
-    if(statusEmergency.value){
-        statusActing.value = false
-        postFilter.value = 2
-    }
-    else{
-        statusEmergency.value = false
-        postFilter.value = 0
-    }
+    postFilter.value = 2
 }
 function clickList() {
-    statusActing.value = false
-    statusEmergency.value = false
     postFilter.value = 0
 }
 
@@ -167,8 +147,8 @@ function clickList() {
         <div class="container">
             <div class="sidebar">
                 <div class="box"><button class="box-text" @click="clickList">최근 1주일 접수 <br><span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
-                <div class="box inProg"><button class="box-text" @click="clickActing" :class="{active: statusActing}">처리 중<br><span class=strong>{{ postsCount?.acting }}</span></button></div>
-                <div class="box alert"><button class="box-text" @click="clickEmergency" :class="{active: statusEmergency}">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency }}</span></button></div>
+                <div class="box inProg"><button class="box-text" @click="clickActing" :class="{active: postFilter == 1}">처리 중<br><span class=strong>{{ postsCount?.acting }}</span></button></div>
+                <div class="box alert"><button class="box-text" @click="clickEmergency" :class="{active: postFilter == 2}">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency }}</span></button></div>
             </div>
             <div class="table-wrap">
                 <div class="post-table">

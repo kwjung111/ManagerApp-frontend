@@ -5,7 +5,7 @@ import Post from '../components/Post.vue'
 import PostAddModal from '../components/PostAddModal.vue'
 import Cmmn from '../common.js'
 import MemoAddModal from '../components/MemoAddModal.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,computed } from 'vue'
 
 const url = Cmmn.url;
 const wsUrl = Cmmn.wsUrl;
@@ -27,7 +27,6 @@ const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 �
 const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급
 
 let connectState = true;
-
 
 onMounted(() => {
     connectWs() //웹소켓 연결시 리프레시 수행
@@ -122,6 +121,30 @@ function clickList() {
     postFilter.value = 0
 }
 
+
+//게시글 필터링
+const actingFilter = computed(() => {
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1)
+})
+const emergencyFilter = computed(() => {
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
+})
+
+const filteredList = computed(() => {
+    if(postFilter.value == 1){
+        return actingFilter.value
+    }
+    else if(postFilter.value == 2){
+        return emergencyFilter.value
+    }
+    else{
+        return posts.value
+    }
+})
+
+
+
+
 </script>
 
 <template>
@@ -163,7 +186,7 @@ function clickList() {
                     </ul>
                     <div class="table-body" v-if="posts?.length">
                         <ol>
-                            <Post v-if="posts" :posts="posts" :lastRefreshTime="lastRefreshTime" :postFilter="postFilter" @addMemo="toggleMemoAddModal"/>
+                            <Post v-if="posts" :posts="filteredList" :lastRefreshTime="lastRefreshTime" :postFilter="postFilter" @addMemo="toggleMemoAddModal"/>
                         </ol>
                     </div>
                     <div class="table-body" v-else>

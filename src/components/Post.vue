@@ -32,9 +32,7 @@ const addMemo = (seq) =>{
 const posts = computed(() =>{
  return props.posts})
 
-const postFilter = computed(() => {
-    return props.postFilter
-})
+
 
 const lastRefreshTime = computed(() =>{
     console.log(props)
@@ -96,31 +94,10 @@ const removePost = (seq) => {
     }
 }
 
-//게시글 필터링
-const actingFilter = computed(() => {
-    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1)
-})
-const emergencyFilter = computed(() => {
-    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
-})
-
-const filteredList = computed(() => {
-    if(postFilter.value == 1){
-        return actingFilter.value
-    }
-    else if(postFilter.value == 2){
-        return emergencyFilter.value
-    }
-    else{
-        return posts.value
-    }
-})
-
-
 </script>
 
 <template>
-    <template v-for="(post, i) in filteredList" :key="i">
+    <template v-for="(post, i) in posts" :key="i">
         <li :class="{emergency: post.BRD_POST_CD == 2}">
             <div class="list-wrap">
                 <p class="col01">{{ post.BRD_SEQ }}</p>

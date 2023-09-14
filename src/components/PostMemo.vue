@@ -19,9 +19,8 @@ const memos = computed(() =>{
 //코멘트 삭제
 const removeMemo = (seq) => {
     if (confirm(`코멘트를 삭제하시겠습니까?`)) {
-        axios.delete(`${url}/memos/${seq}`, {
-            memoSeq: seq
-        }).then((res) => {
+        axios.delete(`${url}/memos/${seq}`)
+        .then((res) => {
             console.log(res)
             if (res.data.ok) {
                 alert('삭제되었습니다!')

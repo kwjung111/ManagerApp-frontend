@@ -10,15 +10,12 @@ import PostMemo from './PostMemo.vue';
 const url = Cmmn.url;
 
 const props = defineProps({
-    posts: {
+    post: {
         type: Object,
     },
     lastRefreshTime:{
         type:Date
     },
-    postFilter:{
-        type:Number
-    }
 })
 
 const emit = defineEmits(['addMemo'])
@@ -29,13 +26,21 @@ const addMemo = (seq) =>{
     })
 }
 
-const posts = computed(() =>{
- return props.posts})
+/*
+const patchPost = (seq) =>{
+    emit('patchPost',{
+        postSeq : seq
+    })
+
+}
+*/
+
+const post = computed(() =>{
+ return props.post})
 
 
 
 const lastRefreshTime = computed(() =>{
-    console.log(props)
 return props.lastRefreshTime})
 
 //타이머 구현 start
@@ -97,7 +102,6 @@ const removePost = (seq) => {
 </script>
 
 <template>
-    <template v-for="(post, i) in posts" :key="i">
         <li :class="{emergency: post.BRD_POST_CD == 2}">
             <div class="list-wrap">
                 <p class="col01">{{ post.BRD_SEQ }}</p>
@@ -106,7 +110,8 @@ const removePost = (seq) => {
                     <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                     {{ post.BRD_CTNTS }}
                 </p>
-                <p class="status col04" :class="{ active :post.BRD_PRGSS_TF}"  @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>
+                <!--<p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="patchPost(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p> -->
+                <p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>
                 <p class="col05" v-if="post.BRD_PRGSS_TF"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</p>
                 <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>
                 <p class="col06">{{ post.BRD_WRTR }}</p>
@@ -117,5 +122,4 @@ const removePost = (seq) => {
             </div>
             <PostMemo v-if="post.memos?.length" :memos="post.memos" />
         </li>
-    </template>
 </template>

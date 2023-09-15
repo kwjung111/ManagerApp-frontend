@@ -1,7 +1,8 @@
 <script setup>
-import {ref} from 'vue'
+import {ref,onMounted} from 'vue'
 import axios from 'axios'
 import Cmmn from '../common.js'
+import UxSelect from 'ux-select'
 
 const url = Cmmn.url;
 const wrtrCookieKey = 'writerName';
@@ -9,6 +10,7 @@ const wrtrCookieKey = 'writerName';
 const postCd = ref(1)
 const cntns = ref('')
 const wrtr = ref('')
+
 const postStatus = ref(1)
 const postCate = ref(1)
 const postAfter = ref(1)
@@ -62,6 +64,22 @@ const checkcntns = () =>{
     return false;   
 }
 
+
+//ux-select Code
+
+
+
+//const myUxSelect = 
+
+
+/*
+onMounted(() =>{
+    const selectBoxElm = document.getElementById("selectSys")
+new UxSelect(selectBoxElm,{
+    placeholder : "시스템 구분",
+});
+})
+*/
 
 Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
@@ -120,10 +138,10 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 <div class="input-clear" :class="{show : postStatus == 3}">
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
-                        <label for="system">시스템 구분</label>
-                        <select name="system" id="system">
-                            <option value="0">영업 관리 시스템(매장용)</option>
-                            <option value="1">토마토 RI 집계</option>
+                        <!-- <label for="system">시스템 구분</label> -->
+                        <select name="system" id="selectSys">
+                            <option  value="0">영업 관리 시스템(매장용)</option>
+                            <option  value="1">토마토 RI 집계</option>
                             <option value="2">Web POP</option>
                             <option value="3">관리자 App</option>
                         </select>

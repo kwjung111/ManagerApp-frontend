@@ -11,6 +11,8 @@ const props = defineProps({
     }
 })
 
+
+
 //TODO destructuring 한 값도 갱신되는지 확인필요
 const memos = computed(() =>{
     return props.memos
@@ -32,10 +34,11 @@ const removeMemo = (seq) => {
     }
 }
 
+
 </script>
 
 <template>
-    <div v-for="memo in memos" class="memo">
+    <div v-for="(memo,i) in memos" :key="i" class="memo">
         <p class="col01 arrow"> <span class="material-symbols-outlined txt-gray">subdirectory_arrow_right</span></p>
         <p class="txt-blue col04">{{ memo.MEMO_WRTR }}</p>
         <p class="txt-left col03">

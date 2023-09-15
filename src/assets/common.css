@@ -154,7 +154,7 @@ header{
 }
 .modal {
     background-color: #fff;
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
     width: 80%;
     max-width: 500px;
@@ -162,17 +162,26 @@ header{
 }
 .modal .input-wrap{
     margin: 0 0 20px;
+    position: relative;
 }
 .input-wrap .input-group {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
+    padding: 0 0 10px;
+    border-bottom: 1px dashed #ddd;
 }
 .input-wrap .input-label {
     display: block;
-    width: 60px; 
-    text-align: right; 
+    width: 95px;
+    text-align: center;
     margin-right: 10px;
+    padding: 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    border-right: 1px dashed #ddd;
+    box-sizing: border-box;
 }
 
 .label-radio{
@@ -230,10 +239,10 @@ header{
 }
 
 .label-text{
-    width: calc(100% - 70px);
+    width: calc(100% - 110px);
 }
 .label-text input[type="text"], .label-text textarea{
-    width: calc(100% - 75px);
+    width: calc(100% - 60px);
     border: 1px solid #aaa;
     border-radius: 3px;
     line-height: 18px;
@@ -243,12 +252,24 @@ header{
 .label-text textarea{
     resize: none;
 }
+.label-text textarea:disabled{
+    background: #eee;
+}
 .label-text input[type="text"]{
     width: calc(50% - 75px);
 }
 .label-text > span{
     margin: 0 0 0 5px;
     font-size: 12px;
+}
+
+.input-clear{
+    height: 0;
+    overflow: hidden;
+    transition: .3s;
+}
+.input-clear.show{
+    height: 170px;
 }
 
 .modal-btn-wrap{

@@ -129,6 +129,9 @@ function clickList() {
         <div class="header-container">
             <div class="item">
                 <h1> SR LIST </h1>
+                <h2 v-if="postFilter == 0">전체</h2>
+                <h2 v-if="postFilter == 1">처리 중</h2>
+                <h2 v-if="postFilter == 2">긴급 처리 중</h2>
             </div>
             <div class="item">
                 <p>{{ curDt }}</p>

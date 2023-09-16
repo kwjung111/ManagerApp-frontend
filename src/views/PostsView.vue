@@ -1,11 +1,12 @@
 
 <script setup>
-import axios from 'axios';
 import Post from '../components/Post.vue'
-import PostAddModal from '../components/PostAddModal.vue'
-import Cmmn from '../common.js'
-import MemoAddModal from '../components/MemoAddModal.vue'
-import { ref, onMounted,computed } from 'vue'
+import PostAddModal from '../components/Post-AddModal.vue'
+import MemoAddModal from '../components/Memo-AddModal.vue'
+import { ref, onMounted, computed, inject } from 'vue'
+
+const axios = inject('axios')
+const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
 const wsUrl = Cmmn.wsUrl;
@@ -27,6 +28,7 @@ const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 �
 const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급
 
 let connectState = true;
+
 
 onMounted(() => {
     connectWs() //웹소켓 연결시 리프레시 수행
@@ -110,39 +112,36 @@ function toggleMemoAddModal(data=null){
     memoAddModalVisible.value = !memoAddModalVisible.value
 }
 
-//sidebar 클릭 이벤트
-function clickActing() {
-    postFilter.value = 1
+function changeFilter(stateCd){
+    if(postFilter.value != 0 && postFilter.value == stateCd){
+        postFilter.value = 0
+    }
+    else{
+        postFilter.value = stateCd
+    }
 }
-function clickEmergency() {
-    postFilter.value = 2
-}
-function clickList() {
-    postFilter.value = 0
-}
+
 
 
 //게시글 필터링
-const actingFilter = computed(() => {
+const actingFilter = (() => {
     return posts.value.filter((p) => p.BRD_PRGSS_TF == 1)
 })
-const emergencyFilter = computed(() => {
+const emergencyFilter = (() => {
     return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
 })
 
 const filteredList = computed(() => {
     if(postFilter.value == 1){
-        return actingFilter.value
+        return actingFilter()
     }
     else if(postFilter.value == 2){
-        return emergencyFilter.value
+        return emergencyFilter()
     }
     else{
         return posts.value
     }
 })
-
-
 
 
 </script>
@@ -152,6 +151,9 @@ const filteredList = computed(() => {
         <div class="header-container">
             <div class="item">
                 <h1> SR LIST </h1>
+                <h2 v-if="postFilter == 0">전체</h2>
+                <h2 v-if="postFilter == 1">처리 중</h2>
+                <h2 v-if="postFilter == 2">긴급 처리 중</h2>
             </div>
             <div class="item">
                 <p>{{ curDt }}</p>
@@ -169,9 +171,9 @@ const filteredList = computed(() => {
     <section>
         <div class="container">
             <div class="sidebar">
-                <div class="box"><button class="box-text" @click="clickList">최근 1주일 접수 <br><span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
-                <div class="box inProg"><button class="box-text" @click="clickActing" :class="{active: postFilter == 1}">처리 중<br><span class=strong>{{ postsCount?.acting }}</span></button></div>
-                <div class="box alert"><button class="box-text" @click="clickEmergency" :class="{active: postFilter == 2}">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency }}</span></button></div>
+                <div class="box"><button class="box-text" @click="changeFilter(0)" :class="{active: postFilter == 0}">최근 1주일 접수 <br><span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
+                <div class="box inProg"><button class="box-text" @click="changeFilter(1)" :class="{active: postFilter == 1}">처리 중<br><span class=strong>{{ postsCount?.acting }}</span></button></div>
+                <div class="box alert"><button class="box-text" @click="changeFilter(2)" :class="{active: postFilter == 2}">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency }}</span></button></div>
             </div>
             <div class="table-wrap">
                 <div class="post-table">
@@ -184,9 +186,9 @@ const filteredList = computed(() => {
                         <li class="col06">작성자</li>
                         <li class="col07">비고</li>
                     </ul>
-                    <div class="table-body" v-if="posts?.length">
-                        <ol>
-                            <Post v-if="posts" :posts="filteredList" :lastRefreshTime="lastRefreshTime" :postFilter="postFilter" @addMemo="toggleMemoAddModal"/>
+                    <div class="table-body" v-if="filteredList?.length">
+                        <ol  >
+                            <Post  v-for="(post,i) of filteredList" :key="i" :post="post" :lastRefreshTime="lastRefreshTime"  @addMemo="toggleMemoAddModal"/>
                         </ol>
                     </div>
                     <div class="table-body" v-else>

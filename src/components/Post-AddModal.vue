@@ -1,7 +1,9 @@
 <script setup>
-import {ref} from 'vue'
-import axios from 'axios'
-import Cmmn from '../common.js'
+import {ref, inject} from 'vue'
+import cmmn from '../common';
+
+const axios = inject('axios')
+const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
 const wrtrCookieKey = 'writerName';
@@ -13,13 +15,17 @@ const wrtr = ref('')
 const emit = defineEmits(['closeModal'])
 
 
-const addPost = () =>{
+const addPost = async () =>{
     console.log(postCd.value, cntns.value, wrtr.value)
     if(!validation()) return
+
+    const UID = await cmmn.getUserIdentifier()
+
     axios.post(`${url}/posts`,{
         postCd:postCd.value,
         content:cntns.value,
         writer:wrtr.value,
+        UID:UID
     })
     .then((res) =>{
         if(res.data.ok==true){

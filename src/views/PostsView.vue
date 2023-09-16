@@ -1,11 +1,12 @@
 
 <script setup>
-import axios from 'axios';
 import Post from '../components/Post.vue'
 import PostAddModal from '../components/Post-AddModal.vue'
-import Cmmn from '../common.js'
 import MemoAddModal from '../components/Memo-AddModal.vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, inject } from 'vue'
+
+const axios = inject('axios')
+const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
 const wsUrl = Cmmn.wsUrl;

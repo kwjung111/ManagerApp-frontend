@@ -1,7 +1,9 @@
 <script setup>
-import {ref,computed} from 'vue'
-import axios from 'axios'
-import Cmmn from '../common.js'
+import {inject,ref,computed} from 'vue'
+
+
+const axios = inject('axios')
+const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
 const wrtrCookieKey = 'writerName';

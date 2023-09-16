@@ -1,8 +1,9 @@
 <script setup>
-import {ref,onMounted} from 'vue'
-import axios from 'axios'
-import Cmmn from '../common.js'
+import {ref,onMounted, inject} from 'vue'
 import UxSelect from 'ux-select'
+
+const axios = inject('axios')
+const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
 const wrtrCookieKey = 'writerName';

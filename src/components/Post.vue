@@ -1,9 +1,10 @@
 <script setup>
-import { ref,computed } from 'vue'
-import axios from 'axios'
-import Cmmn from '../common.js'
+import { ref,computed, inject } from 'vue'
 import PostMemo from './PostMemo.vue';
 
+
+const axios = inject('axios')
+const Cmmn = inject('Cmmn')
 
 //TODO 컴포넌트 바깥에서 v-for 사용하게 리팩토링
 
@@ -60,14 +61,18 @@ const getElapsedTime = (postTime) => {
 
 
  //상태 변환 및 경과시간 업데이트
-const toggleState = (seq) => {
-    axios.post(`${url}/changePrgState`, {
-        postSeq : seq
+const toggleState = async (seq) => {
+
+    const UID = await Cmmn.getUserIdentifier();
+    
+    axios.patch(`${url}/posts/prgState`, {
+        postSeq:seq,
+        UID:UID
     }).
     then((res) => {
         console.log(res)
         if(res.data.ok){
-            //
+        //
         }
         else{
             alert(`다시 시도해 주세요`)

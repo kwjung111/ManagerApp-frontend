@@ -108,7 +108,7 @@ function connectWs() {
                         
                     setTimeout(()=>{
                         noti.close()
-                    }),5000}
+                    },5000)
                 }
                 /*
                 //자기 글에 댓글 등록시 알림
@@ -118,6 +118,7 @@ function connectWs() {
                     }
                 }
                 */
+                }
             }
         }
     };

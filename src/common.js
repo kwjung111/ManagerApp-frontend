@@ -1,5 +1,6 @@
 //깊은복사
 import axios from 'axios'
+import moment from 'moment'
 
 const cmmn = {
   url: import.meta.env.VITE_BACK_URL,
@@ -62,7 +63,6 @@ const cmmn = {
 
     return `${hr}:${min}:${sec}`
   },
-
   setCookie: (key, val) => {
     document.cookie = `${key} = ${val}`
   },
@@ -92,6 +92,50 @@ const cmmn = {
         localStorage.setItem('userKey', res.data)
     }
     return userKey
+  },
+  //TODO 이 함수는 로컬스토리지에 데이터가 쌓이는 정도를 보고 사용여부 판단.
+  removeOldNotification(postId){
+    const oldNotifications = JSON.parse(localStorage.getItem('notifications')) || {};
+    const newNotifications = oldNotifications.filter(([,val]) =>{
+      return moment().diff(moment(val),'days') <= 30 
+    })
+    newNotifications[postId] = moment().format();
+    localStorage.setItem('notifications', JSON.stringify(newNotifications));
+  },
+  //알림받을 정보를 저장
+  saveNotificationInfo(type,id) {
+    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {};
+    notifications[id] = moment().format();
+    localStorage.setItem(`notifications_${type}`, JSON.stringify(notifications));
+  },
+
+  //알림 여부를 판단
+  checkSendNotification(type,id) {
+    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {};
+
+    let notiInfo = notifications[id]
+    
+    if(notiInfo){
+      return true;
+    }
+    else{
+      return false;
+    }
+  },
+
+
+  navigateToSection(sectionId) {
+    window.focus();
+    location.hash = `#${sectionId}`;
+    
+    //비동기화 -> 현재 큐의 비동기 함수 모두 실행 후 실행됨.
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element){ 
+          element.focus()
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+      };
+    }, 0);
   }
 }
 

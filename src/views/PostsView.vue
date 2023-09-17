@@ -68,7 +68,7 @@ function connectWs() {
     */
 
     ws = new WebSocket(wsUrl)
-    
+
     ws.onopen = async () => {
         console.log('연결되었습니다')
         connectState = true;
@@ -85,55 +85,66 @@ function connectWs() {
             let evtData = data.data
             console.log("server event : ", evtData)
 
-            //어떤 이벤트인지 보고 리프레시S            
+            //이벤트가 오면 무조건 리프레시
             refresh();
 
-            //알림 관련
-            if(evtData.method == "POST"){
+            //알림 관련 함수들
+            if (evtData.method == "POST") {
                 const UID = await cmmn.getUserIdentifier();
-                
+
                 //새글 등록시 알림
-                if(evtData.resource =="posts"){
-                    if(evtData.UID != UID){
-                        const noti = new Notification('새글 등록됨',{
-                            icon:null,
-                            body:evtData.content
+                if (evtData.resource == "posts" && evtData.UID != UID) {
+                    const noti = new Notification('새글 등록됨', {
+                        icon: null,
+                        body: evtData.content
+                    });
+
+                    noti.onclick = function (event) {
+                        event.preventDefault();         // 알림 클릭의 기본 동작을 방지
+                        cmmn.navigateToSection(evtData.rid)        // id 위치로 이동
+                    };
+
+                    setTimeout(() => {
+                        noti.close()
+                    }, 5000)
+
+                }
+
+                else if (evtData.resource == "memos" && evtData.UID != UID) {
+                    //게시물에 연관된 정보를 받으므로 posts 저장소로 접근
+                    if (cmmn.checkSendNotification("posts", evtData.meta.postSeq)) {
+                        const noti = new Notification('댓글 등록됨', {
+                            icon: null,                      //TODO 아이콘 삽입
+                            body: evtData.content
                         });
 
-                         // 알림 클릭 시 현재 탭으로 초점을 이동
-                    noti.onclick = function(event) {
-                        event.preventDefault(); // 알림 클릭의 기본 동작을 방지
-                        window.focus(); // 현재 탭에 초점을 맞춤
-                    };
-                        
-                    setTimeout(()=>{
-                        noti.close()
-                    },5000)
-                }
-                /*
-                //자기 글에 댓글 등록시 알림
-                else if(evtData.resource == "memos"){
-                    if(evtData.UID == UID){
-                        new Notification();
+                        noti.onclick = function (event) {
+                            event.preventDefault();         // 알림 클릭의 기본 동작을 방지
+                            cmmn.navigateToSection(evtData.meta.postSeq)        // id 위치로 이동
+                        };
+
+                        setTimeout(() => {
+                            noti.close()
+                        }, 5000)
                     }
-                }
-                */
                 }
             }
         }
-    };
+    }
 
-    ws.onclose = async (e) => {
-        if(connectState == true){
-            console.log('서버와의 연결이 종료되었습니다.')
-            connectState = false;
-        }
-        setTimeout(() => {
+
+ws.onclose = async (e) => {
+    if (connectState == true) {
+        console.log('서버와의 연결이 종료되었습니다.')
+        connectState = false;
+    }
+    setTimeout(() => {
         console.log('reconnecting to server...')
         connectWs();
-    },1000)}
-
+    }, 1000)
 }
+};
+
 
 
 
@@ -141,16 +152,16 @@ function togglePostAddModal() {
     postAddModalVisible.value = !postAddModalVisible.value;
 }
 
-function toggleMemoAddModal(data=null){
+function toggleMemoAddModal(data = null) {
     postSeqForMemo.value = data?.postSeq
     memoAddModalVisible.value = !memoAddModalVisible.value
 }
 
-function changeFilter(stateCd){
-    if(postFilter.value != 0 && postFilter.value == stateCd){
+function changeFilter(stateCd) {
+    if (postFilter.value != 0 && postFilter.value == stateCd) {
         postFilter.value = 0
     }
-    else{
+    else {
         postFilter.value = stateCd
     }
 }
@@ -166,13 +177,13 @@ const emergencyFilter = (() => {
 })
 
 const filteredList = computed(() => {
-    if(postFilter.value == 1){
+    if (postFilter.value == 1) {
         return actingFilter()
     }
-    else if(postFilter.value == 2){
+    else if (postFilter.value == 2) {
         return emergencyFilter()
     }
-    else{
+    else {
         return posts.value
     }
 })
@@ -205,9 +216,14 @@ const filteredList = computed(() => {
     <section>
         <div class="container">
             <div class="sidebar">
-                <div class="box"><button class="box-text" @click="changeFilter(0)" :class="{active: postFilter == 0}">최근 1주일 접수 <br><span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
-                <div class="box inProg"><button class="box-text" @click="changeFilter(1)" :class="{active: postFilter == 1}">처리 중<br><span class=strong>{{ postsCount?.acting }}</span></button></div>
-                <div class="box alert"><button class="box-text" @click="changeFilter(2)" :class="{active: postFilter == 2}">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency }}</span></button></div>
+                <div class="box"><button class="box-text" @click="changeFilter(0)" :class="{ active: postFilter == 0 }">최근 1주일
+                        접수 <br><span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
+                <div class="box inProg"><button class="box-text" @click="changeFilter(1)"
+                        :class="{ active: postFilter == 1 }">처리 중<br><span class=strong>{{ postsCount?.acting
+                        }}</span></button></div>
+                <div class="box alert"><button class="box-text" @click="changeFilter(2)"
+                        :class="{ active: postFilter == 2 }">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency
+                        }}</span></button></div>
             </div>
             <div class="table-wrap">
                 <div class="post-table">
@@ -221,8 +237,9 @@ const filteredList = computed(() => {
                         <li class="col07">비고</li>
                     </ul>
                     <div class="table-body" v-if="filteredList?.length">
-                        <ol  >
-                            <Post  v-for="(post,i) of filteredList" :key="i" :post="post" :lastRefreshTime="lastRefreshTime"  @addMemo="toggleMemoAddModal"/>
+                        <ol>
+                            <Post v-for="(post, i) of filteredList" :key="i" :post="post" :lastRefreshTime="lastRefreshTime"
+                                @addMemo="toggleMemoAddModal" />
                         </ol>
                     </div>
                     <div class="table-body" v-else>
@@ -238,10 +255,9 @@ const filteredList = computed(() => {
             </template>
             <template v-if="memoAddModalVisible">
                 <div @click="toggleMemoAddModal()" class="modal-bg">
-                    <MemoAddModal :postSeq="postSeqForMemo"  @closeModal="toggleMemoAddModal" />
+                    <MemoAddModal :postSeq="postSeqForMemo" @closeModal="toggleMemoAddModal" />
                 </div>
-            </template>
-            <!-- 구간 end -->
-        </div>
-    </section>
-</template>
+        </template>
+        <!-- 구간 end -->
+    </div>
+</section></template>

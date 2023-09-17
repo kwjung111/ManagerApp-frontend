@@ -6,9 +6,9 @@ import PostMemo from './PostMemo.vue';
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
 
-//TODO 컴포넌트 바깥에서 v-for 사용하게 리팩토링
-
 const url = Cmmn.url;
+
+const pagePath = '/srList'        
 
 const props = defineProps({
     post: {
@@ -107,7 +107,8 @@ const removePost = (seq) => {
 
 <template>
         <li :class="{emergency: post.BRD_POST_CD == 2}">
-            <div class="list-wrap">
+            <router-link :to="{ path:pagePath, hash:`#${post.BRD_SEQ}`}"></router-link> <!-- anchor 이동을 위해 삽입-->
+            <div class="list-wrap" :id="post.BRD_SEQ" tabindex="-1">    <!--anchor 이동을 위한 id, tabindex-->
                 <p class="col01">{{ post.BRD_SEQ }}</p>
                 <p class="col02">{{ post.BRD_REG_DTM.slice(0,-3) }}</p>
                 <p class="col03 txt-left title">

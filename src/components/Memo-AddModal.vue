@@ -37,6 +37,7 @@ const addMemo = async () =>{
         console.log(res)
         if(res.data.ok == true){
         alert('등록 완료!')
+        Cmmn.saveNotificationInfo('posts',res.data.result.postSeq)
         }else{
             alert('등록 실패')
         }

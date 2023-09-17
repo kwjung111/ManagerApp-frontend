@@ -1,6 +1,5 @@
 <script setup>
 import {ref, inject} from 'vue'
-import cmmn from '../common';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -19,7 +18,7 @@ const addPost = async () =>{
     console.log(postCd.value, cntns.value, wrtr.value)
     if(!validation()) return
 
-    const UID = await cmmn.getUserIdentifier()
+    const UID = await Cmmn.getUserIdentifier()
 
     axios.post(`${url}/posts`,{
         postCd:postCd.value,
@@ -30,6 +29,8 @@ const addPost = async () =>{
     .then((res) =>{
         if(res.data.ok==true){
             alert('등록 완료!')
+            console.log
+            Cmmn.saveNotificationInfo('posts',res.data.result.postSeq)
         }
         else{
             alert('실패했습니다. 접속 상태를 확인해 주세요')

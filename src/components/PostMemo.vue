@@ -12,6 +12,8 @@ const props = defineProps({
 })
 
 
+
+
 //TODO destructuring 한 값도 갱신되는지 확인필요
 const memos = computed(() =>{
     return props.memos
@@ -21,9 +23,7 @@ const memos = computed(() =>{
 const removeMemo = async (seq) => {
     if (confirm(`코멘트를 삭제하시겠습니까?`)) {
 
-        const UID = await Cmmn.getUserIdentifier();
-
-        axios.delete(`${url}/memos/${seq}/UID/${UID}`)
+        axios.delete(`${url}/memos/${seq}`)
         .then((res) => {
             console.log(res)
             if (res.data.ok) {
@@ -35,6 +35,8 @@ const removeMemo = async (seq) => {
         })
     }
 }
+
+
 
 </script>
 

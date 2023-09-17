@@ -4,6 +4,7 @@ import Post from '../components/Post.vue'
 import PostAddModal from '../components/Post-AddModal.vue'
 import MemoAddModal from '../components/Memo-AddModal.vue'
 import { ref, onMounted, computed, inject } from 'vue'
+import cmmn from '../common';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -76,16 +77,48 @@ function connectWs() {
 
     ws.onmessage = async (event) => {
         const data = JSON.parse(event.data)
-        if (data.type == "message") {
+        if (data.type === "message") {
             let msgData = data.data
-            console.log("server message :", msgData.content);
+            console.log("server message :", msgData);
         }
-        else if (data.type == "event") {
+        else if (data.type === "event") {
             let evtData = data.data
-            console.log("server event : ", evtData.event)
+            console.log("server event : ", evtData)
 
-            //어떤 이벤트인지 보고 리프레시
+            //어떤 이벤트인지 보고 리프레시S            
             refresh();
+
+            //알림 관련
+            if(evtData.method == "POST"){
+                const UID = await cmmn.getUserIdentifier();
+                
+                //새글 등록시 알림
+                if(evtData.resource =="posts"){
+                    if(evtData.UID != UID){
+                        const noti = new Notification('새글 등록됨',{
+                            icon:null,
+                            body:evtData.content
+                        });
+
+                         // 알림 클릭 시 현재 탭으로 초점을 이동
+                    noti.onclick = function(event) {
+                        event.preventDefault(); // 알림 클릭의 기본 동작을 방지
+                        window.focus(); // 현재 탭에 초점을 맞춤
+                    };
+                        
+                    setTimeout(()=>{
+                        noti.close()
+                    }),5000}
+                }
+                /*
+                //자기 글에 댓글 등록시 알림
+                else if(evtData.resource == "memos"){
+                    if(evtData.UID == UID){
+                        new Notification();
+                    }
+                }
+                */
+            }
         }
     };
 

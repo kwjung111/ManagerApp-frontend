@@ -19,13 +19,17 @@ const postAfter = ref(1)
 const emit = defineEmits(['closeModal'])
 
 
-const addPost = () =>{
+const addPost = async() =>{
     console.log(postCd.value, cntns.value, wrtr.value)
     if(!validation()) return
+
+    const UID = await Cmmn.getUserIdentifier();
+
     axios.post(`${url}/posts`,{
         postCd:postCd.value,
         content:cntns.value,
         writer:wrtr.value,
+        UID:UID,
     })
     .then((res) =>{
         if(res.data.ok==true){

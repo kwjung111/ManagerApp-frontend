@@ -29,7 +29,6 @@ const addPost = async () =>{
     })
     .then((res) =>{
         if(res.data.ok==true){
-        console.log(res.data.ok)
             alert('등록 완료!')
         }
         else{

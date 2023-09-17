@@ -70,7 +70,6 @@ const toggleState = async (seq) => {
         UID:UID
     }).
     then((res) => {
-        console.log(res)
         if(res.data.ok){
         //
         }

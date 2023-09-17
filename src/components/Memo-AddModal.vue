@@ -22,13 +22,16 @@ const wrtr = ref('')
 
 const emit = defineEmits(['closeModal'])
 
-const addMemo = () =>{
-    console.log(cntns.value, wrtr.value)
+const addMemo = async () =>{
     if(!validation()) return
+
+    const UID = await Cmmn.getUserIdentifier();
+
     axios.post(`${url}/memos`,{
         postSeq:postSeq.value,
         content:cntns.value,
         writer:wrtr.value,
+        UID:UID,
     })
     .then((res) =>{
         console.log(res)

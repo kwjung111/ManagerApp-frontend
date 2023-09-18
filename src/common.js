@@ -94,13 +94,16 @@ const cmmn = {
     return userKey
   },
   //TODO 이 함수는 로컬스토리지에 데이터가 쌓이는 정도를 보고 사용여부 판단.
-  removeOldNotification(postId){
-    const oldNotifications = JSON.parse(localStorage.getItem('notifications')) || {};
-    const newNotifications = oldNotifications.filter(([,val]) =>{
-      return moment().diff(moment(val),'days') <= 30 
-    })
-    newNotifications[postId] = moment().format();
-    localStorage.setItem('notifications', JSON.stringify(newNotifications));
+  test_deleteOldNotification(type){
+    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {};
+    console.log(notifications)
+    let newNoti = {}
+     for(let key in notifications){
+         if(moment().diff(moment(notifications[key]),'days') <= 30){
+            newNoti[key] = notifications[key]
+         }
+     }
+     return newNoti
   },
   //알림받을 정보를 저장
   saveNotificationInfo(type,id) {

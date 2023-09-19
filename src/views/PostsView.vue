@@ -199,6 +199,7 @@ const filteredList = computed(() => {
                 <h2 v-if="postFilter == 0">전체</h2>
                 <h2 v-if="postFilter == 1">처리 중</h2>
                 <h2 v-if="postFilter == 2">긴급 처리 중</h2>
+                <h2 v-if="postFilter == 3">처리 대기 중</h2>
             </div>
             <div class="item">
                 <p>{{ curDt }}</p>
@@ -217,12 +218,15 @@ const filteredList = computed(() => {
         <div class="container">
             <div class="sidebar">
                 <div class="box"><button class="box-text" @click="changeFilter(0)" :class="{ active: postFilter == 0 }">최근 1주일
-                        접수 <br><span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
+                        접수<span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
                 <div class="box inProg"><button class="box-text" @click="changeFilter(1)"
-                        :class="{ active: postFilter == 1 }">처리 중<br><span class=strong>{{ postsCount?.acting
+                        :class="{ active: postFilter == 1 }">처리 중<span class=strong>{{ postsCount?.acting
                         }}</span></button></div>
                 <div class="box alert"><button class="box-text" @click="changeFilter(2)"
-                        :class="{ active: postFilter == 2 }">긴급 처리 중<br><span class="strong">{{ postsCount?.emergency
+                        :class="{ active: postFilter == 2 }">긴급 처리 중<span class="strong">{{ postsCount?.emergency
+                        }}</span></button></div>
+                <div class="box delay"><button class="box-text" @click="changeFilter(3)"
+                        :class="{ active: postFilter == 3 }">처리 대기 중<span class="strong">{{ postsCount?.delay
                         }}</span></button></div>
             </div>
             <div class="table-wrap">

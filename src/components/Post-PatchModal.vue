@@ -1,6 +1,6 @@
 <script setup>
 import {ref,onMounted, inject} from 'vue'
-import UxSelect from 'ux-select'
+//import UxSelect from 'ux-select'
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -9,8 +9,10 @@ const url = Cmmn.url;
 const wrtrCookieKey = 'writerName';
 
 const postCd = ref(1)
+const afterCd = ref(1)
 const cntns = ref('')
 const wrtr = ref('')
+const delayCntns = ref('')
 
 const postStatus = ref(1)
 const postCate = ref(1)
@@ -74,17 +76,14 @@ const checkcntns = () =>{
 
 
 
-//const myUxSelect = 
+//const myUxSelect = onMounted(() =>{
+//    const selectBoxElm = document.getElementById("selectSys")
+//    new UxSelect(selectBoxElm,{
+//        placeholder : "시스템 구분",
+//    });
+//})
 
 
-/*
-onMounted(() =>{
-    const selectBoxElm = document.getElementById("selectSys")
-new UxSelect(selectBoxElm,{
-    placeholder : "시스템 구분",
-});
-})
-*/
 
 Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
@@ -137,7 +136,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <span class="input-label"> 대기사유 </span>
                     <label class="label-text">
                         <textarea maxlength="50" :disabled="postStatus != 2"></textarea>
-                        <span> {{ cntns.length }}/50 자</span>
+                        <span> {{ delayCntns.length }}/50 자</span>
                     </label>
                 </div>
                 <div class="input-clear" :class="{show : postStatus == 3}">
@@ -195,9 +194,36 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                         </label>
                     </div>
                 </div>
+                <div class="input-after" :class="{show : postAfter == 2 && postStatus == 3}">
+                    <div class="input-group">
+                        <span class="input-label"> 입력값 </span>
+                        <label class="label-radio">
+                            <input type="radio" name="afterCd" value="1" v-model="afterCd">
+                            <span > 일반</span>
+                        </label>
+                        <label class="label-radio">
+                            <input type="radio" name="afterCd" value="2" v-model="afterCd">
+                            <span > 긴급</span>
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-label"> 내용 </span>
+                        <label class="label-text">
+                            <textarea maxlength="50" v-model="cntns"></textarea>
+                            <span> {{ cntns.length }}/50 자</span>
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-label" > 작성자 </span>
+                        <label class="label-text">
+                            <input type="text" maxlength="5" size="40" v-model="wrtr"/>
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="modal-btn-wrap">
-                <button class="modal-btn btn-common" @click="addPost()">등록하기</button>
+                <button class="modal-btn btn-common" v-if="postStatus != 3" @click="changePost()">수정하기</button>
+                <button class="modal-btn btn-common" v-else @click="addPost()">등록하기</button>
                 <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
             </div>
         </div>

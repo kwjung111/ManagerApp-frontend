@@ -79,24 +79,24 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
     <div class="modal-overlay">
         <div class="modal" @click.stop=""> <!--이벤트 버블링 방지-->
            <div class="input-wrap">
-             <div class="input-group">
-                <span class="input-label"> 내용 </span>
-                <label class="label-text">
-                    <textarea maxlength="100" v-model="cntns"></textarea>
-                    <span> {{ cntns.length }}/100 자</span>
-                </label>
+                <div class="input-group">
+                    <span class="input-label"> 내용 </span>
+                    <label class="label-text">
+                        <textarea maxlength="100" v-model="cntns"></textarea>
+                        <span> {{ cntns.length }}/100 자</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <span class="input-label" > 작성자 </span>
+                    <label class="label-text">
+                        <input type="text" maxlength="5" size="40" v-model="wrtr"/>
+                    </label>
+                </div>
             </div>
-         <div class="input-group">
-             <span class="input-label" > 작성자 </span>
-            <label class="label-text">
-                <input type="text" maxlength="5" size="40" v-model="wrtr"/>
-            </label>
-        </div>
-    </div>
-        <div class="modal-btn-wrap">
-        <button class="modal-btn btn-common" @click="addMemo()">등록하기</button>
-        <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
-        </div>
+            <div class="modal-btn-wrap">
+                <button class="modal-btn btn-common" @click="addMemo()">등록하기</button>
+                <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
+            </div>
         </div>
     </div>
 </template>

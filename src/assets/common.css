@@ -272,6 +272,16 @@ header{
     height: 170px;
 }
 
+.input-after{
+    height: 0;
+    overflow: hidden;
+    transition: .3s;
+}
+.input-after.show{
+    height: 150px;
+    margin: 10px 0 0;
+}
+
 .modal-btn-wrap{
     display: flex;
     justify-content: center; 
@@ -327,6 +337,9 @@ header{
 }
 .box.inProg .box-text{
     background-color: #f9ffbe;
+}
+.box.delay .box-text{
+    background-color: #8cd77c;
 }
 
 /* list table */

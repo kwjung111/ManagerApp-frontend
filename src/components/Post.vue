@@ -1,6 +1,7 @@
 <script setup>
 import { ref,computed, inject } from 'vue'
-import PostMemo from './PostMemo.vue';
+import PostMemo from './PostMemo.vue'
+import PostPatch from './Post-PatchModal.vue'
 
 
 const axios = inject('axios')
@@ -102,6 +103,11 @@ const removePost = (seq) => {
         })
     }
 }
+const postPatchModalVisible = ref(false)
+function togglePostPatchModal() {
+    postPatchModalVisible.value = !postPatchModalVisible.value;
+}
+
 
 </script>
 
@@ -115,8 +121,8 @@ const removePost = (seq) => {
                     <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                     {{ post.BRD_CTNTS }}
                 </p>
-                <!--<p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="patchPost(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p> -->
-                <p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>
+                <p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @click="togglePostPatchModal()" @dblclick="patchPost(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>
+                <!--<p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>-->
                 <p class="col05" v-if="post.BRD_PRGSS_TF"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</p>
                 <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>
                 <p class="col06">{{ post.BRD_WRTR }}</p>
@@ -126,5 +132,10 @@ const removePost = (seq) => {
                 </div>
             </div>
             <PostMemo v-if="post.memos?.length" :memos="post.memos" />
+            <template v-if="postPatchModalVisible">
+                <div @click="togglePostPatchModal()" class="modal-bg">
+                    <PostPatch @closeModal="togglePostPatchModal" />
+                </div>
+            </template>
         </li>
 </template>

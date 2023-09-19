@@ -93,23 +93,20 @@ const cmmn = {
     }
     return userKey
   },
-  //TODO 이 함수는 로컬스토리지에 데이터가 쌓이는 정도를 보고 사용여부 판단.
-  test_deleteOldNotification(type){
-    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {};
-    console.log(notifications)
-    let newNoti = {}
-     for(let key in notifications){
-         if(moment().diff(moment(notifications[key]),'days') <= 30){
-            newNoti[key] = notifications[key]
-         }
-     }
-     return newNoti
-  },
   //알림받을 정보를 저장
   saveNotificationInfo(type,id) {
+    let newNoti = {}
+    cmmn.test_deleteOldNotification(type)
     const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {};
-    notifications[id] = moment().format();
-    localStorage.setItem(`notifications_${type}`, JSON.stringify(notifications));
+    //오래된 key 들 삭제(기한 7일)
+    for(let key in notifications){
+      console.log(moment().diff(moment(notifications[key]),'days'))
+       if(moment().diff(moment(notifications[key]),'days') <= 7){
+          newNoti[key] = notifications[key]
+       }
+   }
+    newNoti[id] = moment().format();
+    localStorage.setItem(`notifications_${type}`, JSON.stringify(newNoti));
   },
 
   //알림 여부를 판단

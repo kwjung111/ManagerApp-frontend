@@ -29,7 +29,6 @@ const addPost = async () =>{
     .then((res) =>{
         if(res.data.ok==true){
             alert('등록 완료!')
-            console.log
             Cmmn.saveNotificationInfo('posts',res.data.result.postSeq)
         }
         else{

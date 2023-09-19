@@ -5,6 +5,7 @@ import PostAddModal from '../components/Post-AddModal.vue'
 import MemoAddModal from '../components/Memo-AddModal.vue'
 import { ref, onMounted, computed, inject } from 'vue'
 import cmmn from '../common';
+import eventMapper from '../eventHandler';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -85,50 +86,10 @@ function connectWs() {
             let evtData = data.data
             console.log("server event : ", evtData)
 
-            //이벤트가 오면 무조건 리프레시
+            //이벤트가 오면 무조건 리프레시 TODO 분기처리.
             refresh();
-
-            //알림 관련 함수들
-            if (evtData.method == "POST") {
-                const UID = await cmmn.getUserIdentifier();
-
-                //새글 등록시 알림
-                if (evtData.resource == "posts" && evtData.UID != UID) {
-                    const noti = new Notification('새글 등록됨', {
-                        icon: null,
-                        body: evtData.content
-                    });
-
-                    noti.onclick = function (event) {
-                        event.preventDefault();         // 알림 클릭의 기본 동작을 방지
-                        cmmn.navigateToSection(evtData.rid)        // id 위치로 이동
-                    };
-
-                    setTimeout(() => {
-                        noti.close()
-                    }, 5000)
-
-                }
-
-                else if (evtData.resource == "memos" && evtData.UID != UID) {
-                    //게시물에 연관된 정보를 받으므로 posts 저장소로 접근
-                    if (cmmn.checkSendNotification("posts", evtData.meta.postSeq)) {
-                        const noti = new Notification('댓글 등록됨', {
-                            icon: null,                      //TODO 아이콘 삽입
-                            body: evtData.content
-                        });
-
-                        noti.onclick = function (event) {
-                            event.preventDefault();         // 알림 클릭의 기본 동작을 방지
-                            cmmn.navigateToSection(evtData.meta.postSeq)        // id 위치로 이동
-                        };
-
-                        setTimeout(() => {
-                            noti.close()
-                        }, 5000)
-                    }
-                }
-            }
+            
+            eventMapper(evtData)
         }
     }
 

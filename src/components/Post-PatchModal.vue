@@ -1,6 +1,6 @@
 <script setup>
-import {ref,onMounted, inject} from 'vue'
-//import UxSelect from 'ux-select'
+import {ref,onMounted,onBeforeUnmount, inject} from 'vue'
+import UxSelect from 'ux-select'
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -48,6 +48,19 @@ const addPost = async() =>{
     })
 }
 
+const myUxSelect = onMounted(() =>{
+    const selectBoxSys = document.getElementById("selectSys")
+    new UxSelect(selectBoxSys,{
+        placeholder : "시스템 구분 선택",
+        isSearchable : true,
+    });
+})
+
+const myUxSelectDestroy = onBeforeUnmount(() => {
+    const selectbox = document.querySelector('.ux-select')
+    selectbox.remove()
+})
+
 const closeModal = () =>{
     emit('closeModal')
 }
@@ -70,18 +83,6 @@ const checkcntns = () =>{
     alert('내용을 입력해주세요')
     return false;   
 }
-
-
-//ux-select Code
-
-
-
-//const myUxSelect = onMounted(() =>{
-//    const selectBoxElm = document.getElementById("selectSys")
-//    new UxSelect(selectBoxElm,{
-//        placeholder : "시스템 구분",
-//    });
-//})
 
 
 
@@ -142,13 +143,27 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 <div class="input-clear" :class="{show : postStatus == 3}">
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
-                        <!-- <label for="system">시스템 구분</label> -->
-                        <select name="system" id="selectSys">
-                            <option  value="0">영업 관리 시스템(매장용)</option>
-                            <option  value="1">토마토 RI 집계</option>
-                            <option value="2">Web POP</option>
-                            <option value="3">관리자 App</option>
-                        </select>
+                        <div class="label-text">
+                            <select name="system" id="selectSys">
+                                <option value="0">영업 관리 시스템(매장용)</option>
+                                <option value="1">영업 관리 시스템(대리점용)</option>
+                                <option value="2">영업 관리 시스템(RI)</option>
+                                <option value="3">토마토 RI 집계</option>
+                                <option value="4">Web POP</option>
+                                <option value="5">관리자 App</option>
+                                <option value="6">안드로이드 H/T</option>
+                                <option value="7">일반 H/T</option>
+                                <option value="8">토마토 App</option>
+                                <option value="9">B2B Supply</option>
+                                <option value="10">B2B Trade(P/C)</option>
+                                <option value="11">B2B Trade(Mobile)</option>
+                                <option value="12">일반 POS</option>
+                                <option value="13">kiosk POS</option>
+                                <option value="14">인프라-운영계(AWS)</option>
+                                <option value="15">인프라-개발계</option>
+                                <option value="16">ESL</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 유형 </span>
@@ -163,8 +178,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
-                        <div v-if="postCate == 1">
-                            <label for="cateSR">상세 유형 - SR</label>
+                        <div class="label-text" v-if="postCate == 1">
                             <select name="cateSR" id="cateSR">
                                 <option value="0">...</option>
                                 <option value="1">...</option>
@@ -172,8 +186,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                                 <option value="3">...</option>
                             </select>
                         </div>
-                        <div v-if="postCate == 2">
-                            <label for="cateErr">상세 유형 - 장애/에러</label>
+                        <div class="label-text" v-if="postCate == 2">
                             <select name="cateErr" id="cateErr">
                                 <option value="0">...</option>
                                 <option value="1">...</option>

@@ -225,4 +225,12 @@ const filteredList = computed(() => {
         </template>
         <!-- 구간 end -->
     </div>
+    <div class="loading-wrap">
+        <div class="loading">
+            <span class="first"></span>
+            <span class="second"></span>
+            <span class="third"></span>
+            <span class="forth"></span>
+        </div>
+    </div>
 </section></template>

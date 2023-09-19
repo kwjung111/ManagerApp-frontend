@@ -94,6 +94,86 @@ body {
     box-shadow: none;
 }
 
+/* loading */
+.loading-wrap{
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255,255,255,.9);
+    z-index: 9999;
+}
+.loading{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 35px;
+    height: 35px;
+}
+.loading > span{
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+.loading > span.first{
+    animation: ani01 3s infinite;
+    background: #FF8259;
+}
+.loading > span.second{
+    left: 100%;
+    animation: ani02 3s infinite;
+    background: #E64EB0;
+}
+.loading > span.third{
+    top: 100%;
+    left: 100%;
+    animation: ani03 3s infinite;
+    background: #A670FF;
+}
+.loading > span.forth{
+    top: 100%;
+    left: 0;
+    animation: ani04 3s infinite;
+    background: #5698F5;
+}
+
+@keyframes ani01{
+    0%{top: 0;left: 0;}
+    25%{top: 0;left: 100%;}
+    50%{top: 100%;left: 100%;}
+    75%{top: 100%;left: 0;}
+    100%{top: 0;left: 0;}
+}
+@keyframes ani02{
+    0%{top: 0;left: 100%;}
+    25%{top: 100%;left: 100%;}
+    50%{top: 100%;left: 0;}
+    75%{top: 0;left: 0;}
+    100%{top: 0;left: 100%;}
+}
+@keyframes ani03{
+    0%{top: 100%;left: 100%;}
+    25%{top: 100%;left: 0;}
+    50%{top: 0;left: 0;}
+    75%{top: 0;left: 100%;}
+    100%{top: 100%;left: 100%;}
+}
+@keyframes ani04{
+    0%{top: 100%;left: 0;}
+    25%{top: 0;left: 0;}
+    50%{top: 0;left: 100%;}
+    75%{top: 100%;left: 100%;}
+    100%{top: 100%;left: 0;}
+}
+
 /* header */
 header{
     position: fixed;
@@ -161,7 +241,6 @@ header{
     z-index:100;
 }
 .modal .input-wrap{
-    margin: 0 0 20px;
     position: relative;
 }
 .input-wrap .input-group {
@@ -265,11 +344,14 @@ header{
 
 .input-clear{
     height: 0;
+    opacity: 0;
     overflow: hidden;
     transition: .3s;
 }
 .input-clear.show{
-    height: 170px;
+    height: 195px;
+    opacity: 1;
+    overflow: visible;
 }
 
 .input-after{
@@ -291,6 +373,28 @@ header{
     padding: 10px 10px 8px;
     margin: 0 10px;
     line-height: 1;
+}
+
+/* ux-select custom */
+.label-text .ux-select{
+    width: calc(100% - 53px);
+    border-color: #aaa;
+    border-radius: 3px;
+    box-sizing: border-box;
+    --uxs-option-hover-bg-color: #e4effc !important;
+    --uxs-option-select-bg-color: #e4effc !important;
+}
+.ux-select__title{
+    font-size: 14px;
+    color: #666;
+}
+.ux-select-group__elem{
+    font-size: 14px;
+    color: #333;
+}
+.ux-select__body{
+    border-color: var(--uxs-border-hover-color) !important;
+    left: -1px;
 }
 
 /* list view */

@@ -116,7 +116,7 @@ function togglePostPatchModal() {
             <!--<router-link :to="{ path:pagePath, hash:`#${post.BRD_SEQ}`}"></router-link> --><!-- anchor 이동을 위해 삽입-->
             <div class="list-wrap" :id="post.BRD_SEQ" tabindex="-1">    <!--anchor 이동을 위한 id, tabindex-->
                 <p class="col01">{{ post.BRD_SEQ }}</p>
-                <p class="col02">{{ post.BRD_REG_DTM.slice(0,-3) }}</p>
+                <p class="col02">{{ post.BRD_REG_DTM.slice(5,-3) }}</p>
                 <p class="col03 txt-left title">
                     <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                     {{ post.BRD_CTNTS }}

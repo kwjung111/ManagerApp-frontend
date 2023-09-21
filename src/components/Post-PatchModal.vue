@@ -55,6 +55,20 @@ const myUxSelect = onMounted(() =>{
         isSearchable : true,
     });
 })
+const myUxSelect02 = onMounted(() =>{
+    const selectBoxSR = document.getElementById("cateSR")
+    new UxSelect(selectBoxSR,{
+        placeholder : "상세 유형 선택 - SR",
+        isSearchable : true,
+        isGroupOptions : true,
+    });
+})
+const myUxSelect03 = onMounted(() =>{
+    const selectBoxErr = document.getElementById("cateErr")
+    new UxSelect(selectBoxErr,{
+        placeholder : "상세 유형 선택 - 장애/에러",
+    });
+})
 
 const myUxSelectDestroy = onBeforeUnmount(() => {
     const selectbox = document.querySelector('.ux-select')
@@ -145,23 +159,23 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                         <span class="input-label"> 시스템 구분 </span>
                         <div class="label-text">
                             <select name="system" id="selectSys">
-                                <option value="0">영업 관리 시스템(매장용)</option>
-                                <option value="1">영업 관리 시스템(대리점용)</option>
-                                <option value="2">영업 관리 시스템(RI)</option>
-                                <option value="3">토마토 RI 집계</option>
-                                <option value="4">Web POP</option>
-                                <option value="5">관리자 App</option>
-                                <option value="6">안드로이드 H/T</option>
-                                <option value="7">일반 H/T</option>
-                                <option value="8">토마토 App</option>
-                                <option value="9">B2B Supply</option>
-                                <option value="10">B2B Trade(P/C)</option>
-                                <option value="11">B2B Trade(Mobile)</option>
-                                <option value="12">일반 POS</option>
-                                <option value="13">kiosk POS</option>
-                                <option value="14">인프라-운영계(AWS)</option>
-                                <option value="15">인프라-개발계</option>
-                                <option value="16">ESL</option>
+                                <option value="1">영업 관리 시스템(매장용)</option>
+                                <option value="2">영업 관리 시스템(대리점용)</option>
+                                <option value="3">영업 관리 시스템(RI)</option>
+                                <option value="4">토마토 RI 집계</option>
+                                <option value="5">Web POP</option>
+                                <option value="6">관리자 App</option>
+                                <option value="7">안드로이드 H/T</option>
+                                <option value="8">일반 H/T</option>
+                                <option value="9">토마토 App</option>
+                                <option value="10">B2B Supply</option>
+                                <option value="11">B2B Trade(P/C)</option>
+                                <option value="12">B2B Trade(Mobile)</option>
+                                <option value="13">일반 POS</option>
+                                <option value="14">kiosk POS</option>
+                                <option value="15">인프라-운영계(AWS)</option>
+                                <option value="16">인프라-개발계</option>
+                                <option value="17">ESL</option>
                             </select>
                         </div>
                     </div>
@@ -178,20 +192,44 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
-                        <div class="label-text" v-if="postCate == 1">
+                        <div class="label-text selectbox" :class="{on : postCate == 1}">
                             <select name="cateSR" id="cateSR">
-                                <option value="0">...</option>
-                                <option value="1">...</option>
-                                <option value="2">...</option>
-                                <option value="3">...</option>
+                                <option value="1" data-ux-select-group="Data Check">Data Check - Data 이상</option>
+                                <option value="2" data-ux-select-group="Data Check">Data Check - Data 조회/확인</option>
+                                <option value="3" data-ux-select-group="Data 수정">Data 수정 - Data 가공(요청)</option>
+                                <option value="4" data-ux-select-group="Data 수정">Data 수정 - 사용자 오류</option>
+                                <option value="5" data-ux-select-group="Data 수정">Data 수정 - 시스템 오류</option>
+                                <option value="6" data-ux-select-group="Data 수정">Data 수정 - 타시스템 오류</option>
+                                <option value="7" data-ux-select-group="Data 수정">Data 수정 - 테스트/지원</option>
+                                <option value="8" data-ux-select-group="Data 이행">Data 이행 - 신규점 재이행</option>
+                                <option value="9" data-ux-select-group="Data 이행">Data 이행 - 신규점 초기 이행</option>
+                                <option value="10" data-ux-select-group="Data 추출">Data 추출 - 기존</option>
+                                <option value="11" data-ux-select-group="Data 추출">Data 추출 - 기존변형</option>
+                                <option value="12" data-ux-select-group="Data 추출">Data 추출 - 신규</option>
+                                <option value="13" data-ux-select-group="문의">문의 - 사용법 - 장비/Tool</option>
+                                <option value="14" data-ux-select-group="문의">문의 - 사용법 - 프로그램 화면</option>
+                                <option value="15" data-ux-select-group="문의">문의 - 장애/오류 - 시스템</option>
+                                <option value="16" data-ux-select-group="문의">문의 - 장애/오류 - 장비</option>
+                                <option value="17" data-ux-select-group="문의">문의 - 장애/오류 - 프로그램</option>
+                                <option value="18" data-ux-select-group="문의">문의 - 프로세스 - 기존 프로세스</option>
+                                <option value="19" data-ux-select-group="문의">문의 - 프로세스 - 신규 프로세스</option>
+                                <option value="20" data-ux-select-group="업무지원">업무지원 - 문서작성</option>
+                                <option value="21" data-ux-select-group="업무지원">업무지원 - 조사/모니터링</option>
+                                <option value="22" data-ux-select-group="프로그램 변경/추가">프로그램 변경/추가 - 기능/프로세스 개선</option>
+                                <option value="23" data-ux-select-group="프로그램 변경/추가">프로그램 변경/추가 - 신규 프로그램</option>
+                                <option value="24" data-ux-select-group="프로그램 변경/추가">프로그램 변경/추가 - 오류 개선</option>
+                                <option value="25" data-ux-select-group="프로그램 실행">프로그램 실행 - 배치</option>
+                                <option value="26" data-ux-select-group="프로그램 실행">프로그램 실행 - 일반화면</option>
                             </select>
                         </div>
-                        <div class="label-text" v-if="postCate == 2">
+                        <div class="label-text selectbox" :class="{on : postCate == 2}">
                             <select name="cateErr" id="cateErr">
-                                <option value="0">...</option>
-                                <option value="1">...</option>
-                                <option value="2">...</option>
-                                <option value="3">...</option>
+                                <option value="1">API/IRT</option>
+                                <option value="2">DBMS</option>
+                                <option value="3">Server</option>
+                                <option value="4">네트워크</option>
+                                <option value="5">배치 프로그램</option>
+                                <option value="6">화면 프로그램</option>
                             </select>
                         </div>
                     </div>

@@ -87,55 +87,67 @@ const cmmn = {
   getUserIdentifier: async () => {
     let userKey = localStorage.getItem('userKey')
     if (userKey == null) {
-        const res = await axios.get(`${cmmn.url}/identifier`)
-        userKey = res.data;
-        localStorage.setItem('userKey', res.data)
+      const res = await axios.get(`${cmmn.url}/identifier`)
+      userKey = res.data
+      localStorage.setItem('userKey', res.data)
     }
     return userKey
   },
   //알림받을 정보를 저장
-  saveNotificationInfo(type,id) {
+  saveNotificationInfo(type, id) {
     let newNoti = {}
     cmmn.test_deleteOldNotification(type)
-    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {};
+    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {}
     //오래된 key 들 삭제(기한 7일)
-    for(let key in notifications){
-      console.log(moment().diff(moment(notifications[key]),'days'))
-       if(moment().diff(moment(notifications[key]),'days') <= 7){
-          newNoti[key] = notifications[key]
-       }
-   }
-    newNoti[id] = moment().format();
-    localStorage.setItem(`notifications_${type}`, JSON.stringify(newNoti));
+    for (let key in notifications) {
+      console.log(moment().diff(moment(notifications[key]), 'days'))
+      if (moment().diff(moment(notifications[key]), 'days') <= 7) {
+        newNoti[key] = notifications[key]
+      }
+    }
+    newNoti[id] = moment().format()
+    localStorage.setItem(`notifications_${type}`, JSON.stringify(newNoti))
   },
 
   //알림 여부를 판단
-  checkSendNotification(type,id) {
-    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {};
+  checkSendNotification(type, id) {
+    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {}
 
     let notiInfo = notifications[id]
-    
-    if(notiInfo){
-      return true;
-    }
-    else{
-      return false;
+
+    if (notiInfo) {
+      return true
+    } else {
+      return false
     }
   },
 
-
   navigateToSection(sectionId) {
-    window.focus();
-    location.hash = `#${sectionId}`;
-    
+    window.focus()
+    location.hash = `#${sectionId}`
+
     //비동기화 -> 현재 큐의 비동기 함수 모두 실행 후 실행됨.
     setTimeout(() => {
-      const element = document.getElementById(sectionId);
-      if (element){ 
-          element.focus()
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-      };
-    }, 0);
+      const element = document.getElementById(sectionId)
+      if (element) {
+        element.focus()
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 0)
+  },
+  //공통코드를 서버에서 가져옴
+  async getCmcd(cd) {
+    try {
+      const res = await axios.get(`${cmmn.url}/cmmn/cmcd/${cd}`)
+        if (res.data.ok == true) {
+          return res.data.result
+        } else {
+          alert('서버와의 통신에 실패했습니다.')
+          throw new Error('Comm error')
+        }
+    } catch(error) {
+      console.error(error)
+    }
   }
 }
 

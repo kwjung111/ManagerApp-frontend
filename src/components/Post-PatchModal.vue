@@ -1,6 +1,7 @@
 <script setup>
-import {ref,onMounted,onBeforeUnmount, inject} from 'vue'
+import {ref,onMounted,onBeforeUnmount,onBeforeMount, inject, computed} from 'vue'
 import UxSelect from 'ux-select'
+import cmcdOption from './common/cmcd-option.vue';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -17,6 +18,7 @@ const delayCntns = ref('')
 const postStatus = ref(1)
 const postCate = ref(1)
 const postAfter = ref(1)
+const cmcdSys = ref([])
 
 const emit = defineEmits(['closeModal'])
 
@@ -177,6 +179,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                                 <option value="16">인프라-개발계</option>
                                 <option value="17">ESL</option>
                             </select>
+                                <cmcdOption :cd="'01'" :placeholder="'시스템 구분'"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
@@ -221,6 +224,9 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                                 <option value="25" data-ux-select-group="프로그램 실행">프로그램 실행 - 배치</option>
                                 <option value="26" data-ux-select-group="프로그램 실행">프로그램 실행 - 일반화면</option>
                             </select>
+                        </div>
+                        <div class="label-text" v-if="postCate == 1">
+                            <cmcdOption :cd="'02'" :placeholder="'상세 유형'"></cmcdOption>
                         </div>
                         <div class="label-text selectbox" :class="{on : postCate == 2}">
                             <select name="cateErr" id="cateErr">

@@ -4,7 +4,6 @@ import Post from '../components/Post.vue'
 import PostAddModal from '../components/Post-AddModal.vue'
 import MemoAddModal from '../components/Memo-AddModal.vue'
 import { ref, onMounted, computed, inject } from 'vue'
-import cmmn from '../common';
 import eventMapper from '../eventHandler';
 
 const axios = inject('axios')
@@ -136,6 +135,9 @@ const actingFilter = (() => {
 const emergencyFilter = (() => {
     return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
 })
+const pendingFilter = (()=> {
+    return posts.value.filter((p) => p.GRD_PRGSS_TF == 1 && p.BRD_POST_CD ==3)
+})
 
 const filteredList = computed(() => {
     if (postFilter.value == 1) {
@@ -143,6 +145,9 @@ const filteredList = computed(() => {
     }
     else if (postFilter.value == 2) {
         return emergencyFilter()
+    }
+    else if(postFilter.value == 3){
+        return pendingFilter()
     }
     else {
         return posts.value
@@ -187,7 +192,7 @@ const filteredList = computed(() => {
                         :class="{ active: postFilter == 2 }">긴급 처리 중<span class="strong">{{ postsCount?.emergency
                         }}</span></button></div>
                 <div class="box delay"><button class="box-text" @click="changeFilter(3)"
-                        :class="{ active: postFilter == 3 }">처리 대기 중<span class="strong">{{ postsCount?.delay
+                        :class="{ active: postFilter == 3 }">처리 대기 중<span class="strong">{{ postsCount?.pending
                         }}</span></button></div>
             </div>
             <div class="table-wrap">

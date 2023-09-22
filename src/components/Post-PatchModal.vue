@@ -50,32 +50,6 @@ const addPost = async() =>{
     })
 }
 
-const myUxSelect = onMounted(() =>{
-    const selectBoxSys = document.getElementById("selectSys")
-    new UxSelect(selectBoxSys,{
-        placeholder : "시스템 구분 선택",
-        isSearchable : true,
-    });
-})
-const myUxSelect02 = onMounted(() =>{
-    const selectBoxSR = document.getElementById("cateSR")
-    new UxSelect(selectBoxSR,{
-        placeholder : "상세 유형 선택 - SR",
-        isSearchable : true,
-        isGroupOptions : true,
-    });
-})
-const myUxSelect03 = onMounted(() =>{
-    const selectBoxErr = document.getElementById("cateErr")
-    new UxSelect(selectBoxErr,{
-        placeholder : "상세 유형 선택 - 장애/에러",
-    });
-})
-
-const myUxSelectDestroy = onBeforeUnmount(() => {
-    const selectbox = document.querySelector('.ux-select')
-    selectbox.remove()
-})
 
 const closeModal = () =>{
     emit('closeModal')
@@ -159,8 +133,8 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 <div class="input-clear" :class="{show : postStatus == 3}">
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
-                        <div class="label-text">
-                            <select name="system" id="selectSys">
+                        <div class="label-text sel01">
+                            <!--<select name="system" id="selectSys">
                                 <option value="1">영업 관리 시스템(매장용)</option>
                                 <option value="2">영업 관리 시스템(대리점용)</option>
                                 <option value="3">영업 관리 시스템(RI)</option>
@@ -179,7 +153,8 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                                 <option value="16">인프라-개발계</option>
                                 <option value="17">ESL</option>
                             </select>
-                                <cmcdOption :cd="'01'" :placeholder="'시스템 구분'"></cmcdOption>
+                            -->
+                            <cmcdOption :cd="'01'" :placeholder="'시스템 구분'"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
@@ -195,7 +170,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
-                        <div class="label-text selectbox" :class="{on : postCate == 1}">
+                        <!--<div class="label-text selectbox" :class="{on : postCate == 1}">
                             <select name="cateSR" id="cateSR">
                                 <option value="1" data-ux-select-group="Data Check">Data Check - Data 이상</option>
                                 <option value="2" data-ux-select-group="Data Check">Data Check - Data 조회/확인</option>
@@ -224,11 +199,14 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                                 <option value="25" data-ux-select-group="프로그램 실행">프로그램 실행 - 배치</option>
                                 <option value="26" data-ux-select-group="프로그램 실행">프로그램 실행 - 일반화면</option>
                             </select>
+                        </div> -->
+                        <div class="label-text selectbox sel02" :class="{on : postCate == 1}">
+                            <cmcdOption :cd="'02'" :placeholder="'상세 유형 - SR'"></cmcdOption>
                         </div>
-                        <div class="label-text" v-if="postCate == 1">
-                            <cmcdOption :cd="'02'" :placeholder="'상세 유형'"></cmcdOption>
+                        <div class="label-text selectbox sel03" :class="{on : postCate == 2}">
+                            <cmcdOption :cd="'03'" :placeholder="'상세 유형 - 장애/에러'"></cmcdOption>
                         </div>
-                        <div class="label-text selectbox" :class="{on : postCate == 2}">
+                        <!--<div class="label-text selectbox" :class="{on : postCate == 2}">
                             <select name="cateErr" id="cateErr">
                                 <option value="1">API/IRT</option>
                                 <option value="2">DBMS</option>
@@ -237,7 +215,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                                 <option value="5">배치 프로그램</option>
                                 <option value="6">화면 프로그램</option>
                             </select>
-                        </div>
+                        </div>-->
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 후속 조치 </span>

@@ -584,6 +584,7 @@ input[name="postAfter"] + span:hover, input[name="postAfter"]:checked + span{
 .post-table .table-body .memo > p .memo-cntns{
     max-width: calc(100% - 190px);
     white-space: pre-line;
+    word-break: break-all;
 }
 .emergency .title{
     color:#ea0d0d;
@@ -800,6 +801,9 @@ input[name="postAfter"] + span:hover, input[name="postAfter"]:checked + span{
     .header-container .item > p{
         font-size: 12px;
 
+    }
+    .sidebar{
+        top: 63px;
     }
     .post-table .table-body .memo > p > span{
         display: inline;

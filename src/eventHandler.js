@@ -10,7 +10,7 @@ const evtHandler= {
         //새글 등록시 알림
         if (evtData.method == "POST" && evtData.UID != UID) {    
             const noti = new Notification('새글 등록됨', {
-                icon: null,
+                icon: './ico-noti.svg',
                 body: evtData.content});
 
             noti.onclick = function (event) {

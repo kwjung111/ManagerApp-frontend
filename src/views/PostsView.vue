@@ -26,7 +26,7 @@ const postSeqForMemo = ref(null)                  //메모를 삽입할 게시�
 const postAddModalVisible = ref(false)
 const memoAddModalVisible = ref(false)
 const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 마지막 refresh 시간을 받음
-const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급
+const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급 , 3 처리대기중
 
 let connectState = true;
 
@@ -130,13 +130,13 @@ function changeFilter(stateCd) {
 
 //게시글 필터링
 const actingFilter = (() => {
-    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1)
+    return posts.value.filter((p) => p.BRD_PRGSS_TF  == 1)
 })
 const emergencyFilter = (() => {
     return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
 })
 const pendingFilter = (()=> {
-    return posts.value.filter((p) => p.GRD_PRGSS_TF == 1 && p.BRD_POST_CD ==3)
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 2 )
 })
 
 const filteredList = computed(() => {

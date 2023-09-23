@@ -1,6 +1,5 @@
 <script setup>
-import {ref,onMounted,onBeforeUnmount,onBeforeMount, inject, computed} from 'vue'
-import UxSelect from 'ux-select'
+import {ref, computed, inject, watch} from 'vue'
 import cmcdOption from './common/cmcd-option.vue';
 
 const axios = inject('axios')
@@ -9,36 +8,65 @@ const Cmmn = inject('Cmmn')
 const url = Cmmn.url;
 const wrtrCookieKey = 'writerName';
 
-const postCd = ref(1)
-const afterCd = ref(1)
-const cntns = ref('')
-const wrtr = ref('')
-const delayCntns = ref('')
+const postCd = ref(1)            //긴급여부
+const cntns = ref('')            //게시물내용
+const wrtr = ref('')             //작성자
+const postStatus = ref(1)        //게시물 진행상태
+const pendingCntns = ref('')     //대기사유
+const sysTp = ref(null)          //시스템 구분
+const postCate = ref(1)          //SR유형
+const srTpDtl = ref(null)        //SR-상세코드       
+const errTpDtl = ref(null)       //에러-상세코드     //두 상세코드는 같은 컬럼이지만 값을 공유하면 안된다.
+const postAfter = ref(1)         //후속과제여부
+const afterCd = ref(1)           //후속게시물 긴급여부
+const afterCntns = ref ('')      //후속게시물 내용
+const followUpPostNo = ref(null) //후속게시물 번호
 
-const postStatus = ref(1)
-const postCate = ref(1)
-const postAfter = ref(1)
-const cmcdSys = ref([])
+const props = defineProps({
+    postSeq : Number,
+})
+const postSeq = props.postSeq;
 
 const emit = defineEmits(['closeModal'])
 
+axios.get(`${url}/posts/${postSeq}`,)
+    .then((res) =>{
+        const [data] = res.data.result 
+        console.log(data)
+        
+        postCd.value = data.BRD_POST_CD
+        cntns.value = data.BRD_CTNTS || ''
+        wrtr.value = data.BRD_WRTR 
+        postStatus.value = data.BRD_PRGSS_TF
+        pendingCntns.value = data.BRD_RSN_PNDNG || ''
+        sysTp.value = data.BRD_END_SYS_TP 
+        postCate.value = data.BRD_END_TP  || 1
+        if(postCate.value == 1){
+            srTpDtl.value = data.BRD_END_TP_DTL
+        }else{
+            errTpDtl.value = data.BRD_END_TP_DTL
+        }
+        if(data.FOLLOWUP_POST_BRD_NO != null){
+            followUpPostNo.value = data.FOLLOWUP_POST_BRD_NO
+            postAfter.value = 3     // 후속 게시물번호 있음
+        }
+    })
 
-const addPost = async() =>{
-    console.log(postCd.value, cntns.value, wrtr.value)
-    if(!validation()) return
 
-    const UID = await Cmmn.getUserIdentifier();
 
-    axios.post(`${url}/posts`,{
-        postCd:postCd.value,
-        content:cntns.value,
-        writer:wrtr.value,
-        UID:UID,
+
+const changePost = async() =>{
+    axios.patch(`${url}/posts/chgPost`,{
+        postSeq:postSeq
+        ,postCd:postCd.value
+        ,content:cntns.value
+        ,writer:wrtr.value
+        ,prgCd:postStatus.value
     })
     .then((res) =>{
         if(res.data.ok==true){
         console.log(res.data.ok)
-            alert('등록 완료!')
+            alert('수정 완료!')
         }
         else{
             alert('실패했습니다. 접속 상태를 확인해 주세요')
@@ -48,17 +76,73 @@ const addPost = async() =>{
         Cmmn.setCookie(wrtrCookieKey,wrtr.value)
         closeModal()
     })
+    
+}
+
+const endPostWithoutImprove = () =>{
+    console.log('without')
+}
+
+const endPostWithImprove = () => {
+    console.log('with')
+}
+
+
+const changePostByModalStat = (statCd)=>{
+    if(!validationByModalStat(statCd)) return
+
+    if(statCd == 1){
+        changePost()
+    }else if(statCd == 2){
+        endPostWithoutImprove()
+    }else if(statCd == 3){
+        endPostWithImprove()
+    }
+}
+
+const validationByModalStat = (statCd)=>{
+    if(statCd ==1){
+        return validation()
+    }else if(statCd ==2){
+        return validationWithoutImprove()
+    }
+    else if(statCd == 3){
+        return validationWithImprove()
+    }
 }
 
 const closeModal = () =>{
     emit('closeModal')
 }
 
+//TODO validaiton 공통코드 작성
 const validation = () =>{
-    if(checkcntns() && 
-    checkWrtr()){
-        return true;
+    if(!checkcntns()) return false;
+    if(!checkWrtr()) return false;
+
+    if(postStatus.value == 2){
+        if(!checkPndTxt()) return false;
     }
+    return true;
+}
+
+const validationWithoutImprove = () => {
+    if(!validation()) return false
+    if(!checkSysTp()) return false
+    if(!checkPostCate()) return false
+    if(postCate.value == 1){
+        if(!checkSrTpDtl()) return false
+    }else if(postCate.value == 2){
+        if(!checkErrTpDtl()) return false
+    }
+    return true;
+}
+
+const validationWithImprove = () => {
+    if(!validationWithoutImprove())  return false
+    if(!checkAfterCd()) return false
+    if(!checkAfterCntns()) return false
+    return true;
 }
 
 const checkWrtr = () =>{
@@ -68,11 +152,91 @@ const checkWrtr = () =>{
 }
 
 const checkcntns = () =>{
-    if(cntns.value )return true;
+    if(cntns.value)return true;
     alert('내용을 입력해주세요')
     return false;   
 }
 
+const checkPndTxt = () =>{
+    if(pendingCntns.value) return true;
+    alert('대기사유를 입력해주세요')
+    return false;
+}
+
+
+const checkSysTp = () =>{
+    if(sysTp.value) return true;
+    alert('시스템 구분을 선택해주세요')
+    return false;
+}
+
+const checkPostCate = () =>{
+    if(postCate.value) return true;
+    alert('SR유형을 선택해주세요')
+    return false;
+}
+
+const checkSrTpDtl= () =>{
+    if(srTpDtl.value) return true;
+    alert('SR유형을 선택해주세요')
+    return false;
+}
+
+const checkErrTpDtl = () =>{
+    if(errTpDtl.value) return true;
+    alert('에러 유형을 선택해주세요')
+    return false;
+}
+
+const checkAfterCd = () =>{
+    if(afterCd.value) return true;
+    alert('후속게시물 여부를 선택해주세요')
+    return false;
+}
+
+const checkAfterCntns = () =>{
+    if(afterCntns.value) return true;
+    alert('후속게시물 내용을 입력해주세요')
+    return false;
+}
+
+const displayBtnText = (statCd) => {
+    if(statCd != 0){
+        return "수정하기"
+    }else return "등록하기"
+}  
+
+//모달의 상태
+const modalStat = computed(() => {
+    if(postStatus.value != 0){
+        return 1;       //1단계
+    }else if(postAfter.value == 1){
+        return 2;       //2단계
+    }else{
+        return 3;       //3단계
+    }
+})
+
+
+//UI/UX 관련 코드
+watch(() => postStatus.value ,(newVal) =>{   //1단계 모달스탯일 경우 
+    if(newVal != 3 && postAfter.value !=3){
+        postAfter.value = 1                  //상태 리셋
+    }
+})
+
+//common selectbox 이벤트
+const changeSysTp = (val) => {
+    sysTp.value = val
+}
+
+const changeSrTpDtl = (val) => {
+    srTpDtl.value = val
+}
+
+const changeErrTpDtl = (val) => {
+    errTpDtl.value = val
+}
 
 
 Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
@@ -118,22 +282,22 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                         <span>처리 대기 중</span>
                     </label>
                     <label class="label-radio">
-                        <input type="radio" name="postStatus" value="3" v-model="postStatus">
+                        <input type="radio" name="postStatus" value="0" v-model="postStatus">
                         <span>완료</span>
                     </label>
                 </div>
                 <div class="input-group">
                     <span class="input-label"> 대기사유 </span>
                     <label class="label-text">
-                        <textarea maxlength="50" :disabled="postStatus != 2"></textarea>
-                        <span> {{ delayCntns.length }}/50 자</span>
+                        <textarea maxlength="50" :disabled="postStatus != 2" v-model="pendingCntns"></textarea>
+                        <span> {{ pendingCntns.length }}/50 자</span>
                     </label>
                 </div>
-                <div class="input-clear" :class="{show : postStatus == 3}">
+                <div class="input-clear" :class="{show : postStatus == 0}">
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
                         <div class="label-text">
-                                <cmcdOption :cd="'01'" :placeholder="'시스템 구분'"></cmcdOption>
+                            <cmcdOption :cd="'02'" :placeholder="'시스템 구분'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
@@ -149,33 +313,31 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
-                        <div class="label-text" v-if="postCate == 1">
-                            <cmcdOption :cd="'02'" :placeholder="'상세 유형'"></cmcdOption>
+                        <div class="label-text" v-show="postCate == 1"> <!-- v-show 와 v-if의 차이 -->
+                            <cmcdOption :cd="'01'" :placeholder="'상세 유형'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
                         </div>
-                        <div class="label-text" v-if="postCate == 2">
-                            <select name="cateErr" id="cateErr">
-                                <option value="0">...</option>
-                                <option value="1">...</option>
-                                <option value="2">...</option>
-                                <option value="3">...</option>
-                            </select>
+                        <div class="label-text" v-show="postCate == 2">
+                            <cmcdOption :cd="'03'" :placeholder="'장애/에러상세 유형'" :seleced="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 후속 조치 </span>
-                        <label class="label-radio">
+                        <label class="label-radio" v-show="postAfter!=3"> 
                             <input type="radio" name="postAfter" value="1" v-model="postAfter">
                             <span>없음</span>
                         </label>
-                        <label class="label-radio">
+                        <label class="label-radio" v-show="postAfter!=3">
                             <input type="radio" name="postAfter" value="2" v-model="postAfter">
                             <span>개선 과제 등록</span>
                         </label>
+                        <label class="label-radio" v-show="postAfter == 3">
+                            <span>후속과제 번호 : {{followUpPostNo}}</span>
+                        </label>
                     </div>
                 </div>
-                <div class="input-after" :class="{show : postAfter == 2 && postStatus == 3}">
+                <div class="input-after" :class="{show : postAfter == 2 && postStatus == 0}">
                     <div class="input-group">
-                        <span class="input-label"> 입력값 </span>
+                        <span class="input-label"> 후-긴급여부 </span>
                         <label class="label-radio">
                             <input type="radio" name="afterCd" value="1" v-model="afterCd">
                             <span > 일반</span>
@@ -186,23 +348,24 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                         </label>
                     </div>
                     <div class="input-group">
-                        <span class="input-label"> 내용 </span>
+                        <span class="input-label"> 후-내용 </span>
                         <label class="label-text">
-                            <textarea maxlength="50" v-model="cntns"></textarea>
-                            <span> {{ cntns.length }}/50 자</span>
+                            <textarea maxlength="50" v-model="afterCntns"></textarea>
+                            <span> {{ afterCntns.length }}/50 자</span>
                         </label>
                     </div>
+                    <!--
                     <div class="input-group">
                         <span class="input-label" > 작성자 </span>
                         <label class="label-text">
-                            <input type="text" maxlength="5" size="40" v-model="wrtr"/>
+                            <input type="text" maxlength="5" size="40" v-model="AfterWrtr"/>
                         </label>
                     </div>
+                -->
                 </div>
             </div>
             <div class="modal-btn-wrap">
-                <button class="modal-btn btn-common" v-if="postStatus != 3" @click="changePost()">수정하기</button>
-                <button class="modal-btn btn-common" v-else @click="addPost()">등록하기</button>
+                <button class="modal-btn btn-common" @click="changePostByModalStat(modalStat)">{{ displayBtnText(postStatus) }}</button>
                 <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
             </div>
         </div>

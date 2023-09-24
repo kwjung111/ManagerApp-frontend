@@ -1,12 +1,16 @@
-//깊은복사
 import axios from 'axios'
-import dayjs from 'dayjs'
+import dayjs from 'dayjs'             //날짜 관련 라이브러리
+import Noty from 'noty';              //토스트 메세지
+import 'noty/lib/noty.css';
+import 'noty/lib/themes/sunset.css';
 
 const cmmn = {
+  //환경변수
   url: import.meta.env.VITE_BACK_URL,
   wsUrl: import.meta.env.VITE_BACK_WSURL,
   notiImg : import.meta.env.VITE_NOTI_ICON,
-  deepCopy: (obj) => {
+
+  deepCopy: (obj) => {              //깊은복사
     if (obj === null || typeof obj !== 'object') return obj
 
     let copy = {}
@@ -174,6 +178,57 @@ setTimeout(() => {
     } catch(error) {
       console.error(error)
     }
+  },
+
+  toast(type,text,moreOptions=null){
+
+    let options = {
+      type:type,
+      layout:'bottomCenter',
+      theme:'sunset',
+      text:text,
+      timeout:5000,
+    }
+
+    if(moreOptions){
+      Object.assign(options,moreOptions)
+    }
+
+    return new Noty(options).show();
+  },
+
+  toastSuccess(text,moreOptions=null){
+    return this.toast('success',text,moreOptions)
+  },
+  toastError(text,moreOptions=null){
+    return this.toast('error',text,moreOptions)
+  },
+  toastAlert(text,moreOptions=null){
+    return this.toast('alert',text,moreOptions)
+  },
+
+  confirm(text,okCb=null,noCb=null){
+    new Noty({
+      text: text,
+      layout: 'center',
+      theme:'sunset',
+      buttons: [
+          Noty.button('예', 'btn btn-ok', function (n) {
+            if(okCb){  
+            okCb()
+            }
+              n.close();
+          }, {id: 'button1', 'data-status': 'ok'}),
+  
+          Noty.button('아니오', 'btn btn-no', function (n) {
+            if(noCb){
+              noCb()
+            }
+              n.close();
+          })
+      ]
+  }).show();
+  
   }
 }
 

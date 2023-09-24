@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import axios from 'axios'
 import Cmmn from '../common.js'
 
+
 const url = Cmmn.url;
 
 const props = defineProps({
@@ -11,9 +12,6 @@ const props = defineProps({
     }
 })
 
-
-
-
 //TODO destructuring 한 값도 갱신되는지 확인필요
 const memos = computed(() =>{
     return props.memos
@@ -21,21 +19,20 @@ const memos = computed(() =>{
 
 //코멘트 삭제
 const removeMemo = async (seq) => {
-    if (confirm(`코멘트를 삭제하시겠습니까?`)) {
-
+    Cmmn.confirm('코멘트를 삭제하시겠습니까?',
+    () => {
         axios.delete(`${url}/memos/${seq}`)
         .then((res) => {
             console.log(res)
             if (res.data.ok) {
-                alert('삭제되었습니다!')
+                Cmmn.toastSuccess('삭제 완료!')
             }
             else {
-                alert('다시 시도해 주세요')
+                Cmmn.toastError('다시 시도해 주세요')
             }
         })
-    }
+    })
 }
-
 
 
 </script>

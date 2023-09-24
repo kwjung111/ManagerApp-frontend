@@ -71,7 +71,7 @@ const toggleState = async (seq) => {
         //
         }
         else{
-            alert(`다시 시도해 주세요`)
+            Cmmn.toastError(`다시 시도해 주세요`)
         }
     })
 
@@ -98,18 +98,19 @@ const postprgText = (code) => {
     }
 }
 
-const removePost = (seq) => {
-    if (confirm(`NO.${seq} 게시물을 정말로 삭제하시겠습니까?`)) {
+const removePost = (seq,no) => {
+    Cmmn.confirm(`NO.${no} 게시물을 정말로 삭제하시겠습니까?`,
+    () => {
         axios.delete(`${url}/posts/${seq}`).then((res) => {
             console.log(res)
             if (res.data.ok) {
-                alert('삭제되었습니다!')
+                Cmmn.toastSuccess('삭제되었습니다!')
             }
             else {
-                alert('다시 시도해 주세요')
+                Cmmn.toastError('다시 시도해 주세요')
             }
         })
-    }
+    })
 }
 const postPatchModalVisible = ref(false)
 function togglePostPatchModal() {
@@ -136,7 +137,7 @@ function togglePostPatchModal() {
                 <p class="col06">{{ post.BRD_WRTR }}</p>
                 <div class="col07">
                     <span class="material-symbols-outlined btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록">note_add</span>
-                    <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ)" title="삭제">delete</span>
+                    <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제">delete</span>
                 </div>
             </div>
             <PostMemo v-if="post.memos?.length" :memos="post.memos" />

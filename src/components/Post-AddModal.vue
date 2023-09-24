@@ -1,5 +1,6 @@
 <script setup>
 import {ref, inject} from 'vue'
+import cmmn from '../common';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -27,11 +28,11 @@ const addPost = async () =>{
     })
     .then((res) =>{
         if(res.data.ok==true){
-            alert('등록 완료!')
+            cmmn.toastSuccess('등록 완료!')
             Cmmn.saveNotificationInfo('posts',res.data.result.postSeq)
         }
         else{
-            alert('실패했습니다. 접속 상태를 확인해 주세요')
+            cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
         }
 
         //작성자 쿠키 저장
@@ -53,13 +54,13 @@ const validation = () =>{
 
 const checkWrtr = () =>{
     if(wrtr.value) return true;
-    alert('작성자를 입력해주세요')
+    cmmn.toastAlert('작성자를 입력해주세요')
     return false;
 }
 
 const checkcntns = () =>{
     if(cntns.value )return true;
-    alert('내용을 입력해주세요')
+    cmmn.toastAlert('내용을 입력해주세요')
     return false;   
 }
 

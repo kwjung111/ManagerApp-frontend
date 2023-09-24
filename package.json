@@ -13,6 +13,7 @@
     "axios": "^1.5.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
+    "noty": "^3.2.0-beta-deprecated",
     "pinia": "^2.1.6",
     "uuid": "^9.0.1",
     "vue": "^3.3.4",

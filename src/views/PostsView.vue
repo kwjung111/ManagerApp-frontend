@@ -7,6 +7,7 @@ import { ref, onMounted, computed, inject } from 'vue'
 import eventMapper from '../eventHandler';
 
 const axios = inject('axios')
+const axiosNoSpinner = inject('axiosNoSpinner')
 const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
@@ -35,10 +36,10 @@ onMounted(() => {
     connectWs() //웹소켓 연결시 리프레시 수행
 })
 
-const refresh = async () => {
+const refresh = async () => {                       //refresh 는 Spinner 를 표시하지 않음.
     lastRefreshTime.value = new Date()
     axios.all([
-        axios.get(`${url}/postTree`),          //게시물
+        axios.get(`${url}/postTree`),      //게시물
         axios.get(`${url}/postsCount`),    //게시물수
         //TODO 리프레시 시간: 서버 시간 기준으로 바꾼다.
     ])
@@ -230,13 +231,5 @@ const filteredList = computed(() => {
                 </div>
         </template>
         <!-- 구간 end -->
-    </div>
-    <div class="loading-wrap">
-        <div class="loading">
-            <span class="first"></span>
-            <span class="second"></span>
-            <span class="third"></span>
-            <span class="forth"></span>
-        </div>
     </div>
 </section></template>

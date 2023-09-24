@@ -1,6 +1,7 @@
 <script setup>
 import {ref, computed, inject, watch} from 'vue'
 import cmcdOption from './common/cmcd-option.vue';
+import cmmn from '../common';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -70,11 +71,10 @@ const changePost = async() =>{
     })
     .then((res) =>{
         if(res.data.ok==true){
-            console.log(res.data.ok)
-            alert('수정 완료!')
+            cmmn.toastSuccess('수정 완료!')
         }
         else{
-            alert('실패했습니다. 접속 상태를 확인해 주세요')
+            cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
         }
 
         //작성자 쿠키 저장
@@ -112,13 +112,13 @@ const endPost = async () =>{
     .then((res) =>{
         if(res.data.ok==true){
         console.log(res.data.ok)
-            alert('수정 완료!')
+        cmmn.toastSuccess('수정 완료!')
             if(res.data.result[0].insertId){  //후속게시물 알림등록
                 Cmmn.saveNotificationInfo('posts',res.data.result[0].insertId) 
             }
         }
         else{
-            alert('실패했습니다. 접속 상태를 확인해 주세요')
+            cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
         }
 
         //작성자 쿠키 저장
@@ -186,56 +186,56 @@ const validationWithImprove = () => {
 
 const checkWrtr = () =>{
     if(wrtr.value) return true;
-    alert('작성자를 입력해주세요')
+    cmmn.toastAlert('작성자를 입력해주세요')
     return false;
 }
 
 const checkcntns = () =>{
     if(cntns.value)return true;
-    alert('내용을 입력해주세요')
+    cmmn.toastAlert('내용을 입력해주세요')
     return false;   
 }
 
 const checkPndTxt = () =>{
     if(pendingCntns.value) return true;
-    alert('대기사유를 입력해주세요')
+    cmmn.toastAlert('대기사유를 입력해주세요')
     return false;
 }
 
 
 const checkSysTp = () =>{
     if(sysTp.value) return true;
-    alert('시스템 구분을 선택해주세요')
+    cmmn.toastAlert('시스템 구분을 선택해주세요')
     return false;
 }
 
 const checkpostCtg = () =>{
     if(postCtg.value) return true;
-    alert('SR유형을 선택해주세요')
+    cmmn.toastAlert('SR유형을 선택해주세요')
     return false;
 }
 
 const checkSrTpDtl= () =>{
     if(srTpDtl.value) return true;
-    alert('SR유형을 선택해주세요')
+    cmmn.toastAlert('SR유형을 선택해주세요')
     return false;
 }
 
 const checkErrTpDtl = () =>{
     if(errTpDtl.value) return true;
-    alert('에러 유형을 선택해주세요')
+    cmmn.toastAlert('에러 유형을 선택해주세요')
     return false;
 }
 
 const checkfollowUpCd = () =>{
     if(followUpCd.value) return true;
-    alert('후속게시물 유형을 선택해주세요')
+    cmmn.toastAlert('후속게시물 유형을 선택해주세요')
     return false;
 }
 
 const checkfollowUpCntns = () =>{
     if(followUpCntns.value) return true;
-    alert('후속게시물 내용을 입력해주세요')
+    cmmn.toastAlert('후속게시물 내용을 입력해주세요')
     return false;
 }
 

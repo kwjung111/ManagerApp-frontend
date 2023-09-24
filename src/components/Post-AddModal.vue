@@ -15,7 +15,6 @@ const emit = defineEmits(['closeModal'])
 
 
 const addPost = async () =>{
-    console.log(postCd.value, cntns.value, wrtr.value)
     if(!validation()) return
 
     const UID = await Cmmn.getUserIdentifier()

@@ -1,10 +1,11 @@
 //깊은복사
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 const cmmn = {
   url: import.meta.env.VITE_BACK_URL,
   wsUrl: import.meta.env.VITE_BACK_WSURL,
+  notiImg : import.meta.env.VITE_NOTI_ICON,
   deepCopy: (obj) => {
     if (obj === null || typeof obj !== 'object') return obj
 
@@ -93,19 +94,24 @@ const cmmn = {
     }
     return userKey
   },
+
   //알림받을 정보를 저장
   saveNotificationInfo(type, id) {
     let newNoti = {}
-    cmmn.test_deleteOldNotification(type)
-    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {}
+    let notiItems = localStorage.getItem(`notifications_${type}`);
+    let notifications
+    if(typeof notiItems != 'object'){
+      notifications = {}
+    }else{
+      notifications = JSON.parse(notiItems) || {}
+    }
     //오래된 key 들 삭제(기한 7일)
     for (let key in notifications) {
-      console.log(moment().diff(moment(notifications[key]), 'days'))
-      if (moment().diff(moment(notifications[key]), 'days') <= 7) {
+      if (dayjs().diff(dayjs(notifications[key]), 'days') <= 7) {
         newNoti[key] = notifications[key]
       }
     }
-    newNoti[id] = moment().format()
+    newNoti[id] = dayjs().format()
     localStorage.setItem(`notifications_${type}`, JSON.stringify(newNoti))
   },
 
@@ -120,6 +126,26 @@ const cmmn = {
     } else {
       return false
     }
+  },
+
+  newNoti(msg,evtData,id){
+
+    console.log(evtData)
+    const noti = new Notification(msg, {
+      icon: `../public/noti_icon.jpg`,                 
+      body: evtData.content
+  });
+
+  noti.onclick = function (event) {
+    event.preventDefault();         // 알림 클릭의 기본 동작을 방지
+    cmmn.navigateToSection(id)        // id 위치로 이동
+};
+
+setTimeout(() => {
+    noti.close()
+}, 10000)
+
+  return noti
   },
 
   navigateToSection(sectionId) {

@@ -41,17 +41,13 @@ const post = computed(() =>{
  return props.post})
 
 
-
-const lastRefreshTime = computed(() =>{
-return props.lastRefreshTime})
-
 //타이머 구현 start
 let curTime 
 const elapsedTime = ref(0)
 
 setInterval(()=>{
     curTime = new Date()
-    elapsedTime.value = Number(Math.floor((curTime - lastRefreshTime.value)/1000))
+    elapsedTime.value = Number(Math.floor((curTime - props.lastRefreshTime)/1000))
 },500)
 
 

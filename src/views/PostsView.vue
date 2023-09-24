@@ -36,6 +36,7 @@ onMounted(() => {
 })
 
 const refresh = async () => {
+    lastRefreshTime.value = new Date()
     axios.all([
         axios.get(`${url}/postTree`),          //게시물
         axios.get(`${url}/postsCount`),    //게시물수

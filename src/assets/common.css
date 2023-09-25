@@ -281,22 +281,22 @@ header{
 }
 
 /* radio button color */
-input[name="postCd"] + span, input[name="afterCd"] + span{
+input[name="postCd"] + span, input[name="followUpCd"] + span{
     border-color: #007BFF;
     color: #007BFF;
 }
 input[name="postCd"] + span:hover, input[name="postCd"]:checked + span,
-input[name="afterCd"] + span:hover, input[name="afterCd"]:checked + span{
+input[name="followUpCd"] + span:hover, input[name="followUpCd"]:checked + span{
     border-color: #007BFF;
     background-color: #007BFF;
     color: white;
 }
-input[name="postCd"][value="2"] + span, input[name="afterCd"][value="2"] + span{
+input[name="postCd"][value="2"] + span, input[name="followUpCd"][value="2"] + span{
     border-color: #FF4830;
     color: #FF4830;
 }
 input[name="postCd"][value="2"] + span:hover, input[name="postCd"][value="2"]:checked + span,
-input[name="afterCd"][value="2"] + span:hover, input[name="afterCd"][value="2"]:checked + span{
+input[name="followUpCd"][value="2"] + span:hover, input[name="followUpCd"][value="2"]:checked + span{
     border-color: #FF4830;
     background-color: #FF4830;
     color: #fff;
@@ -320,22 +320,22 @@ input[name="postStatus"][value="2"] + span:hover, input[name="postStatus"][value
     background-color: #35B867;
     color: #fff;
 }
-input[name="postStatus"][value="3"] + span{
+input[name="postStatus"][value="0"] + span{
     border-color: #007BFF;
     color: #007BFF;
 }
-input[name="postStatus"][value="3"] + span:hover, input[name="postStatus"][value="3"]:checked + span{
+input[name="postStatus"][value="0"] + span:hover, input[name="postStatus"][value="0"]:checked + span{
     border-color: #007BFF;
     background-color: #007BFF;
     color: #fff;
 }
 
-input[name="postCate"] + span, input[name="postAfter"] + span{
+input[name="postCtg"] + span, input[name="followUp"] + span{
     border-color: #00acbd;
     color: #00acbd;
 }
-input[name="postCate"] + span:hover, input[name="postCate"]:checked + span,
-input[name="postAfter"] + span:hover, input[name="postAfter"]:checked + span{
+input[name="postCtg"] + span:hover, input[name="postCtg"]:checked + span,
+input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     border-color: #00acbd;
     background-color: #00acbd;
     color: #fff;
@@ -376,7 +376,7 @@ input[name="postAfter"] + span:hover, input[name="postAfter"]:checked + span{
     transition: .3s;
 }
 .input-clear.show{
-    height: 175px;
+    height: 170px;
     opacity: 1;
     overflow: visible;
 }

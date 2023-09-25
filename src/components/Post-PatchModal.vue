@@ -130,6 +130,7 @@ const endPost = async () =>{
 
 
 const changePostByModalStat = (statCd)=>{
+    console.log(statCd)
     if(!validationByModalStat(statCd)) return
 
     if(statCd == 1){
@@ -249,7 +250,7 @@ const displayBtnText = (statCd) => {
 const modalStat = computed(() => {
     if(postStatus.value != 0){
         return 1;       //1단계
-    }else if(followUp.value == 0){
+    }else if(followUp.value == 0 || followUp.value == 2){
         return 2;       //2단계
     }else{
         return 3;       //3단계

@@ -7,7 +7,6 @@ import { ref, onMounted, computed, inject } from 'vue'
 import eventMapper from '../eventHandler';
 
 const axios = inject('axios')
-const axiosNoSpinner = inject('axiosNoSpinner')
 const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;

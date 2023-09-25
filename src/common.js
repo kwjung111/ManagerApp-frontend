@@ -136,7 +136,7 @@ const cmmn = {
 
     console.log(evtData)
     const noti = new Notification(msg, {
-      icon: `../public/noti_icon.jpg`,                 
+      icon: this.notiImg,                 
       body: evtData.content
   });
 
@@ -208,7 +208,7 @@ setTimeout(() => {
   },
 
   confirm(text,okCb=null,noCb=null){
-    new Noty({
+    return new Noty({
       text: text,
       layout: 'center',
       theme:'sunset',

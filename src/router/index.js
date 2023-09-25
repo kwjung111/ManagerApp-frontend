@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import PostsView from '../views/PostsView.vue'
 
 const router = createRouter({
@@ -10,12 +9,20 @@ const router = createRouter({
       name: 'home',
       redirect: {name:'srList'}  //TODO 서비스 추가시 고치기
     },
+    
     {
       path:'/srList',
       name: 'srList',
       component : PostsView
 
     },
+
+    {
+      path:'/test',
+      name:'test',
+      component : () => import('../views/TestView.vue') //code splitting 최적화
+    }
+    
     /*
     {
       path: '/about',

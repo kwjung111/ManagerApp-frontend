@@ -221,12 +221,12 @@ const filteredList = computed(() => {
             </div>
             <!-- 리팩토링 필요 구간 start-->
             <template v-if="postAddModalVisible">
-                <div @click="togglePostAddModal()" class="modal-bg">
+                <div class="modal-bg">
                     <PostAddModal @closeModal="togglePostAddModal" />
                 </div>
             </template>
             <template v-if="memoAddModalVisible">
-                <div @click="toggleMemoAddModal()" class="modal-bg">
+                <div class="modal-bg">
                     <MemoAddModal :postSeq="postSeqForMemo" @closeModal="toggleMemoAddModal" />
                 </div>
         </template>

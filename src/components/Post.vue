@@ -142,7 +142,7 @@ function togglePostPatchModal() {
             </div>
             <PostMemo v-if="post.memos?.length" :memos="post.memos" />
             <template v-if="postPatchModalVisible">
-                <div @click="togglePostPatchModal()" class="modal-bg">
+                <div class="modal-bg">
                     <PostPatch @closeModal="togglePostPatchModal" :postSeq="post.BRD_SEQ" />
                 </div>
             </template>

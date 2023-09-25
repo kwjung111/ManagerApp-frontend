@@ -77,12 +77,15 @@ const toggleState = async (seq) => {
 
 }
 
-const getShouldTimerMove = (code) => {
+const getShouldTimerMove = (code) => {      //상태 클래스 부여
     if(code == 1){
-        return true
+        return 'active'
     }
-    if(code == 0 || code == 2){     //완료, 대기중
-        return false
+    else if(code == 2){
+        return 'pending'
+    }
+    else if(code == 0 ){
+        return ''
     }
 }
 
@@ -97,7 +100,7 @@ const postprgText = (code) => {
         return '대기 중'
     }
 }
-
+8
 const removePost = (seq,no) => {
     Cmmn.confirm(`NO.${no} 게시물을 정말로 삭제하시겠습니까?`,
     () => {
@@ -130,7 +133,12 @@ function togglePostPatchModal() {
                     <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                     {{ post.BRD_CTNTS }}
                 </p>
-                <p class="status col04" :class="{ active :getShouldTimerMove(post.BRD_PRGSS_TF)}" @click="togglePostPatchModal()" @dblclick="patchPost(post.BRD_SEQ)">{{ postprgText(post.BRD_PRGSS_TF) }}</p>
+                <div class="status col04" :class="getShouldTimerMove(post.BRD_PRGSS_TF)" @click="togglePostPatchModal()" @dblclick="patchPost(post.BRD_SEQ)">
+                    <span>{{ postprgText(post.BRD_PRGSS_TF) }}</span>   <!--상태 텍스트-->
+                    <div v-if="post.BRD_PRGSS_TF == 2" class="pending-pop">   <!--대기중 사유 레이어-->
+                        <p>대기중 내용은 여기에~</p>
+                    </div>
+                </div>
                 <!--<p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="toggleState(post.BRD_SEQ)">{{ postprgText(post.BRD_PRGSS_TF) }}</p>-->
                 <p class="col05" v-if="getShouldTimerMove(post.BRD_PRGSS_TF)"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</p>
                 <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>

@@ -45,6 +45,24 @@ q:before, q:after {
 }
 /* reset CSS END */
 
+/* color define */
+:root{
+    --main-blue: #47a0ff;
+    --main-blue-deep: #007BFF;
+    --btn-color-red: #FF4830;
+    --btn-color-yellow: #c0cd3d;
+    --btn-color-green: #35B867;
+    --btn-color-mint: #00acbd;
+    --main-border-color: #ddd;
+    --main-border-color-deep: #ccc;
+    --main-list-bg: #f5f5f5;
+    --input-border-color: #aaa;
+    --pending-border-color: #8faa8b;
+    --acting: #f9ffbe;
+    --emergency: #ff3131;
+    --pending: #8cd77c;
+}
+
 /* common */
 body {
     font-family: 'IBM Plex Sans KR', sans-serif;
@@ -57,14 +75,14 @@ body {
 .btn-common{
     font-family: 'IBM Plex Sans KR', sans-serif;
     border: none;
-    background: #47a0ff;
+    background: var(--main-blue);
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
     transition: .3s;
 }
 .btn-common:hover{
-    background: #007BFF;
+    background: var(--main-blue-deep);
 }
 
 .txt-left{
@@ -74,7 +92,7 @@ body {
     text-align: right !important;
 }
 .txt-blue{
-    color: #47a0ff !important;
+    color: var(--main-blue) !important;
 }
 .txt-gray{
     color: #666;
@@ -102,7 +120,6 @@ body {
     transform: translate(-50%,-50%);
     width: 100vw;
     height: 100vh;
-    background: rgba(255,255,255,0);
     z-index: 9999;
 }
 .loading{
@@ -188,7 +205,7 @@ header{
     padding: 26px 0;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--main-border-color);
 }
 
 .item{
@@ -247,7 +264,7 @@ header{
     align-items: center;
     margin: 0 0 10px;
     padding: 0 0 10px;
-    border-bottom: 1px dashed #ddd;
+    border-bottom: 1px dashed var(--main-border-color);
 }
 .input-wrap .input-label {
     display: block;
@@ -258,7 +275,7 @@ header{
     font-size: 15px;
     font-weight: 700;
     color: #333;
-    border-right: 1px dashed #ddd;
+    border-right: 1px dashed var(--main-border-color);
     box-sizing: border-box;
 }
 
@@ -282,62 +299,62 @@ header{
 
 /* radio button color */
 input[name="postCd"] + span, input[name="followUpCd"] + span{
-    border-color: #007BFF;
-    color: #007BFF;
+    border-color: var(--main-blue-deep);
+    color: var(--main-blue-deep);
 }
 input[name="postCd"] + span:hover, input[name="postCd"]:checked + span,
 input[name="followUpCd"] + span:hover, input[name="followUpCd"]:checked + span{
-    border-color: #007BFF;
-    background-color: #007BFF;
+    border-color: var(--main-blue-deep);
+    background-color: var(--main-blue-deep);
     color: white;
 }
 input[name="postCd"][value="2"] + span, input[name="followUpCd"][value="2"] + span{
-    border-color: #FF4830;
-    color: #FF4830;
+    border-color: var(--btn-color-red);
+    color: var(--btn-color-red);
 }
 input[name="postCd"][value="2"] + span:hover, input[name="postCd"][value="2"]:checked + span,
 input[name="followUpCd"][value="2"] + span:hover, input[name="followUpCd"][value="2"]:checked + span{
-    border-color: #FF4830;
-    background-color: #FF4830;
+    border-color: var(--btn-color-red);
+    background-color: var(--btn-color-red);
     color: #fff;
 }
 
 input[name="postStatus"] + span{
-    border-color: #c0cd3d;
-    color: #c0cd3d;
+    border-color: var(--btn-color-yellow);
+    color: var(--btn-color-yellow);
 }
 input[name="postStatus"] + span:hover, input[name="postStatus"]:checked + span{
-    border-color: #c0cd3d;
-    background-color: #c0cd3d;
+    border-color: var(--btn-color-yellow);
+    background-color: var(--btn-color-yellow);
     color: white;
 }
 input[name="postStatus"][value="2"] + span{
-    border-color: #35B867;
-    color: #35B867;
+    border-color: var(--btn-color-green);
+    color: var(--btn-color-green);
 }
 input[name="postStatus"][value="2"] + span:hover, input[name="postStatus"][value="2"]:checked + span{
-    border-color: #35B867;
-    background-color: #35B867;
+    border-color: var(--btn-color-green);
+    background-color: var(--btn-color-green);
     color: #fff;
 }
 input[name="postStatus"][value="0"] + span{
-    border-color: #007BFF;
-    color: #007BFF;
+    border-color: var(--main-blue-deep);
+    color: var(--main-blue-deep);
 }
 input[name="postStatus"][value="0"] + span:hover, input[name="postStatus"][value="0"]:checked + span{
-    border-color: #007BFF;
-    background-color: #007BFF;
+    border-color: var(--main-blue-deep);
+    background-color: var(--main-blue-deep);
     color: #fff;
 }
 
 input[name="postCtg"] + span, input[name="followUp"] + span{
-    border-color: #00acbd;
-    color: #00acbd;
+    border-color: var(--btn-color-mint);
+    color: var(--btn-color-mint);
 }
 input[name="postCtg"] + span:hover, input[name="postCtg"]:checked + span,
 input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
-    border-color: #00acbd;
-    background-color: #00acbd;
+    border-color: var(--btn-color-mint);
+    background-color: var(--btn-color-mint);
     color: #fff;
 }
 /**/
@@ -347,7 +364,7 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
 }
 .label-text input[type="text"], .label-text textarea{
     width: calc(100% - 60px);
-    border: 1px solid #aaa;
+    border: 1px solid var(--input-border-color);
     border-radius: 3px;
     line-height: 18px;
     min-height: 22px;
@@ -412,7 +429,7 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
 /* ux-select custom */
 .label-text .ux-select{
     width: calc(100% - 53px);
-    border-color: #aaa;
+    border-color: var(--input-border-color);
     border-radius: 3px;
     box-sizing: border-box;
     --uxs-option-hover-bg-color: #e4effc !important;
@@ -454,7 +471,7 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     font-family: 'IBM Plex Sans KR', sans-serif;
     font-size: 15px;
     line-height: 1;
-    background-color: #f3f3f3;
+    background-color: var(--main-list-bg);
     border: none;
     border-radius: 8px;
     box-shadow: 1px 3px 5px rgba(0,0,0,.25);
@@ -474,13 +491,13 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
 }
 
 .box.alert .box-text{
-    background-color: #ff3131;
+    background-color: var(--emergency);
 }
 .box.inProg .box-text{
-    background-color: #f9ffbe;
+    background-color: var(--acting);
 }
 .box.delay .box-text{
-    background-color: rgba(53,184,103,.8);
+    background-color: var(--pending);
 }
 
 /* list table */
@@ -520,6 +537,7 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     background: #fff;
     position: sticky;
     top: 105px;
+    z-index: 9;
 }
 .post-table .table-head > li{
     padding: 10px;
@@ -545,20 +563,26 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     align-items: center;
     padding: 5px 10px;
     line-height: 24px;
-    background: #f5f5f5;
+    background: var(--main-list-bg);
     box-shadow: 0px 2px 2px rgba(0,0,0,0.2);
 }
-.post-table .table-body .list-wrap > div{
+.post-table .table-body .list-wrap > div:last-of-type{
     margin: 0;
 }
-.post-table .table-body .list-wrap > p.txt-left{
+.post-table .table-body .list-wrap > .txt-left{
     justify-content: flex-start;
 }
-.post-table .table-body .list-wrap > p.status{
+.post-table .table-body .list-wrap > .status{
     cursor: pointer;
 }
-.post-table .table-body .list-wrap > p.status.active{
-    background: #f9ffbe;
+.post-table .table-body .list-wrap > .status.active{
+    background: var(--acting);
+}
+.post-table .table-body .list-wrap > .status.pending{
+    background: var(--pending);
+}
+.post-table .table-body .list-wrap > .col04{
+    position: relative;
 }
 
 .post-table .table-body .memo{
@@ -586,11 +610,55 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     word-break: break-all;
 }
 .emergency .title{
-    color:#ea0d0d;
+    color: var(--emergency);
     font-weight: 500;
 }
 .emergency .title .material-symbols-outlined {
     font-size: 20px !important;
+}
+
+/* pending msg */
+.pending-pop{
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid var(--pending-border-color);
+    border-radius: 5px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.6);
+    z-index: 9;
+    visibility: hidden;
+    opacity: 0;
+    transition: .3s;
+    cursor: auto;
+}
+.status:hover .pending-pop{
+    visibility: visible;
+    opacity: 1;
+}
+.pending-pop > p{
+    width: max-content;
+    max-width: 500px;
+    padding: 10px 20px;
+    background: #e8ffe3;
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+}
+.pending-pop::after{
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -8px) rotate(45deg);
+    display: block;
+    width: 15px;
+    height: 15px;
+    background: #e8ffe3;
+    border-bottom: 1px solid var(--pending-border-color);
+    border-right: 1px solid var(--pending-border-color);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+    z-index: 0;
 }
 
 /* add delete button */
@@ -602,10 +670,10 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     margin: 0 5px 0 0;
 }
 .btn-etc.btn-addmemo:hover{
-    color: #007BFF;
+    color: var(--main-blue-deep);
 }
 .btn-etc.btn-delete:hover{
-    color: #ff3131;
+    color: var(--emergency);
 }
 .btn-delete-memo{
     padding: 3px 5px 1px;
@@ -614,9 +682,9 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     font-weight: 500;
     line-height: 1;
     color: #333;
-    border: 1px solid #ccc;
+    border: 1px solid var(--main-border-color-deep);
     border-radius: 3px;
-    background-color: #f5f5f5;
+    background-color: var(--main-list-bg);
     cursor: pointer;
     opacity: 0;
     visibility: hidden;
@@ -625,6 +693,54 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
 .post-table .table-body .memo:hover .btn-delete-memo{
     opacity: 1;
     visibility: visible;
+}
+
+/* noti style */
+.noty_theme__sunset.noty_bar{
+    padding: 10px 0;
+}
+.noty_theme__sunset.noty_type__alert, 
+.noty_theme__sunset.noty_type__notification{
+    background: #fff !important;
+    color: #333 !important;
+    border: 1px solid var(--main-blue-deep);
+    border-radius: 5px !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.8);
+}
+.noty_theme__sunset.noty_bar .noty_body{
+    font-size: 15px !important;
+    font-weight: 500;
+    text-shadow: none !important;
+    text-align: center;
+}
+.noty_theme__sunset.noty_bar .noty_buttons{
+    text-align: center;
+}
+.noty_theme__sunset.noty_bar .noty_buttons .btn{
+    min-width: 80px;
+    padding: 7px 10px 5px;
+    margin: 0 5px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    border: none;
+    background: var(--main-blue);
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .3s;
+}
+.noty_theme__sunset.noty_bar .noty_buttons .btn.btn-no{
+    background: #999;
+}
+.noty_theme__sunset.noty_bar .noty_buttons .btn:hover{
+    background: var(--main-blue-deep);
+}
+.noty_theme__sunset.noty_bar .noty_buttons .btn.btn-no:hover{
+    background: #666;
+}
+.noty_theme__sunset.noty_type__alert .noty_progressbar,
+.noty_theme__sunset.noty_type__notification .noty_progressbar{
+    background-color: var(--main-blue-deep) !important;
+    opacity: .8 !important;
 }
 
 /* responsive view */
@@ -642,7 +758,7 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
         margin: 0;
         padding: 16px 0 20px;
         justify-content: center;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--main-border-color);
     }
     .sidebar .box{
         margin: 0 20px 0 0;
@@ -756,7 +872,7 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     .post-table .table-body .list-wrap{
         padding: 0 4px;
         flex-wrap: wrap;
-        background: #f5f5f5;
+        background: var(--main-list-bg);
         border-radius: 5px;
         box-shadow: 0px 2px 3px rgba(0,0,0,0.2);
         position: relative;
@@ -777,9 +893,9 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
         right: 4px;
         min-width: 62px;
     }
-    .post-table .table-body .list-wrap > p.status{
+    .post-table .table-body .list-wrap > .status{
         background: #ddd;
-        border: 1px solid #ccc;
+        border: 1px solid var(--main-border-color-deep);
         justify-content: center;
         box-shadow: 0 1px 4px rgba(0,0,0,.2);
     }
@@ -799,7 +915,6 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
 @media screen and (max-width:480px) {
     .header-container .item > p{
         font-size: 12px;
-
     }
     .sidebar{
         top: 63px;

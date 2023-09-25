@@ -28,6 +28,8 @@ const props = defineProps({
 })
 const postSeq = props.postSeq;
 
+const toastQueue =[]
+
 const emit = defineEmits(['closeModal'])
 
 axios.get(`${url}/posts/${postSeq}`,)
@@ -152,6 +154,7 @@ const validationByModalStat = (statCd)=>{
 }
 
 const closeModal = () =>{
+    cmmn.removeAllToast(toastQueue)
     emit('closeModal')
 }
 
@@ -187,56 +190,56 @@ const validationWithImprove = () => {
 
 const checkWrtr = () =>{
     if(wrtr.value) return true;
-    cmmn.toastAlert('작성자를 입력해주세요')
+    toastQueue.push(cmmn.toastAlert('작성자를 입력해주세요'))
     return false;
 }
 
 const checkcntns = () =>{
     if(cntns.value)return true;
-    cmmn.toastAlert('내용을 입력해주세요')
+    toastQueue.push(cmmn.toastAlert('내용을 입력해주세요'))
     return false;   
 }
 
 const checkPndTxt = () =>{
     if(pendingCntns.value) return true;
-    cmmn.toastAlert('대기사유를 입력해주세요')
+    toastQueue.push(cmmn.toastAlert('대기사유를 입력해주세요'))
     return false;
 }
 
 
 const checkSysTp = () =>{
     if(sysTp.value) return true;
-    cmmn.toastAlert('시스템 구분을 선택해주세요')
+    toastQueue.push(cmmn.toastAlert('시스템 구분을 선택해주세요'))
     return false;
 }
 
 const checkpostCtg = () =>{
     if(postCtg.value) return true;
-    cmmn.toastAlert('SR유형을 선택해주세요')
+    toastQueue.push(cmmn.toastAlert('SR유형을 선택해주세요'))
     return false;
 }
 
 const checkSrTpDtl= () =>{
     if(srTpDtl.value) return true;
-    cmmn.toastAlert('SR유형을 선택해주세요')
+    toastQueue.push(cmmn.toastAlert('SR유형을 선택해주세요'))
     return false;
 }
 
 const checkErrTpDtl = () =>{
     if(errTpDtl.value) return true;
-    cmmn.toastAlert('에러 유형을 선택해주세요')
+    toastQueue.push(cmmn.toastAlert('에러 유형을 선택해주세요'))
     return false;
 }
 
 const checkfollowUpCd = () =>{
     if(followUpCd.value) return true;
-    cmmn.toastAlert('후속게시물 유형을 선택해주세요')
+    toastQueue.push(cmmn.toastAlert('후속게시물 유형을 선택해주세요'))
     return false;
 }
 
 const checkfollowUpCntns = () =>{
     if(followUpCntns.value) return true;
-    cmmn.toastAlert('후속게시물 내용을 입력해주세요')
+    toastQueue.push(cmmn.toastAlert('후속게시물 내용을 입력해주세요'))
     return false;
 }
 

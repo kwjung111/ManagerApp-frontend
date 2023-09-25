@@ -206,6 +206,14 @@ setTimeout(() => {
   toastAlert(text,moreOptions=null){
     return this.toast('alert',text,moreOptions)
   },
+  
+ removeAllToast(toastQueue){
+  toastQueue.map((toast) =>{ 
+      if(toast){
+          toast.close()
+      }
+  })
+},
 
   confirm(text,okCb=null,noCb=null){
     return new Noty({

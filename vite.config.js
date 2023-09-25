@@ -11,7 +11,7 @@ export default defineConfig({
     copy({
     targets: [
       { src: 'src/sw.js', dest: 'dist' },
-      { src: 'public/noti_icon.js', dest:'dist'}
+      { src: 'public/noti_icon.svg', dest:'dist'}
     ],
     hook: 'writeBundle',
     verbose:true,

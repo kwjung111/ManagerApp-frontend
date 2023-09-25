@@ -100,7 +100,7 @@ const postprgText = (code) => {
         return '대기 중'
     }
 }
-8
+
 const removePost = (seq,no) => {
     Cmmn.confirm(`NO.${no} 게시물을 정말로 삭제하시겠습니까?`,
     () => {
@@ -120,29 +120,29 @@ function togglePostPatchModal() {
     postPatchModalVisible.value = !postPatchModalVisible.value;
 }
 
-
 </script>
 
 <template>
         <li :class="{emergency: post.BRD_POST_CD == 2}">
             <!--<router-link :to="{ path:pagePath, hash:`#${post.BRD_SEQ}`}"></router-link> --><!-- anchor 이동을 위해 삽입-->
             <div class="list-wrap" :id="post.BRD_SEQ" tabindex="-1">    <!--anchor 이동을 위한 id, tabindex-->
-                <p class="col01">{{ post.BRD_NO.slice(3) }}</p>
+                <p class="col01">{{ post.BRD_NO }}</p>
                 <p class="col02">{{ post.BRD_REG_DTM.slice(5,-3) }}</p>
                 <p class="col03 txt-left title">
                     <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                     {{ post.BRD_CTNTS }}
                 </p>
-                <div class="status col04" :class="getShouldTimerMove(post.BRD_PRGSS_TF)" @click="togglePostPatchModal()" @dblclick="patchPost(post.BRD_SEQ)">
+                <div class="status col04" :class="getShouldTimerMove(post.BRD_PRGSS_TF)" @click="togglePostPatchModal()">
                     <span>{{ postprgText(post.BRD_PRGSS_TF) }}</span>   <!--상태 텍스트-->
                     <div v-if="post.BRD_PRGSS_TF == 2" class="pending-pop">   <!--대기중 사유 레이어-->
-                        <p>대기중 내용은 여기에~</p>
+                        <p>{{post.BRD_RSN_PNDNG}}</p>
                     </div>
                 </div>
                 <!--<p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="toggleState(post.BRD_SEQ)">{{ postprgText(post.BRD_PRGSS_TF) }}</p>-->
                 <p class="col05" v-if="getShouldTimerMove(post.BRD_PRGSS_TF)"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</p>
                 <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>
-                <p class="col06">{{ post.BRD_WRTR }}</p>
+                <p class="col06">{{ post.BRD_WRTR }}<span v-if=" post.BRD_PRGSS_TF == 0 && !post.BRD_END_SYS_TP" class="material-symbols-outlined">
+person_check</span></p> <!-- 추석 관련 '완료' 안된 게시물 -->
                 <div class="col07">
                     <span class="material-symbols-outlined btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록">note_add</span>
                     <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제">delete</span>
@@ -156,3 +156,6 @@ function togglePostPatchModal() {
             </template>
         </li>
 </template>
+
+<style>
+</style>

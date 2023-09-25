@@ -12,8 +12,10 @@ const postCd = ref(1)
 const cntns = ref('')
 const wrtr = ref('')
 
-const emit = defineEmits(['closeModal'])
 
+const toastQueue =  []
+
+const emit = defineEmits(['closeModal'])
 
 const addPost = async () =>{
     if(!validation()) return
@@ -42,6 +44,7 @@ const addPost = async () =>{
 }
 
 const closeModal = () =>{
+    cmmn.removeAllToast(toastQueue)
     emit('closeModal')
 }
 
@@ -54,13 +57,13 @@ const validation = () =>{
 
 const checkWrtr = () =>{
     if(wrtr.value) return true;
-    cmmn.toastAlert('작성자를 입력해주세요')
+    toastQueue.push(cmmn.toastAlert('작성자를 입력해주세요'))
     return false;
 }
 
 const checkcntns = () =>{
     if(cntns.value )return true;
-    cmmn.toastAlert('내용을 입력해주세요')
+    toastQueue.push(cmmn.toastAlert('내용을 입력해주세요'))
     return false;   
 }
 

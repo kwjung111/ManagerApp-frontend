@@ -110,6 +110,7 @@ ws.onclose = async (e) => {
 
 
 function togglePostAddModal() {
+    
     postAddModalVisible.value = !postAddModalVisible.value;
 }
 

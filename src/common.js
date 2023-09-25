@@ -1,11 +1,16 @@
-//깊은복사
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'             //날짜 관련 라이브러리
+import Noty from 'noty';              //토스트 메세지
+import 'noty/lib/noty.css';
+import 'noty/lib/themes/sunset.css';
 
 const cmmn = {
+  //환경변수
   url: import.meta.env.VITE_BACK_URL,
   wsUrl: import.meta.env.VITE_BACK_WSURL,
-  deepCopy: (obj) => {
+  notiImg : import.meta.env.VITE_NOTI_ICON,
+
+  deepCopy: (obj) => {              //깊은복사
     if (obj === null || typeof obj !== 'object') return obj
 
     let copy = {}
@@ -93,19 +98,24 @@ const cmmn = {
     }
     return userKey
   },
+
   //알림받을 정보를 저장
   saveNotificationInfo(type, id) {
     let newNoti = {}
-    cmmn.test_deleteOldNotification(type)
-    const notifications = JSON.parse(localStorage.getItem(`notifications_${type}`)) || {}
+    let notiItems = localStorage.getItem(`notifications_${type}`);
+    let notifications
+    if(typeof notiItems != 'object'){
+      notifications = {}
+    }else{
+      notifications = JSON.parse(notiItems) || {}
+    }
     //오래된 key 들 삭제(기한 7일)
     for (let key in notifications) {
-      console.log(moment().diff(moment(notifications[key]), 'days'))
-      if (moment().diff(moment(notifications[key]), 'days') <= 7) {
+      if (dayjs().diff(dayjs(notifications[key]), 'days') <= 7) {
         newNoti[key] = notifications[key]
       }
     }
-    newNoti[id] = moment().format()
+    newNoti[id] = dayjs().format()
     localStorage.setItem(`notifications_${type}`, JSON.stringify(newNoti))
   },
 
@@ -120,6 +130,26 @@ const cmmn = {
     } else {
       return false
     }
+  },
+
+  newNoti(msg,evtData,id){
+
+    console.log(evtData)
+    const noti = new Notification(msg, {
+      icon: `../public/noti_icon.jpg`,                 
+      body: evtData.content
+  });
+
+  noti.onclick = function (event) {
+    event.preventDefault();         // 알림 클릭의 기본 동작을 방지
+    cmmn.navigateToSection(id)        // id 위치로 이동
+};
+
+setTimeout(() => {
+    noti.close()
+}, 10000)
+
+  return noti
   },
 
   navigateToSection(sectionId) {
@@ -148,6 +178,57 @@ const cmmn = {
     } catch(error) {
       console.error(error)
     }
+  },
+
+  toast(type,text,moreOptions=null){
+
+    let options = {
+      type:type,
+      layout:'bottomCenter',
+      theme:'sunset',
+      text:text,
+      timeout:5000,
+    }
+
+    if(moreOptions){
+      Object.assign(options,moreOptions)
+    }
+
+    return new Noty(options).show();
+  },
+
+  toastSuccess(text,moreOptions=null){
+    return this.toast('success',text,moreOptions)
+  },
+  toastError(text,moreOptions=null){
+    return this.toast('error',text,moreOptions)
+  },
+  toastAlert(text,moreOptions=null){
+    return this.toast('alert',text,moreOptions)
+  },
+
+  confirm(text,okCb=null,noCb=null){
+    new Noty({
+      text: text,
+      layout: 'center',
+      theme:'sunset',
+      buttons: [
+          Noty.button('예', 'btn btn-ok', function (n) {
+            if(okCb){  
+            okCb()
+            }
+              n.close();
+          }, {id: 'button1', 'data-status': 'ok'}),
+  
+          Noty.button('아니오', 'btn btn-no', function (n) {
+            if(noCb){
+              noCb()
+            }
+              n.close();
+          })
+      ]
+  }).show();
+  
   }
 }
 

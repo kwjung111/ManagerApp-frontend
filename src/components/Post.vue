@@ -41,17 +41,13 @@ const post = computed(() =>{
  return props.post})
 
 
-
-const lastRefreshTime = computed(() =>{
-return props.lastRefreshTime})
-
 //타이머 구현 start
 let curTime 
 const elapsedTime = ref(0)
 
 setInterval(()=>{
     curTime = new Date()
-    elapsedTime.value = Number(Math.floor((curTime - lastRefreshTime.value)/1000))
+    elapsedTime.value = Number(Math.floor((curTime - props.lastRefreshTime)/1000))
 },500)
 
 
@@ -75,33 +71,46 @@ const toggleState = async (seq) => {
         //
         }
         else{
-            alert(`다시 시도해 주세요`)
+            Cmmn.toastError(`다시 시도해 주세요`)
         }
     })
 
 }
 
-const checkPostProgressState = (code) => {
+const getShouldTimerMove = (code) => {
+    if(code == 1){
+        return true
+    }
+    if(code == 0 || code == 2){     //완료, 대기중
+        return false
+    }
+}
+
+const postprgText = (code) => {
     if (code == 1) {
         return '처리 중'
     }
     else if (code == 0) {
         return '완료'
     }
+    else if(code == 2){
+        return '대기 중'
+    }
 }
 
-const removePost = (seq) => {
-    if (confirm(`NO.${seq} 게시물을 정말로 삭제하시겠습니까?`)) {
+const removePost = (seq,no) => {
+    Cmmn.confirm(`NO.${no} 게시물을 정말로 삭제하시겠습니까?`,
+    () => {
         axios.delete(`${url}/posts/${seq}`).then((res) => {
             console.log(res)
             if (res.data.ok) {
-                alert('삭제되었습니다!')
+                Cmmn.toastSuccess('삭제되었습니다!')
             }
             else {
-                alert('다시 시도해 주세요')
+                Cmmn.toastError('다시 시도해 주세요')
             }
         })
-    }
+    })
 }
 const postPatchModalVisible = ref(false)
 function togglePostPatchModal() {
@@ -115,26 +124,26 @@ function togglePostPatchModal() {
         <li :class="{emergency: post.BRD_POST_CD == 2}">
             <!--<router-link :to="{ path:pagePath, hash:`#${post.BRD_SEQ}`}"></router-link> --><!-- anchor 이동을 위해 삽입-->
             <div class="list-wrap" :id="post.BRD_SEQ" tabindex="-1">    <!--anchor 이동을 위한 id, tabindex-->
-                <p class="col01">{{ post.BRD_SEQ }}</p>
+                <p class="col01">{{ post.BRD_NO.slice(3) }}</p>
                 <p class="col02">{{ post.BRD_REG_DTM.slice(5,-3) }}</p>
                 <p class="col03 txt-left title">
                     <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                     {{ post.BRD_CTNTS }}
                 </p>
-                <p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @click="togglePostPatchModal()" @dblclick="patchPost(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>
-                <!--<p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="toggleState(post.BRD_SEQ)">{{ checkPostProgressState(post.BRD_PRGSS_TF) }}</p>-->
-                <p class="col05" v-if="post.BRD_PRGSS_TF"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</p>
+                <p class="status col04" :class="{ active :getShouldTimerMove(post.BRD_PRGSS_TF)}" @click="togglePostPatchModal()" @dblclick="patchPost(post.BRD_SEQ)">{{ postprgText(post.BRD_PRGSS_TF) }}</p>
+                <!--<p class="status col04" :class="{ active :post.BRD_PRGSS_TF}" @dblclick="toggleState(post.BRD_SEQ)">{{ postprgText(post.BRD_PRGSS_TF) }}</p>-->
+                <p class="col05" v-if="getShouldTimerMove(post.BRD_PRGSS_TF)"> {{ getElapsedTime(post.BRD_ELAPSED_TIME)  }}</p>
                 <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>
                 <p class="col06">{{ post.BRD_WRTR }}</p>
                 <div class="col07">
                     <span class="material-symbols-outlined btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록">note_add</span>
-                    <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ)" title="삭제">delete</span>
+                    <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제">delete</span>
                 </div>
             </div>
             <PostMemo v-if="post.memos?.length" :memos="post.memos" />
             <template v-if="postPatchModalVisible">
                 <div @click="togglePostPatchModal()" class="modal-bg">
-                    <PostPatch @closeModal="togglePostPatchModal" />
+                    <PostPatch @closeModal="togglePostPatchModal" :postSeq="post.BRD_SEQ" />
                 </div>
             </template>
         </li>

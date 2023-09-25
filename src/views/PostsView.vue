@@ -7,6 +7,7 @@ import { ref, onMounted, computed, inject } from 'vue'
 import eventMapper from '../eventHandler';
 
 const axios = inject('axios')
+const axiosNoSpinner = inject('axiosNoSpinner')
 const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
@@ -26,7 +27,7 @@ const postSeqForMemo = ref(null)                  //메모를 삽입할 게시�
 const postAddModalVisible = ref(false)
 const memoAddModalVisible = ref(false)
 const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 마지막 refresh 시간을 받음
-const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급
+const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급 , 3 처리대기중
 
 let connectState = true;
 
@@ -35,9 +36,10 @@ onMounted(() => {
     connectWs() //웹소켓 연결시 리프레시 수행
 })
 
-const refresh = async () => {
+const refresh = async () => {                       //refresh 는 Spinner 를 표시하지 않음.
+    lastRefreshTime.value = new Date()
     axios.all([
-        axios.get(`${url}/postTree`),          //게시물
+        axios.get(`${url}/postTree`),      //게시물
         axios.get(`${url}/postsCount`),    //게시물수
         //TODO 리프레시 시간: 서버 시간 기준으로 바꾼다.
     ])
@@ -130,13 +132,13 @@ function changeFilter(stateCd) {
 
 //게시글 필터링
 const actingFilter = (() => {
-    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1)
+    return posts.value.filter((p) => p.BRD_PRGSS_TF  == 1)
 })
 const emergencyFilter = (() => {
     return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
 })
 const pendingFilter = (()=> {
-    return posts.value.filter((p) => p.GRD_PRGSS_TF == 1 && p.BRD_POST_CD ==3)
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 2 )
 })
 
 const filteredList = computed(() => {
@@ -229,13 +231,5 @@ const filteredList = computed(() => {
                 </div>
         </template>
         <!-- 구간 end -->
-    </div>
-    <div class="loading-wrap">
-        <div class="loading">
-            <span class="first"></span>
-            <span class="second"></span>
-            <span class="third"></span>
-            <span class="forth"></span>
-        </div>
     </div>
 </section></template>

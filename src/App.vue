@@ -1,13 +1,16 @@
 <script setup>
-import { provide ,onBeforeMount ,onMounted } from 'vue'
+import { provide ,onBeforeMount ,onMounted, ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import axios from 'axios'
 import Cmmn from './common';
+import spinner from './components/common/spinner.vue';
 
 //전역변수 설정
 provide('axios',axios)
+
 provide('Cmmn',Cmmn)
 
+const isLoading = ref(false)
 
 //TODO 로그인 구현시 삭제
 /*
@@ -66,13 +69,37 @@ onBeforeMount(() => {
       console.log(event)
     };
 */
+
+//axios configuration
+axios.interceptors.request.use(function(config){    //로딩바 있는 기본 axios
+  isLoading.value= true;
+  return config
+},
+function(error){
+  return Promise.reject(error);
+})
 })
 
+axios.interceptors.response.use(
+  (response) => {
+    isLoading.value= false;
+    return response;
+  },
+  (error) => {
+    isLoading.value= false;
+    return Promise.reject(error);
+  }
+);
 
+const axiosNoSpinner = axios.create({                 //로딩바 없는 axios에 사용
+}) 
+
+provide('axiosNoSpinner',axiosNoSpinner)
 
 </script>
 
 <template>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <RouterView />
+  <spinner :isLoading="isLoading"></spinner>
 </template>

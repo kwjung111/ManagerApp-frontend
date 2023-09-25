@@ -1,7 +1,7 @@
 <script setup>
-import {ref,onMounted,onBeforeUnmount,onBeforeMount, inject, computed} from 'vue'
-import UxSelect from 'ux-select'
+import {ref, computed, inject, watch} from 'vue'
 import cmcdOption from './common/cmcd-option.vue';
+import cmmn from '../common';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -9,39 +9,116 @@ const Cmmn = inject('Cmmn')
 const url = Cmmn.url;
 const wrtrCookieKey = 'writerName';
 
-const postCd = ref(1)
-const afterCd = ref(1)
-const cntns = ref('')
-const wrtr = ref('')
-const delayCntns = ref('')
+const postCd = ref(1)            //긴급여부
+const cntns = ref('')            //게시물내용
+const wrtr = ref('')             //작성자
+const postStatus = ref(1)        //게시물 진행상태
+const pendingCntns = ref('')     //대기사유
+const sysTp = ref(null)          //시스템 구분
+const postCtg = ref(1)           //SR유형
+const srTpDtl = ref(null)        //SR-상세코드              -- 두 상세코드는 같은 컬럼을 공유
+const errTpDtl = ref(null)       //에러-상세코드            -- 두 상세코드는 같은 컬럼을 공유
+const followUp = ref(0)          //후속과제여부              -- DB에 들어가는 값은 아님
+const followUpCd = ref(1)        //후속게시물 긴급여부      
+const followUpCntns = ref ('')   //후속게시물 내용
+const followUpPostNo = ref(null) //후속게시물 번호
 
-const postStatus = ref(1)
-const postCate = ref(1)
-const postAfter = ref(1)
-const cmcdSys = ref([])
+const props = defineProps({
+    postSeq : Number,
+})
+const postSeq = props.postSeq;
 
 const emit = defineEmits(['closeModal'])
 
+axios.get(`${url}/posts/${postSeq}`,)
+    .then((res) =>{
+        const [data] = res.data.result 
+        console.log(data)
+        
+        postCd.value = data.BRD_POST_CD
+        cntns.value = data.BRD_CTNTS || ''
+        wrtr.value = data.BRD_WRTR 
+        postStatus.value = data.BRD_PRGSS_TF
+        pendingCntns.value = data.BRD_RSN_PNDNG || ''
+        sysTp.value = data.BRD_END_SYS_TP 
+        postCtg.value = data.BRD_END_CTG  || 1
+        if(postCtg.value == 1)
+        {
+            srTpDtl.value = data.BRD_END_CTG_DTL
+        }else if(postCtg.value == 2)
+        {
+            errTpDtl.value = data.BRD_END_CTG_DTL
+        }
+        if(data.FOLLOWUP_POST_BRD_NO != null){
+            followUpPostNo.value = data.FOLLOWUP_POST_BRD_NO
+            followUp.value = 2     // 후속 게시물번호 있음
+        }
+    })
 
-const addPost = async() =>{
-    console.log(postCd.value, cntns.value, wrtr.value)
-    if(!validation()) return
+
+const changePost = async() =>{
 
     const UID = await Cmmn.getUserIdentifier();
 
-    axios.post(`${url}/posts`,{
-        postCd:postCd.value,
-        content:cntns.value,
-        writer:wrtr.value,
-        UID:UID,
+    axios.patch(`${url}/posts/chgPost`,{
+        postSeq:postSeq
+        ,postCd:postCd.value
+        ,cntns:cntns.value
+        ,writer:wrtr.value
+        ,prgCd:postStatus.value
+        ,rsnPndg:pendingCntns.value
+        ,UID:UID
+    })
+    .then((res) =>{
+        if(res.data.ok==true){
+            cmmn.toastSuccess('수정 완료!')
+        }
+        else{
+            cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
+        }
+
+        //작성자 쿠키 저장
+        Cmmn.setCookie(wrtrCookieKey,wrtr.value)
+        closeModal()
+    })
+}
+
+const endPost = async () =>{
+
+    const UID = await Cmmn.getUserIdentifier();
+
+    let postCtgDtl
+
+    if(postCtg.value == 1){
+        postCtgDtl = srTpDtl
+    }else if(postCtg.value == 2){
+        postCtgDtl = errTpDtl
+    }
+
+    axios.patch(`${url}/posts/clsPost`,{
+        postSeq:postSeq
+        ,postCd:postCd.value
+        ,cntns:cntns.value
+        ,writer:wrtr.value
+        ,prgCd:'0'              //완료
+        ,sysTp:sysTp.value
+        ,postCtg:postCtg.value
+        ,postCtgDtl:postCtgDtl.value
+        ,followUp:followUp.value
+        ,followUpCd:followUpCd.value
+        ,followUpCntns:followUpCntns.value
+        ,UID:UID
     })
     .then((res) =>{
         if(res.data.ok==true){
         console.log(res.data.ok)
-            alert('등록 완료!')
+        cmmn.toastSuccess('수정 완료!')
+            if(res.data.result[0].insertId){  //후속게시물 알림등록
+                Cmmn.saveNotificationInfo('posts',res.data.result[0].insertId) 
+            }
         }
         else{
-            alert('실패했습니다. 접속 상태를 확인해 주세요')
+            cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
         }
 
         //작성자 쿠키 저장
@@ -51,29 +128,154 @@ const addPost = async() =>{
 }
 
 
+
+const changePostByModalStat = (statCd)=>{
+    if(!validationByModalStat(statCd)) return
+
+    if(statCd == 1){
+        changePost()
+    }else if(statCd == 2 || statCd ==3){
+        endPost()
+    }
+}
+
+const validationByModalStat = (statCd)=>{
+    if(statCd ==1){
+        return validation()
+    }else if(statCd ==2){
+        return validationWithoutImprove()
+    }
+    else if(statCd == 3){
+        return validationWithImprove()
+    }
+}
+
 const closeModal = () =>{
     emit('closeModal')
 }
 
+//TODO validaiton 공통코드 작성
 const validation = () =>{
-    if(checkcntns() && 
-    checkWrtr()){
-        return true;
+    if(!checkcntns()) return false;
+    if(!checkWrtr()) return false;
+
+    if(postStatus.value == 2){
+        if(!checkPndTxt()) return false;
     }
+    return true;
+}
+
+const validationWithoutImprove = () => {
+    if(!validation()) return false
+    if(!checkSysTp()) return false
+    if(!checkpostCtg()) return false
+    if(postCtg.value == 1){
+        if(!checkSrTpDtl()) return false
+    }else if(postCtg.value == 2){
+        if(!checkErrTpDtl()) return false
+    }
+    return true;
+}
+
+const validationWithImprove = () => {
+    if(!validationWithoutImprove())  return false
+    if(!checkfollowUpCd()) return false
+    if(!checkfollowUpCntns()) return false
+    return true;
 }
 
 const checkWrtr = () =>{
     if(wrtr.value) return true;
-    alert('작성자를 입력해주세요')
+    cmmn.toastAlert('작성자를 입력해주세요')
     return false;
 }
 
 const checkcntns = () =>{
-    if(cntns.value )return true;
-    alert('내용을 입력해주세요')
+    if(cntns.value)return true;
+    cmmn.toastAlert('내용을 입력해주세요')
     return false;   
 }
 
+const checkPndTxt = () =>{
+    if(pendingCntns.value) return true;
+    cmmn.toastAlert('대기사유를 입력해주세요')
+    return false;
+}
+
+
+const checkSysTp = () =>{
+    if(sysTp.value) return true;
+    cmmn.toastAlert('시스템 구분을 선택해주세요')
+    return false;
+}
+
+const checkpostCtg = () =>{
+    if(postCtg.value) return true;
+    cmmn.toastAlert('SR유형을 선택해주세요')
+    return false;
+}
+
+const checkSrTpDtl= () =>{
+    if(srTpDtl.value) return true;
+    cmmn.toastAlert('SR유형을 선택해주세요')
+    return false;
+}
+
+const checkErrTpDtl = () =>{
+    if(errTpDtl.value) return true;
+    cmmn.toastAlert('에러 유형을 선택해주세요')
+    return false;
+}
+
+const checkfollowUpCd = () =>{
+    if(followUpCd.value) return true;
+    cmmn.toastAlert('후속게시물 유형을 선택해주세요')
+    return false;
+}
+
+const checkfollowUpCntns = () =>{
+    if(followUpCntns.value) return true;
+    cmmn.toastAlert('후속게시물 내용을 입력해주세요')
+    return false;
+}
+
+const displayBtnText = (statCd) => {
+    if(statCd != 0){
+        return "수정하기"
+    }else return "등록하기"
+}  
+
+//모달의 상태
+const modalStat = computed(() => {
+    if(postStatus.value != 0){
+        return 1;       //1단계
+    }else if(followUp.value == 0){
+        return 2;       //2단계
+    }else{
+        return 3;       //3단계
+    }
+})
+
+
+//UI/UX 관련 코드
+watch(() => postStatus.value ,(newVal) =>{   //1단계 모달스탯일 경우 
+    if(newVal != 3 && followUp.value !=2){
+        followUp.value = 0                  //상태 리셋
+    }
+})
+
+//common selectbox 이벤트
+const changeSysTp = (val) => {
+    sysTp.value = val
+}
+
+const changeSrTpDtl = (val) => {
+    srTpDtl.value = val
+}
+
+const changeErrTpDtl = (val) => {
+    errTpDtl.value = val
+}
 
 
 Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
@@ -119,146 +321,91 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                         <span>처리 대기 중</span>
                     </label>
                     <label class="label-radio">
-                        <input type="radio" name="postStatus" value="3" v-model="postStatus">
+                        <input type="radio" name="postStatus" value="0" v-model="postStatus">
                         <span>완료</span>
                     </label>
                 </div>
                 <div class="input-group">
                     <span class="input-label"> 대기사유 </span>
                     <label class="label-text">
-                        <textarea maxlength="50" :disabled="postStatus != 2"></textarea>
-                        <span> {{ delayCntns.length }}/50 자</span>
+                        <textarea maxlength="50" :disabled="postStatus != 2" v-model="pendingCntns"></textarea>
+                        <span> {{ pendingCntns.length }}/50 자</span>
                     </label>
                 </div>
-                <div class="input-clear" :class="{show : postStatus == 3}">
+                <div class="input-clear" :class="{show : postStatus == 0}">
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
-                        <div class="label-text sel01">
-                            <!--<select name="system" id="selectSys">
-                                <option value="1">영업 관리 시스템(매장용)</option>
-                                <option value="2">영업 관리 시스템(대리점용)</option>
-                                <option value="3">영업 관리 시스템(RI)</option>
-                                <option value="4">토마토 RI 집계</option>
-                                <option value="5">Web POP</option>
-                                <option value="6">관리자 App</option>
-                                <option value="7">안드로이드 H/T</option>
-                                <option value="8">일반 H/T</option>
-                                <option value="9">토마토 App</option>
-                                <option value="10">B2B Supply</option>
-                                <option value="11">B2B Trade(P/C)</option>
-                                <option value="12">B2B Trade(Mobile)</option>
-                                <option value="13">일반 POS</option>
-                                <option value="14">kiosk POS</option>
-                                <option value="15">인프라-운영계(AWS)</option>
-                                <option value="16">인프라-개발계</option>
-                                <option value="17">ESL</option>
-                            </select>
-                            -->
-                            <cmcdOption :cd="'01'" :placeholder="'시스템 구분'"></cmcdOption>
+                        <div class="label-text">
+                            <cmcdOption :cd="'02'" :placeholder="'시스템 구분'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 유형 </span>
                         <label class="label-radio">
-                            <input type="radio" name="postCate" value="1" v-model="postCate">
+                            <input type="radio" name="postCtg" value="1" v-model="postCtg">
                             <span>SR</span>
                         </label>
                         <label class="label-radio">
-                            <input type="radio" name="postCate" value="2" v-model="postCate">
+                            <input type="radio" name="postCtg" value="2" v-model="postCtg">
                             <span>장애/에러</span>
                         </label>
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
-                        <!--<div class="label-text selectbox" :class="{on : postCate == 1}">
-                            <select name="cateSR" id="cateSR">
-                                <option value="1" data-ux-select-group="Data Check">Data Check - Data 이상</option>
-                                <option value="2" data-ux-select-group="Data Check">Data Check - Data 조회/확인</option>
-                                <option value="3" data-ux-select-group="Data 수정">Data 수정 - Data 가공(요청)</option>
-                                <option value="4" data-ux-select-group="Data 수정">Data 수정 - 사용자 오류</option>
-                                <option value="5" data-ux-select-group="Data 수정">Data 수정 - 시스템 오류</option>
-                                <option value="6" data-ux-select-group="Data 수정">Data 수정 - 타시스템 오류</option>
-                                <option value="7" data-ux-select-group="Data 수정">Data 수정 - 테스트/지원</option>
-                                <option value="8" data-ux-select-group="Data 이행">Data 이행 - 신규점 재이행</option>
-                                <option value="9" data-ux-select-group="Data 이행">Data 이행 - 신규점 초기 이행</option>
-                                <option value="10" data-ux-select-group="Data 추출">Data 추출 - 기존</option>
-                                <option value="11" data-ux-select-group="Data 추출">Data 추출 - 기존변형</option>
-                                <option value="12" data-ux-select-group="Data 추출">Data 추출 - 신규</option>
-                                <option value="13" data-ux-select-group="문의">문의 - 사용법 - 장비/Tool</option>
-                                <option value="14" data-ux-select-group="문의">문의 - 사용법 - 프로그램 화면</option>
-                                <option value="15" data-ux-select-group="문의">문의 - 장애/오류 - 시스템</option>
-                                <option value="16" data-ux-select-group="문의">문의 - 장애/오류 - 장비</option>
-                                <option value="17" data-ux-select-group="문의">문의 - 장애/오류 - 프로그램</option>
-                                <option value="18" data-ux-select-group="문의">문의 - 프로세스 - 기존 프로세스</option>
-                                <option value="19" data-ux-select-group="문의">문의 - 프로세스 - 신규 프로세스</option>
-                                <option value="20" data-ux-select-group="업무지원">업무지원 - 문서작성</option>
-                                <option value="21" data-ux-select-group="업무지원">업무지원 - 조사/모니터링</option>
-                                <option value="22" data-ux-select-group="프로그램 변경/추가">프로그램 변경/추가 - 기능/프로세스 개선</option>
-                                <option value="23" data-ux-select-group="프로그램 변경/추가">프로그램 변경/추가 - 신규 프로그램</option>
-                                <option value="24" data-ux-select-group="프로그램 변경/추가">프로그램 변경/추가 - 오류 개선</option>
-                                <option value="25" data-ux-select-group="프로그램 실행">프로그램 실행 - 배치</option>
-                                <option value="26" data-ux-select-group="프로그램 실행">프로그램 실행 - 일반화면</option>
-                            </select>
-                        </div> -->
-                        <div class="label-text selectbox sel02" :class="{on : postCate == 1}">
-                            <cmcdOption :cd="'02'" :placeholder="'상세 유형 - SR'"></cmcdOption>
+                        <div class="label-text" v-show="postCtg == 1"> <!-- v-show 와 v-if의 차이 -->
+                            <cmcdOption :cd="'01'" :placeholder="'상세 유형'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
                         </div>
-                        <div class="label-text selectbox sel03" :class="{on : postCate == 2}">
-                            <cmcdOption :cd="'03'" :placeholder="'상세 유형 - 장애/에러'"></cmcdOption>
+                        <div class="label-text" v-show="postCtg == 2">
+                            <cmcdOption :cd="'03'" :placeholder="'장애/에러상세 유형'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
                         </div>
-                        <!--<div class="label-text selectbox" :class="{on : postCate == 2}">
-                            <select name="cateErr" id="cateErr">
-                                <option value="1">API/IRT</option>
-                                <option value="2">DBMS</option>
-                                <option value="3">Server</option>
-                                <option value="4">네트워크</option>
-                                <option value="5">배치 프로그램</option>
-                                <option value="6">화면 프로그램</option>
-                            </select>
-                        </div>-->
                     </div>
                     <div class="input-group">
                         <span class="input-label"> 후속 조치 </span>
-                        <label class="label-radio">
-                            <input type="radio" name="postAfter" value="1" v-model="postAfter">
+                        <label class="label-radio" v-show="followUp!=2"> 
+                            <input type="radio" name="followUp" value="0" v-model="followUp">
                             <span>없음</span>
                         </label>
-                        <label class="label-radio">
-                            <input type="radio" name="postAfter" value="2" v-model="postAfter">
+                        <label class="label-radio" v-show="followUp!=2">
+                            <input type="radio" name="followUp" value="1" v-model="followUp">
                             <span>개선 과제 등록</span>
+                        </label>
+                        <label class="label-radio" v-show="followUp == 2">
+                            <input type="radio" name="followUp" value="2" v-model="followUp">
+                            <span>후속과제 번호 : {{followUpPostNo}}</span>
                         </label>
                     </div>
                 </div>
-                <div class="input-after" :class="{show : postAfter == 2 && postStatus == 3}">
+                <div class="input-after" :class="{show : followUp == 1 && postStatus == 0}">
                     <div class="input-group">
-                        <span class="input-label"> 입력값 </span>
+                        <span class="input-label"> 후-긴급여부 </span>
                         <label class="label-radio">
-                            <input type="radio" name="afterCd" value="1" v-model="afterCd">
+                            <input type="radio" name="followUpCd" value="1" v-model="followUpCd">
                             <span > 일반</span>
                         </label>
                         <label class="label-radio">
-                            <input type="radio" name="afterCd" value="2" v-model="afterCd">
+                            <input type="radio" name="followUpCd" value="2" v-model="followUpCd">
                             <span > 긴급</span>
                         </label>
                     </div>
                     <div class="input-group">
-                        <span class="input-label"> 내용 </span>
+                        <span class="input-label"> 후-내용 </span>
                         <label class="label-text">
-                            <textarea maxlength="50" v-model="cntns"></textarea>
-                            <span> {{ cntns.length }}/50 자</span>
+                            <textarea maxlength="50" v-model="followUpCntns"></textarea>
+                            <span> {{ followUpCntns.length }}/50 자</span>
                         </label>
                     </div>
+                    <!--
                     <div class="input-group">
                         <span class="input-label" > 작성자 </span>
                         <label class="label-text">
-                            <input type="text" maxlength="5" size="40" v-model="wrtr"/>
+                            <input type="text" maxlength="5" size="40" v-model="AfterWrtr"/>
                         </label>
                     </div>
+                -->
                 </div>
             </div>
             <div class="modal-btn-wrap">
-                <button class="modal-btn btn-common" v-if="postStatus != 3" @click="changePost()">수정하기</button>
-                <button class="modal-btn btn-common" v-else @click="addPost()">등록하기</button>
+                <button class="modal-btn btn-common" @click="changePostByModalStat(modalStat)">{{ displayBtnText(postStatus) }}</button>
                 <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
             </div>
         </div>

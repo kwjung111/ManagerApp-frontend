@@ -1,11 +1,10 @@
 <script setup>
 import {inject,ref,computed} from 'vue'
 
-
 const axios = inject('axios')
-const Cmmn = inject('Cmmn')
+const cmmn = inject('Cmmn')
 
-const url = Cmmn.url;
+const url = cmmn.url;
 const wrtrCookieKey = 'writerName';
 
 const props = defineProps({
@@ -25,7 +24,7 @@ const emit = defineEmits(['closeModal'])
 const addMemo = async () =>{
     if(!validation()) return
 
-    const UID = await Cmmn.getUserIdentifier();
+    const UID = await cmmn.getUserIdentifier();
 
     axios.post(`${url}/memos`,{
         postSeq:postSeq.value,
@@ -36,12 +35,12 @@ const addMemo = async () =>{
     .then((res) =>{
         console.log(res)
         if(res.data.ok == true){
-        alert('등록 완료!')
-        Cmmn.saveNotificationInfo('posts',res.data.result.postSeq)
+            cmmn.toastSuccess('등록 완료!')
+            cmmn.saveNotificationInfo('posts',res.data.result.postSeq)
         }else{
-            alert('등록 실패')
+            cmmn.toastError('등록 실패')
         }
-        Cmmn.setCookie(wrtrCookieKey,wrtr.value)
+        cmmn.setCookie(wrtrCookieKey,wrtr.value)
         closeModal()
     })
 
@@ -61,17 +60,17 @@ const validation = () =>{
 
 const checkWrtr = () =>{
     if(wrtr.value) return true;
-    alert('작성자를 입력해주세요')
+    cmmn.toastAlert('작성자를 입력해주세요')
     return false;
 }
 
 const checkcntns = () =>{
     if(cntns.value )return true;
-    alert('내용을 입력해주세요')
+    cmmn.toastAlert('내용을 입력해주세요')
     return false;   
 }
 
-Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
+cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
 </script>
 

@@ -136,7 +136,7 @@ const cmmn = {
 
     console.log(evtData)
     const noti = new Notification(msg, {
-      icon: this.notiImg,                 
+      icon: this.notiImg,                
       body: evtData.content
   });
 

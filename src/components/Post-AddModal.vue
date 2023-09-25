@@ -75,11 +75,11 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 <div class="input-group">
                     <span class="input-label"> 입력값 </span>
                     <label class="label-radio">
-                        <input type="radio" name="radio-group" value="1" v-model="postCd">
+                        <input type="radio" name="postCd" value="1" v-model="postCd">
                         <span > 일반</span>
                     </label>
                     <label class="label-radio">
-                        <input type="radio" name="radio-group" value="2" v-model="postCd">
+                        <input type="radio" name="postCd" value="2" v-model="postCd">
                         <span > 긴급</span>
                     </label>
                 </div>

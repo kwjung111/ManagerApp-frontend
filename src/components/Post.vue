@@ -77,7 +77,7 @@ const toggleState = async (seq) => {
 
 }
 
-const getShouldTimerMove = (code) => {      //상태 클래스 부여
+const getTimerClass = (code) => {      //상태 클래스 부여
     if(code == 1){
         return 'active'
     }
@@ -86,6 +86,15 @@ const getShouldTimerMove = (code) => {      //상태 클래스 부여
     }
     else if(code == 0 ){
         return ''
+    }
+}
+
+const getShouldTimerMove = (code) =>{
+    if(code == 1){
+        return true
+    }
+    if(code == 0 || code == 2){     //완료, 대기중
+        return false
     }
 }
 
@@ -132,7 +141,7 @@ function togglePostPatchModal() {
                     <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
                     {{ post.BRD_CTNTS }}
                 </p>
-                <div class="status col04" :class="getShouldTimerMove(post.BRD_PRGSS_TF)" @click="togglePostPatchModal()">
+                <div class="status col04" :class="getTimerClass(post.BRD_PRGSS_TF)" @click="togglePostPatchModal()">
                     <span>{{ postprgText(post.BRD_PRGSS_TF) }}</span>   <!--상태 텍스트-->
                     <div v-if="post.BRD_PRGSS_TF == 2" class="pending-pop">   <!--대기중 사유 레이어-->
                         <p>{{post.BRD_RSN_PNDNG}}</p>

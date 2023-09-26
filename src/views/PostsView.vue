@@ -184,8 +184,8 @@ const filteredList = computed(() => {
                 </a>
                 <div class="gnb">
                     <ul class="gnb-ul">
-                        <li><a href="" title=""><i class="fa-regular fa-calendar-check"></i>일정 관리</a></li>
-                        <li><a href="" title=""><i class="fa-regular fa-folder-open"></i>Knowledge Share</a></li>
+                        <li><a href="" title=""><i class="fa-regular fa-calendar"></i>일정 관리</a></li>
+                        <li><a href="" title=""><i class="fa-regular fa-folder"></i>Knowledge Share</a></li>
                         <li><a href="" title=""><i class="fa-regular fa-comments"></i>메뉴 3</a></li>
                     </ul>
                 </div>

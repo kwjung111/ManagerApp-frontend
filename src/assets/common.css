@@ -60,7 +60,7 @@ q:before, q:after {
     --main-border-color-deep: #ccc;
     --main-list-bg: #f5f5f5;
     --input-border-color: #aaa;
-    --pending-border-color: #8faa8b;
+    --pending-border-color: #a6aa8b;
     --acting: #8cd77c;
     --emergency: #ff3131;
     --pending: #f9ffbe;
@@ -295,6 +295,13 @@ header{
     background: #333;
     animation: gnbAni .5s both;
 }
+.gnb .gnb-ul > li > a:hover .fa-calendar::before{
+    content: "\f274" !important;
+}
+.gnb .gnb-ul > li > a:hover .fa-folder::before{
+    content: "\f07c" !important;
+}
+
 @keyframes gnbAni {
     0%{
         width: 0;
@@ -707,53 +714,76 @@ input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
 .pending-pop{
     position: absolute;
     bottom: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    border: 1px solid var(--pending-border-color);
+    left: 80%;
     border-radius: 5px;
     box-shadow: 0 3px 5px rgba(0,0,0,0.6);
-    z-index: 9;
-    visibility: hidden;
-    opacity: 0;
     transition: .3s;
     cursor: auto;
+    z-index: 9;
 }
 .status:hover .pending-pop{
-    visibility: visible;
-    opacity: 1;
-}
-.pending-pop > p{
-    width: max-content;
-    max-width: 500px;
-    padding: 10px 20px;
-    background: #e8ffe3;
-    border-radius: 5px;
-    position: relative;
-    z-index: 1;
+    border: 1px solid var(--pending-border-color);
 }
 .pending-pop::after{
     content: "";
     position: absolute;
     top: 100%;
-    left: 50%;
-    transform: translate(-50%, -8px) rotate(45deg);
+    left: 0;
+    width: 0;
+    height: 0;
+    transform: translate(2px, -15px) rotate(45deg) skew(-5deg, 42deg);
     display: block;
-    width: 15px;
-    height: 15px;
-    background: #e8ffe3;
+    background: var(--pending);
     border-bottom: 1px solid var(--pending-border-color);
     border-right: 1px solid var(--pending-border-color);
     box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+    opacity: 0;
+    visibility: hidden;
     z-index: 0;
 }
+.status:hover .pending-pop::after{
+    width: 15px;
+    height: 15px;
+    opacity: 1;
+    visibility: visible;
+    transition: .2s;
+}
+.pending-pop > p{
+    width: 0;
+    height: 0;
+    background: var(--pending);
+    border-radius: 5px;
+    word-break: keep-all;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+.status:hover .pending-pop > p{
+    animation: popAni .2s both;
+}
+@keyframes popAni {
+    0%{
+        width: 0;
+        height: 0;
+    }
+    100%{
+        width: max-content;
+        max-width: 300px;
+        height: auto;
+        padding: 5px 20px;
+    }
+}
+
 
 /* add delete button */
 .btn-etc{
+    font-size: 17px;
+    line-height: 1;
     cursor: pointer;
     transition: .3s;
 }
 .btn-etc:first-of-type{
-    margin: 0 5px 0 0;
+    margin: 0 15px 0 0;
 }
 .btn-etc.btn-addmemo:hover{
     color: var(--main-blue-deep);
@@ -762,10 +792,9 @@ input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
     color: var(--emergency);
 }
 .btn-delete-memo{
-    padding: 3px 5px 1px;
+    padding: 1px 3px;
     margin: 0 0 0 10px;
-    font-family: 'IBM Plex Sans KR', sans-serif;
-    font-weight: 500;
+    font-size: 14px;
     line-height: 1;
     color: #333;
     border: 1px solid var(--main-border-color-deep);
@@ -888,7 +917,7 @@ input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
         font-size: 20px !important;
     }
     .btn-etc:first-of-type{
-        margin: 0 2px 0 0;
+        margin: 0 10px 0 0;
     }
 }
 @media screen and (max-width:640px) {

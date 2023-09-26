@@ -43,7 +43,7 @@ const removeMemo = async (seq) => {
         <p class="txt-blue col04">{{ memo.MEMO_WRTR }}</p>
         <p class="txt-left col03">
             <span class="txt-blue"> {{ memo.MEMO_REG_DTM }} </span> : <span class="memo-cntns"> {{ memo.MEMO_CTNTS }} </span>
-            <button class="btn-delete-memo" title="코멘트 삭제" @click="removeMemo(memo.MEMO_SEQ)">X</button>
+            <button class="btn-delete-memo" title="코멘트 삭제" @click="removeMemo(memo.MEMO_SEQ)"><i class="fa-solid fa-xmark"></i></button>
         </p>
     </div>
 </template>

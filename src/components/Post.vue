@@ -153,8 +153,8 @@ function togglePostPatchModal() {
                 <p class="col06">{{ post.BRD_WRTR }}<span v-if=" post.BRD_PRGSS_TF == 0 && !post.BRD_END_SYS_TP" class="material-symbols-outlined">
 person_check</span></p> <!-- 추석 관련 '완료' 안된 게시물 -->
                 <div class="col07">
-                    <span class="material-symbols-outlined btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록">note_add</span>
-                    <span class="material-symbols-outlined btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제">delete</span>
+                    <span class="btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록"><i class="fa-solid fa-reply fa-rotate-180"></i></span>
+                    <span class="btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제"><i class="fa-regular fa-trash-can"></i></span>
                 </div>
             </div>
             <PostMemo v-if="post.memos?.length" :memos="post.memos" />

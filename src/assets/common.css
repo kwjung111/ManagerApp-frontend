@@ -699,7 +699,9 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
 .noty_theme__sunset.noty_bar{
     padding: 10px 0;
 }
-.noty_theme__sunset.noty_type__alert, 
+.noty_theme__sunset.noty_type__alert,
+.noty_theme__sunset.noty_type__success,
+.noty_theme__sunset.noty_type__error,
 .noty_theme__sunset.noty_type__notification{
     background: #fff !important;
     color: #333 !important;
@@ -738,6 +740,8 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     background: #666;
 }
 .noty_theme__sunset.noty_type__alert .noty_progressbar,
+.noty_theme__sunset.noty_type__success .noty_progressbar,
+.noty_theme__sunset.noty_type__error .noty_progressbar,
 .noty_theme__sunset.noty_type__notification .noty_progressbar{
     background-color: var(--main-blue-deep) !important;
     opacity: .8 !important;

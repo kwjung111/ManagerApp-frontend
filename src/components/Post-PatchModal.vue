@@ -409,7 +409,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 </div>
             </div>
             <div class="modal-btn-wrap">
-                <button class="modal-btn btn-common" @click="changePostByModalStat(modalStat)">{{ displayBtnText(postStatus) }}</button>
+                <button class="modal-btn btn-common positive" @click="changePostByModalStat(modalStat)">{{ displayBtnText(postStatus) }}</button>
                 <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
             </div>
         </div>

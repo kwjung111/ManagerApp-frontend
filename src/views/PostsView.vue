@@ -13,6 +13,7 @@ const url = Cmmn.url;
 const wsUrl = Cmmn.wsUrl;
 
 const curDt = ref(new Date())
+const isActive = ref(false)
 
 //현재 시각 타이머
 const timer = setInterval(() => {
@@ -128,6 +129,9 @@ function changeFilter(stateCd) {
     }
 }
 
+function toggleGNB() {
+    isActive.value = !isActive.value
+}
 
 
 //게시글 필터링
@@ -162,23 +166,35 @@ const filteredList = computed(() => {
 <template>
     <header>
         <div class="header-container">
-            <div class="item">
+            <div class="header-title">
                 <h1> SR LIST </h1>
                 <h2 v-if="postFilter == 0">전체</h2>
                 <h2 v-if="postFilter == 1">처리 중</h2>
                 <h2 v-if="postFilter == 2">긴급 처리 중</h2>
                 <h2 v-if="postFilter == 3">처리 대기 중</h2>
             </div>
-            <div class="item">
+            <div class="header-date">
                 <p>{{ curDt }}</p>
             </div>
-            <div class="item">
-                <button class="post-add btn-common" @click="togglePostAddModal()" title="신규 SR 등록">
-                    <span class="material-symbols-outlined">
-                        add_box
-                    </span>
-                </button>
+            <div class="header-gnb">
+                <a @click="toggleGNB()" :class="{active : isActive}" class="btn-gnb" href="#a" :title="[isActive ? '메뉴 닫기' : '메뉴 열기']">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </a>
+                <div class="gnb">
+                    <ul class="gnb-ul">
+                        <li><a href="" title=""><i class="fa-regular fa-calendar-check"></i>일정 관리</a></li>
+                        <li><a href="" title=""><i class="fa-regular fa-folder-open"></i>Knowledge Share</a></li>
+                        <li><a href="" title=""><i class="fa-regular fa-comments"></i>메뉴 3</a></li>
+                    </ul>
+                </div>
             </div>
+        </div>
+        <div class="btn-post-wrap">
+            <button class="btn-post btn-common positive" @click="togglePostAddModal()" title="신규 SR 등록">
+                <i class="fa-pen-to-square"></i>
+            </button>
         </div>
     </header>
 
@@ -190,11 +206,11 @@ const filteredList = computed(() => {
                 <div class="box inProg"><button class="box-text" @click="changeFilter(1)"
                         :class="{ active: postFilter == 1 }">처리 중<span class=strong>{{ postsCount?.acting
                         }}</span></button></div>
+                <div class="box delay"><button class="box-text" @click="changeFilter(3)"
+                :class="{ active: postFilter == 3 }">처리 대기 중<span class="strong">{{ postsCount?.pending
+                }}</span></button></div>
                 <div class="box alert"><button class="box-text" @click="changeFilter(2)"
                         :class="{ active: postFilter == 2 }">긴급 처리 중<span class="strong">{{ postsCount?.emergency
-                        }}</span></button></div>
-                <div class="box delay"><button class="box-text" @click="changeFilter(3)"
-                        :class="{ active: postFilter == 3 }">처리 대기 중<span class="strong">{{ postsCount?.pending
                         }}</span></button></div>
             </div>
             <div class="table-wrap">

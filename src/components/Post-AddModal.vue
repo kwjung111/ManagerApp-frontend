@@ -101,7 +101,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 </div>
             </div>
             <div class="modal-btn-wrap">
-                <button class="modal-btn btn-common" @click="addPost()">등록하기</button>
+                <button class="modal-btn btn-common positive" @click="addPost()">등록하기</button>
                 <button class="modal-btn btn-common" @click="closeModal()">닫기</button>
             </div>
         </div>

@@ -23,6 +23,7 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+    text-decoration: none;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
@@ -49,6 +50,8 @@ q:before, q:after {
 :root{
     --main-blue: #47a0ff;
     --main-blue-deep: #007BFF;
+    --btn-color-gray: #999;
+    --btn-color-gray-deep: #666;
     --btn-color-red: #FF4830;
     --btn-color-yellow: #c0cd3d;
     --btn-color-green: #35B867;
@@ -58,12 +61,15 @@ q:before, q:after {
     --main-list-bg: #f5f5f5;
     --input-border-color: #aaa;
     --pending-border-color: #8faa8b;
-    --acting: #f9ffbe;
+    --acting: #8cd77c;
     --emergency: #ff3131;
-    --pending: #8cd77c;
+    --pending: #f9ffbe;
 }
 
 /* common */
+html{
+    overflow-y: scroll;
+}
 body {
     font-family: 'IBM Plex Sans KR', sans-serif;
     padding: 0 20px;
@@ -75,13 +81,19 @@ body {
 .btn-common{
     font-family: 'IBM Plex Sans KR', sans-serif;
     border: none;
-    background: var(--main-blue);
+    background: var(--btn-color-gray);
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
     transition: .3s;
 }
+.btn-common.positive{
+    background: var(--main-blue);
+}
 .btn-common:hover{
+    background: var(--btn-color-gray-deep);
+}
+.btn-common.positive:hover{
     background: var(--main-blue-deep);
 }
 
@@ -206,25 +218,124 @@ header{
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--main-border-color);
+    position: relative;
 }
-
-.item{
+.header-container > div{
     text-align: center;
     font-size: 18px;
     font-weight: 500;
 }
-.item h1{
+.header-container .header-title h1{
     width: 130px;
     padding: 0 0 10px;
     font-size: 24px;
     font-weight: 700;
 }
-.item .post-add{
-    padding: 10px;
+.header-container .header-gnb .btn-gnb{
+    display: inline-block;
 }
-.item .post-add span{
+.btn-gnb span{
+    display: block;
+    width: 35px;
+    height: 3px;
+    margin: 0 0 8px;
+    background: #000;
+    transition: .5s;
+}
+.btn-gnb span:last-of-type{
+    margin: 0;
+}
+.btn-gnb.active span:first-of-type{transform: rotate(45deg) translate(5px, 14px);}
+.btn-gnb.active span:nth-of-type(2){opacity: 0;}
+.btn-gnb.active span:last-of-type{transform: rotate(-45deg) translate(1.5px, -11px);}
+
+.header-container .header-gnb .gnb{
+    position: absolute;
+    top: calc(100% + 1px);
+    right: -2px;
+    width: 400px;
+    height: calc(100vh - 105px);
+    padding: 40px;
+    background: #fff;
+    box-shadow: -10px 3px 8px rgba(0,0,0,.3);
+    transform: translateX(500px);
+    transition: .5s;
+    box-sizing: border-box;
+}
+.header-container .header-gnb .btn-gnb.active + .gnb{
+    transform: none;
+}
+
+.gnb .gnb-ul > li{
+    text-align: left;
+    margin: 0 0 10px;
+}
+.gnb .gnb-ul > li > a{
+    display: inline-block;
+    padding: 10px 0;
+    text-align: left;
+    font-weight: 400;
+    color: #000;
+    box-sizing: border-box;
+    position: relative;
+}
+.gnb .gnb-ul > li > a i{
+    margin: 0 10px 0 0;
+}
+.gnb .gnb-ul > li > a:hover{
+    font-weight: 500;
+}
+.gnb .gnb-ul > li > a:hover::after{
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #333;
+    animation: gnbAni .5s both;
+}
+@keyframes gnbAni {
+    0%{
+        width: 0;
+    }
+    75%{
+        width: calc(100% + 10px);
+    }
+    100%{
+        width: 100%;
+    }
+}
+
+.btn-post-wrap{
+    position: fixed;
+    bottom: 40px;
+    right: 30px;
+}
+.btn-post-wrap .btn-post{
+    width: 70px;
+    height: 70px;
+    font-family: "Font Awesome 6 Pro";
+    font-size: 28px;
     vertical-align: middle;
-    color: #fff;
+    text-align: center;
+    border-radius: 50%;
+}
+.btn-post-wrap .btn-post i{
+    padding: 0 0 0 2px;
+}
+.btn-post-wrap::after{
+    content: "";
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--main-blue), transparent);
+    filter: blur(1px);
+    z-index: -1;
 }
 
 /* post add modal */
@@ -291,68 +402,68 @@ header{
     padding: 5px 15px;
     text-align: center;
     font-size: 14px;
-    border: 2px solid;
+    border: 1px solid;
     border-radius: 5px;
     cursor: pointer;
     transition: .3s;
 }
 
 /* radio button color */
-input[name="postCd"] + span, input[name="followUpCd"] + span{
+input[type="radio"] + span{
+    border-color: var(--btn-color-gray);
+    color: var(--btn-color-gray-deep);
+}
+input[name="postCd"] + span:hover, input[name="followUpCd"] + span:hover{
     border-color: var(--main-blue-deep);
     color: var(--main-blue-deep);
 }
-input[name="postCd"] + span:hover, input[name="postCd"]:checked + span,
-input[name="followUpCd"] + span:hover, input[name="followUpCd"]:checked + span{
+input[name="postCd"]:checked + span, input[name="followUpCd"]:checked + span{
     border-color: var(--main-blue-deep);
     background-color: var(--main-blue-deep);
     color: white;
 }
-input[name="postCd"][value="2"] + span, input[name="followUpCd"][value="2"] + span{
+input[name="postCd"][value="2"] + span:hover, input[name="followUpCd"][value="2"] + span:hover{
     border-color: var(--btn-color-red);
     color: var(--btn-color-red);
 }
-input[name="postCd"][value="2"] + span:hover, input[name="postCd"][value="2"]:checked + span,
-input[name="followUpCd"][value="2"] + span:hover, input[name="followUpCd"][value="2"]:checked + span{
+input[name="postCd"][value="2"]:checked + span, input[name="followUpCd"][value="2"]:checked + span{
     border-color: var(--btn-color-red);
     background-color: var(--btn-color-red);
     color: #fff;
 }
 
-input[name="postStatus"] + span{
+input[name="postStatus"] + span:hover{
     border-color: var(--btn-color-yellow);
     color: var(--btn-color-yellow);
 }
-input[name="postStatus"] + span:hover, input[name="postStatus"]:checked + span{
+input[name="postStatus"]:checked + span{
     border-color: var(--btn-color-yellow);
     background-color: var(--btn-color-yellow);
     color: white;
 }
-input[name="postStatus"][value="2"] + span{
+input[name="postStatus"][value="2"] + span:hover{
     border-color: var(--btn-color-green);
     color: var(--btn-color-green);
 }
-input[name="postStatus"][value="2"] + span:hover, input[name="postStatus"][value="2"]:checked + span{
+input[name="postStatus"][value="2"]:checked + span{
     border-color: var(--btn-color-green);
     background-color: var(--btn-color-green);
     color: #fff;
 }
-input[name="postStatus"][value="0"] + span{
+input[name="postStatus"][value="0"] + span:hover{
     border-color: var(--main-blue-deep);
     color: var(--main-blue-deep);
 }
-input[name="postStatus"][value="0"] + span:hover, input[name="postStatus"][value="0"]:checked + span{
+input[name="postStatus"][value="0"]:checked + span{
     border-color: var(--main-blue-deep);
     background-color: var(--main-blue-deep);
     color: #fff;
 }
-
-input[name="postCtg"] + span, input[name="followUp"] + span{
+input[name="postCtg"] + span:hover, input[name="followUp"] + span:hover{
     border-color: var(--btn-color-mint);
     color: var(--btn-color-mint);
 }
-input[name="postCtg"] + span:hover, input[name="postCtg"]:checked + span,
-input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
+input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
     border-color: var(--btn-color-mint);
     background-color: var(--btn-color-mint);
     color: #fff;
@@ -424,31 +535,6 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     padding: 10px 10px 8px;
     margin: 0 10px;
     line-height: 1;
-}
-
-/* ux-select custom */
-.label-text .ux-select{
-    width: calc(100% - 53px);
-    border-color: var(--input-border-color);
-    border-radius: 3px;
-    box-sizing: border-box;
-    --uxs-option-hover-bg-color: #e4effc !important;
-    --uxs-option-select-bg-color: #e4effc !important;
-}
-.ux-select__title{
-    font-size: 14px;
-    color: #666;
-}
-.ux-select-group__title{
-    font-size: 15px;
-}
-.ux-select-group__elem{
-    font-size: 14px;
-    color: #333;
-}
-.ux-select__body{
-    border-color: var(--uxs-border-hover-color) !important;
-    left: -1px;
 }
 
 /* list view */
@@ -620,9 +706,9 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
 /* pending msg */
 .pending-pop{
     position: absolute;
-    bottom: calc(100% + 5px);
+    bottom: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%,-50%);
     border: 1px solid var(--pending-border-color);
     border-radius: 5px;
     box-shadow: 0 3px 5px rgba(0,0,0,0.6);
@@ -731,13 +817,13 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     transition: .3s;
 }
 .noty_theme__sunset.noty_bar .noty_buttons .btn.btn-no{
-    background: #999;
+    background: var(--btn-color-gray);
 }
 .noty_theme__sunset.noty_bar .noty_buttons .btn:hover{
     background: var(--main-blue-deep);
 }
 .noty_theme__sunset.noty_bar .noty_buttons .btn.btn-no:hover{
-    background: #666;
+    background: var(--btn-color-gray-deep);
 }
 .noty_theme__sunset.noty_type__alert .noty_progressbar,
 .noty_theme__sunset.noty_type__success .noty_progressbar,
@@ -770,10 +856,10 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     .sidebar .box:last-of-type{
         margin: 0;
     }
-    .item h1{
+    .header-container .header-title h1{
         width: auto;
     }
-    .item:last-of-type{
+    .header-container .header-gnb{
         width: 88px;
         text-align: right;
     }
@@ -816,34 +902,53 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
         padding: 10px 0;
         position: relative;
     }
-    .header-container .item{
+    .header-container > div{
         display: flex;
         width: calc(100% - 60px);
         text-align: left;
         align-items: center;
     }
-    .header-container .item:first-of-type{
+    .header-container .header-title{
         margin: 0 0 10px;
     }
-    .header-container .item:last-of-type{
-        position: absolute;
-        width: auto;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-    }
-    .header-container .item h1{
+    .header-container .header-title h1{
         text-align: left;
         padding: 0;
         font-size: 20px;
     }
-    .header-container .item h2{
+    .header-container .header-title h2{
         margin: 0 0 0 10px;
         font-size: 16px;
     }
-    .header-container .item > p{
+    .header-container .header-date > p{
         font-size: 16px;
         word-break: keep-all;
+    }
+    .header-container .header-gnb{
+        float: right;
+        width: auto;
+    }
+    .header-container .header-gnb .btn-gnb{
+        transform: translateY(-35px);
+    }
+    .btn-gnb span{
+        width: 25px;
+        height: 2px;
+    }
+    .btn-gnb.active span:first-of-type{
+        transform: rotate(45deg) translate(6px, 9px);
+    }
+    .btn-gnb.active span:last-of-type{
+        transform: rotate(-45deg) translate(5px, -8.5px);
+    }
+    .header-container .header-gnb .gnb{
+        height: calc(100vh - 67px);
+    }
+
+    .btn-post-wrap .btn-post{
+        width: 55px;
+        height: 55px;
+        font-size: 22px;
     }
 
     .sidebar{
@@ -917,7 +1022,7 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     }
 }
 @media screen and (max-width:480px) {
-    .header-container .item > p{
+    .header-container .header-date > p{
         font-size: 12px;
     }
     .sidebar{
@@ -941,7 +1046,9 @@ input[name="followUp"] + span:hover, input[name="followUp"]:checked + span{
     .header-container{
         padding: 10px 0;
     }
-
+    .header-container .header-gnb .gnb{
+        height: calc(100vh - 73px);
+    }
 }
 @media screen and (min-width:1025px) and (max-height:480px) {
     .container{

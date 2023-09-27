@@ -138,7 +138,7 @@ function togglePostPatchModal() {
                 <p class="col01">{{ post.BRD_NO }}</p>
                 <p class="col02">{{ post.BRD_REG_DTM.slice(5,-3) }}</p>
                 <p class="col03 txt-left title">
-                    <span class="material-symbols-outlined" v-if="post.BRD_POST_CD == 2">crisis_alert</span> <!--google icon-->
+                    <i class="fa-solid fa-circle-exclamation" v-if="post.BRD_POST_CD == 2"></i>
                     {{ post.BRD_CTNTS }}
                 </p>
                 <div class="status col04" :class="getTimerClass(post.BRD_PRGSS_TF)" @click="togglePostPatchModal()">

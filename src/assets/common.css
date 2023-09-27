@@ -280,7 +280,8 @@ header{
     position: relative;
 }
 .gnb .gnb-ul > li > a i{
-    margin: 0 10px 0 0;
+    width: 22px;
+    margin: 0 8px 0 0;
 }
 .gnb .gnb-ul > li > a:hover{
     font-weight: 500;
@@ -706,8 +707,9 @@ input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
     color: var(--emergency);
     font-weight: 500;
 }
-.emergency .title .material-symbols-outlined {
-    font-size: 20px !important;
+.emergency .title i{
+    font-size: 18px !important;
+    margin: 0 6px 0 0;
 }
 
 /* pending msg */

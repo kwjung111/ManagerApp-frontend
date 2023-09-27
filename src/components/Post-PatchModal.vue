@@ -357,10 +357,10 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
                         <div class="label-text" v-show="postCtg == 1"> <!-- v-show 와 v-if의 차이 -->
-                            <cmcdOption :cd="'01'" :placeholder="'상세 유형'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
+                            <cmcdOption :cd="'01'" :placeholder="'상세 유형 - SR'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
                         </div>
                         <div class="label-text" v-show="postCtg == 2">
-                            <cmcdOption :cd="'03'" :placeholder="'장애/에러상세 유형'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
+                            <cmcdOption :cd="'03'" :placeholder="'상세 유형 - 장애/에러'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">

@@ -6,8 +6,7 @@
   placeholder   = 기본 placeholder 텍스트. 
 */
 
-import { onBeforeMount, onBeforeUnmount, ref, inject, watch } from 'vue';
-// mport UxSelect from 'ux-select'
+import { onBeforeMount, ref, inject, watch } from 'vue';
 import { v4 as uuidv4 } from 'uuid'
 
 const props = defineProps({
@@ -28,69 +27,47 @@ const Cmmn = inject('Cmmn')
 const cmcdOptions = ref([]);
 const elmId = uuidv4();
 const selectedVal = ref('')
-//let selectInitiated = false;      ux-select 관련 코드
-//let uxSelectBox
-
+const isActive = ref(false)
 const changeOpt = (selectedVal) => {
     emit(`changeOptEvt`, selectedVal)
 }
-
 
 onBeforeMount(async () => {
     cmcdOptions.value = await Cmmn.getCmcd(props.cd);
 })
 
-onBeforeUnmount(() => {
-    const selectbox = document.querySelector('.ux-select')
-
-    if (selectbox) {
-        selectbox.remove()
-    }
-})
-
-/* ux-select 관련 코드
-
-const initializeUxSelect = async () => {
-    if (cmcdOptions.value.length) {
-        //비동기적으로 DOM 업데이트 되니까 다음 업데이트 때 수행
-        
-        //nextTick(()=> {
-        const optSelectBox = document.getElementById(elmId);
-        uxSelectBox = new UxSelect(optSelectBox, {
-          placeholder: props.placeholder,
-          isSearchable: true,
-        });
-        
-        selectInitiated = true;
-        });
-    };
-}
-
-
-onUpdated(() => {
-      if (cmcdOptions.value.length && !selectInitiated) {
-        initializeUxSelect();
-      }
-    });
-*/
-
 watch(() => props.selected, (newValue) => {
     selectedVal.value = newValue;
 });
 
+function toggleSelect() {
+    isActive.value = !isActive.value
+    console.log(selectedVal.value)
+}
+
+function selectOption(e) {
+    isActive.value = !isActive.value
+    const selectedEl = e.target
+    const text = selectedEl.innerText
+    const label = e.target.parentElement.previousSibling.querySelector('span')
+    const clickedValue = e.target.getAttribute('data-value')
+    label.innerText = text
+    selectedVal.value = clickedValue
+}
 
 </script>
 
 <template>
-    <select name="system" :id="elmId" v-if="cmcdOptions.length" v-model="selectedVal" @change="changeOpt(selectedVal)">
-        <option value="" disabled selected >{{ props.placeholder}}</option>
+    <select  v-if="cmcdOptions.length" v-model="selectedVal" @change="changeOpt(selectedVal)">
         <option v-for="(code, idx) of cmcdOptions" :key="idx" :value="code.CM_ITM_CD">{{ code.CM_ITM_NM }}</option>
     </select>
+    <div class="selectbox" :id="elmId">
+        <div class="label" @click="toggleSelect" :class="{active : isActive}">
+            <span>{{ props.placeholder }}</span>
+            <i class="fa-solid fa-caret-down"></i>
+        </div>
+        <ul class="select-list">
+            <li class="option" @click="selectOption" v-for="(code, idx) of cmcdOptions" :key="idx" :data-value="code.CM_ITM_CD">{{ code.CM_ITM_NM }}</li>
+        </ul>
+    </div>
 </template>
-
-<style>
-select option[value=""][disabled] {
-	        display: none;
-        }
-
-</style>

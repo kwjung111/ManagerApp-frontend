@@ -1,8 +1,8 @@
-
 <script setup>
 import Post from '../components/Post.vue'
 import PostAddModal from '../components/Post-AddModal.vue'
 import MemoAddModal from '../components/Memo-AddModal.vue'
+import HamburgerBtn from '../components/common/Hamburger-btn.vue'
 import { ref, onMounted, computed, inject } from 'vue'
 import eventMapper from '../eventHandler';
 
@@ -20,9 +20,15 @@ const timer = setInterval(() => {
     curDt.value = new Date()
 }, 500)
 
+const initialCnt = {                              //게시물 박스 카운트 초기화
+    recentPost:0,
+    acting:0,
+    pending:0,
+    emergency:0,
+}
 
 const posts = ref(null)
-const postsCount = ref(null)
+const postsCount = ref(initialCnt)
 const postSeqForMemo = ref(null)                  //메모를 삽입할 게시물번호
 const postAddModalVisible = ref(false)
 const memoAddModalVisible = ref(false)
@@ -32,16 +38,16 @@ const postFilter = ref(0)                         //0 최근 1주일 접수, 1 �
 let connectState = true;
 
 
+
 onMounted(() => {
     connectWs() //웹소켓 연결시 리프레시 수행
 })
 
-const refresh = async () => {                       //refresh 는 Spinner 를 표시하지 않음.
+const refresh = async () => {                       
     lastRefreshTime.value = new Date()
     axios.all([
-        axios.get(`${url}/postTree`),      //게시물
-        axios.get(`${url}/postsCount`),    //게시물수
-        //TODO 리프레시 시간: 서버 시간 기준으로 바꾼다.
+        axios.get(`${url}/posts/tree`),      //게시물
+        axios.get(`${url}/posts/Count`),    //게시물수
     ])
         .then((resArr) => {
             const postsData = resArr[0].data.result
@@ -50,7 +56,6 @@ const refresh = async () => {                       //refresh 는 Spinner 를 �
             posts.value = postsData
             postsCount.value = postsCountData
 
-            //TODO timer 관련 동작은 별도 스레드로 빼기
             lastRefreshTime.value = new Date()
         })
 
@@ -129,9 +134,6 @@ function changeFilter(stateCd) {
     }
 }
 
-function toggleGNB() {
-    isActive.value = !isActive.value
-}
 
 
 //게시글 필터링
@@ -176,20 +178,7 @@ const filteredList = computed(() => {
             <div class="header-date">
                 <p>{{ curDt }}</p>
             </div>
-            <div class="header-gnb">
-                <a @click="toggleGNB()" :class="{active : isActive}" class="btn-gnb" href="#a" :title="[isActive ? '메뉴 닫기' : '메뉴 열기']">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </a>
-                <div class="gnb">
-                    <ul class="gnb-ul">
-                        <li><a href="" title=""><i class="fa-regular fa-calendar"></i>일정 관리</a></li>
-                        <li><a href="" title=""><i class="fa-regular fa-folder"></i>Knowledge Share</a></li>
-                        <li><a href="" title=""><i class="fa-regular fa-comments"></i>메뉴 3</a></li>
-                    </ul>
-                </div>
-            </div>
+            <HamburgerBtn></HamburgerBtn>
         </div>
         <div class="btn-post-wrap">
             <button class="btn-post btn-common positive" @click="togglePostAddModal()" title="신규 SR 등록">

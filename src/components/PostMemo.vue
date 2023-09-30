@@ -23,7 +23,6 @@ const removeMemo = async (seq) => {
     () => {
         axios.delete(`${url}/memos/${seq}`)
         .then((res) => {
-            console.log(res)
             if (res.data.ok) {
                 Cmmn.toastSuccess('삭제 완료!')
             }

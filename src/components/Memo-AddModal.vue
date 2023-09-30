@@ -35,7 +35,6 @@ const addMemo = async () =>{
         UID:UID,
     })
     .then((res) =>{
-        console.log(res)
         if(res.data.ok == true){
             cmmn.toastSuccess('등록 완료!')
             cmmn.saveNotificationInfo('posts',res.data.result.postSeq)

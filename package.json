@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "cross-env HTTPS=true SSL_CRT_FILE=./certs/localhost.pem vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
@@ -16,6 +16,7 @@
     "noty": "^3.2.0-beta-deprecated",
     "pinia": "^2.1.6",
     "uuid": "^9.0.1",
+    "vite-plugin-mkcert": "^1.16.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },
@@ -25,6 +26,7 @@
     "@vue/eslint-config-prettier": "^8.0.0",
     "eslint": "^8.46.0",
     "eslint-plugin-vue": "^9.16.1",
+    "cross-env": "^7.0.3",
     "prettier": "^3.0.0",
     "rollup-plugin-copy": "^3.5.0",
     "vite": "^4.4.9"

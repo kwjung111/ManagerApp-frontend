@@ -2,17 +2,21 @@
 import { defineProps,computed } from 'vue';
 
 const props = defineProps({
-    isLoading:Boolean
+    isLoading:Boolean,
+    loadingCnt:Number,
 })
 
 const showSpinner = computed(() =>{
-    console.log(props.isLoading)
 return props.isLoading})
+
+const loadingCnt = computed(() =>{
+    return props.loadingCnt
+})
 
 </script>
 
 <template>
-<div class="loading-wrap" v-show="showSpinner">
+<div class="loading-wrap" v-show="loadingCnt != 0">
         <div class="loading">
             <span class="first"></span>
             <span class="second"></span>

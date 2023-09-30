@@ -74,13 +74,11 @@ axios.interceptors.request.use(function(config){    //로딩바 있는 기본 ax
 
   let token
   if(cookie){
-    token = cookie.split(';').find(row => row.startsWith('jwt')).split('=')[1];
+    token = cmmn.getCookie('jwt');
   }
 
   if (token) {
         config.headers.authorization = `${token}`;
-  }else{
-      console.log('no cookie')
   }
     
   return config
@@ -99,16 +97,19 @@ axios.interceptors.response.use(
     loadingCnt.value--;
     if (error.response && error.response.status === 403) {
       if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(showAlertAndRedirect, 500); // 100ms 지연
+      debounceTimer = setTimeout(() => {showAlertAndRedirect('토큰이 만료되었습니다. 재 로그인 해 주세요.')}, 500); 
+    }else if( error.response && error.response.status === 500){
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {showAlertAndRedirect('유효하지 않은 토큰입니다.')}, 500); 
     }
     return Promise.reject(error);
   }
 );
 
-function showAlertAndRedirect(){
+function showAlertAndRedirect(msg){
   if (!isAlertShown) {
     isAlertShown = true;
-    cmmn.toastError('토큰이 만료되었습니다.다시 로그인 해주세요.')
+    cmmn.toastError(msg)
     router.push('/login').finally(() => {
       isAlertShown = false;
     });

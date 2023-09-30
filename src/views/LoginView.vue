@@ -30,6 +30,7 @@ axios.post(`${url}/auth/login`,{
 }).then((res) => {      
     if(res.data.ok == true){
         if(res.data.result.code == "00"){
+            Cmmn.toastSuccess('로그인 성공!')
         router.push('/srList')  //로그인 성공 시 리디렉션
         }
         else if(res.data.result.code == "01"){
@@ -92,13 +93,13 @@ function idChk(id){
 </script>
 
 <template>
-    <div class="login-container">
+    <div class="login-container2">
       <p> Login Page!!</p>
-      <div class="input-group">
+      <div class="input-group2">
         <label for="userId">id</label>
         <input id="userId" type="text" v-model="id">
       </div>
-      <div class="input-group">
+      <div class="input-group2">
         <label for="userPwd">password</label>
         <input id="userPwd" type="text" v-model="pwd">
       </div>
@@ -110,20 +111,20 @@ function idChk(id){
       </section>
       
       <section v-if="isSignUp" class="signup-section">
-        <div class="input-group">
+        <div class="input-group2">
           <label for="signUpUserId">id:</label>
           <input id="signUpUserId" type="text" v-model="signUpId">
           <button @click="idChk(signUpId)">중복확인</button>
         </div>
-        <div class="input-group">
+        <div class="input-group2">
           <label for="signUpUserPwd">pwd:</label>
           <input id="signUpUserPwd" type="text" v-model="signUpPwd">
         </div>
-        <div class="input-group">
+        <div class="input-group2">
           <label for="signUpUserName">name:</label>
           <input id="signUpUserName" type="text" v-model="signUpNm">
         </div>
-        <div class="input-group">
+        <div class="input-group2">
           <label for="signUpUserEmail">email:</label>
           <input id="signUpUserEmail" type="text" v-model="signUpEmail">
         </div>
@@ -133,20 +134,17 @@ function idChk(id){
   </template>
   
   <style>
-  .login-container {
+  .login-container2 {
     width: 300px;
     margin: 0 auto;
   }
   
-  .input-group {
+  .input-group2 {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
   }
   
-  label {
-    width: 100px;
-  }
   
   .error-message {
     color: red;

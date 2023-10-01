@@ -47,6 +47,13 @@ const router = createRouter({
       path: '/ScheduleAll',
       name: 'ScheduleAll',
       component: () => import('../views/ScheduleView-All.vue') //code splitting 최적화
+    },
+    
+    //테스트용 페이지
+    {
+      path: '/test',
+      name: 'test',
+      component: () => import('../views/TestView.vue') //code splitting 최적화
     }
 
     /*

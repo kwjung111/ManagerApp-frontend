@@ -1,6 +1,6 @@
 <script setup>
-import { ref,inject,} from 'vue'
-import {useRouter,useRoute} from 'vue-router'
+import { ref,inject,computed} from 'vue'
+import {useRouter} from 'vue-router'
 import cmmn from '../common';
 
 const axios = inject('axios')
@@ -19,6 +19,7 @@ const signUpId = ref('')
 const signUpPwd = ref('')
 const signUpNm = ref('')
 const signUpEmail = ref('')
+const usableId = ref(false)
 
 function doLogin(){
     const idVal = id.value
@@ -48,16 +49,6 @@ axios.post(`${url}/auth/login`,{
 }
 function signUpVisible(){
     isSignUp.value = !isSignUp.value;
-    /*
-    axios.post(`${url}/auth/signUp`,{
-        id:'test2',
-        pwd:'test2',
-        email:'kwjung@businessinsight.co.kr',
-        name: '정강욱'  
-    }).then((ret) => {
-        console.log(ret)
-    })*/
-
 }
 function signUp(){
     
@@ -67,29 +58,49 @@ function signUp(){
         name:signUpNm.value,
         email : signUpEmail.value
     }
-    console.log(param)
-    /*
-    axios.post(`${url}/auth/signUp`,{
-        id:'test2',
-        pwd:'test2',
-        email:'kwjung@businessinsight.co.kr',
-        name: '정강욱'  
-    }).then((ret) => {
-        console.log(ret)
-    })*/
+    
+    axios.post(`${url}/auth/signUp`,param)
+    .then((ret) => {
+        if(ret.data.ok == true){
+            cmmn.toastSuccess('가입 성공!')
+            isSignUp.value = false;
+            usableId.value = false;
+            signUpId.value = ''
+            signUpPwd.value = ''
+            signUpNm.value = ''
+            signUpEmail.value = ''
+        }
+    })
 
 }
 function idChk(id){
+    if(id.length < 5){
+        cmmn.toastAlert('id는 5자 이상이어야 합니다.')
+        return;
+    }
     axios.get(`${url}/auth/checkId/${id}`)
     .then((ret) =>{
         console.log(ret.data.result)
         if(!ret.data.result){   //있으면 true 반환
             cmmn.toastSuccess('사용 가능한 id 입니다.')
+            usableId.value = true
         }else{
             cmmn.toastAlert('이미 가입된 id 입니다.')
         }
 })
 }
+
+function sendMail(){
+    axios.get(`${url}/auth/sendMailForSignUp`).then((ret) => {
+        console.log(ret)
+    })
+}
+const signUpAble = computed(() => {
+    return (usableId.value && 
+    (signUpPwd.value.length >=   5) &&
+    signUpNm.value && signUpEmail.value) 
+})
+
 </script>
 
 <template>
@@ -103,17 +114,17 @@ function idChk(id){
         <label for="userPwd">password</label>
         <input id="userPwd" type="text" v-model="pwd">
       </div>
-      <button @click="doLogin()">제출</button>
+      <button @click="doLogin()">로그인</button>
       <button @click="signUpVisible()">회원가입</button>
       
       <section v-if="failMsg">
         <p class="error-message">{{ failMsg }}</p>
       </section>
-      
       <section v-if="isSignUp" class="signup-section">
+        <p>아이디,비밀번호는 일단 5자 이상으로 입력해주세요.</p>
         <div class="input-group2">
           <label for="signUpUserId">id:</label>
-          <input id="signUpUserId" type="text" v-model="signUpId">
+          <input :disabled="usableId" id="signUpUserId" type="text" v-model="signUpId">
           <button @click="idChk(signUpId)">중복확인</button>
         </div>
         <div class="input-group2">
@@ -128,7 +139,8 @@ function idChk(id){
           <label for="signUpUserEmail">email:</label>
           <input id="signUpUserEmail" type="text" v-model="signUpEmail">
         </div>
-        <button @click="signUp()">가입하기</button>
+        <button :disabled="!signUpAble" @click="signUp()">가입하기</button>
+        <button @click="sendMail()">메일테스트</button>
       </section>
     </div>
   </template>

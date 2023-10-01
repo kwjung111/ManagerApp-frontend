@@ -1,16 +1,20 @@
 import axios from 'axios'
-import dayjs from 'dayjs'             //날짜 관련 라이브러리
-import Noty from 'noty';              //토스트 메세지
-import 'noty/lib/noty.css';
-import 'noty/lib/themes/sunset.css';
+import dayjs from 'dayjs' //날짜 관련 라이브러리
+import Noty from 'noty' //토스트 메세지
+import router from './router/index.js'
+import 'noty/lib/noty.css'
+import 'noty/lib/themes/sunset.css'
+
 
 const cmmn = {
   //환경변수
   url: import.meta.env.VITE_BACK_URL,
   wsUrl: import.meta.env.VITE_BACK_WSURL,
-  notiImg : import.meta.env.VITE_NOTI_ICON,
+  notiImg: import.meta.env.VITE_NOTI_ICON,
 
-  deepCopy: (obj) => {              //깊은복사
+
+  deepCopy: (obj) => {
+    //깊은복사
     if (obj === null || typeof obj !== 'object') return obj
 
     let copy = {}
@@ -102,11 +106,11 @@ const cmmn = {
   //알림받을 정보를 저장
   saveNotificationInfo(type, id) {
     let newNoti = {}
-    let notiItems = localStorage.getItem(`notifications_${type}`);
+    let notiItems = localStorage.getItem(`notifications_${type}`)
     let notifications
-    if(typeof notiItems != 'object'){
+    if (typeof notiItems != 'object') {
       notifications = {}
-    }else{
+    } else {
       notifications = JSON.parse(notiItems) || {}
     }
     //오래된 key 들 삭제(기한 7일)
@@ -132,27 +136,40 @@ const cmmn = {
     }
   },
 
-  newNoti(msg,evtData,id){
-
+  newNoti(msg, evtData, id, toUrl) {
     console.log(evtData)
     const noti = new Notification(msg, {
-      icon: this.notiImg,                
+      icon: this.notiImg,
       body: evtData.content
-  });
+    })
 
-  noti.onclick = function (event) {
-    event.preventDefault();         // 알림 클릭의 기본 동작을 방지
-    cmmn.navigateToSection(id)        // id 위치로 이동
-};
+    noti.onclick = function (event) {
+      event.preventDefault() // 알림 클릭의 기본 동작을 방지
+      cmmn.navigateToSection(id, toUrl) // id 위치로 이동
+    }
 
-setTimeout(() => {
-    noti.close()
-}, 10000)
+    setTimeout(() => {
+      noti.close()
+    }, 10000)
 
-  return noti
+    return noti
   },
 
-  navigateToSection(sectionId) {
+  navigateToSection(sectionId, toUrl) {
+    const url = toUrl
+    const baseURL = `${window.location.pathname}`;
+    if(baseURL == url){
+      this.navigateToAnchor(sectionId)
+    }else{
+      router.push('/srList').then(()=>{
+        //렌더링완료 시점을 알 수 없어서 동작을 보장못함
+        //정확한 동작을 위해서는 컴포넌트에 포함시키는것을 고려.
+        this.navigateToAnchor(sectionId)
+    })
+    }
+  },
+
+  navigateToAnchor(sectionId){
     window.focus()
     location.hash = `#${sectionId}`
 
@@ -165,78 +182,84 @@ setTimeout(() => {
       }
     }, 0)
   },
+  
+
+
   //공통코드를 서버에서 가져옴
   async getCmcd(cd) {
     try {
       const res = await axios.get(`${cmmn.url}/cmmn/cmcd/${cd}`)
-        if (res.data.ok == true) {
-          return res.data.result
-        } else {
-          alert('서버와의 통신에 실패했습니다.')
-          throw new Error('Comm error')
-        }
-    } catch(error) {
+      if (res.data.ok == true) {
+        return res.data.result
+      } else {
+        alert('서버와의 통신에 실패했습니다.')
+        throw new Error('Comm error')
+      }
+    } catch (error) {
       console.error(error)
     }
   },
 
-  toast(type,text,moreOptions=null){
-
+  toast(type, text, moreOptions = null) {
     let options = {
-      type:type,
-      layout:'bottomCenter',
-      theme:'sunset',
-      text:text,
-      timeout:5000,
+      type: type,
+      layout: 'bottomCenter',
+      theme: 'sunset',
+      text: text,
+      timeout: 5000
     }
 
-    if(moreOptions){
-      Object.assign(options,moreOptions)
+    if (moreOptions) {
+      Object.assign(options, moreOptions)
     }
 
-    return new Noty(options).show();
+    return new Noty(options).show()
   },
 
-  toastSuccess(text,moreOptions=null){
-    return this.toast('success',text,moreOptions)
+  toastSuccess(text, moreOptions = null) {
+    return this.toast('success', text, moreOptions)
   },
-  toastError(text,moreOptions=null){
-    return this.toast('error',text,moreOptions)
+  toastError(text, moreOptions = null) {
+    return this.toast('error', text, moreOptions)
   },
-  toastAlert(text,moreOptions=null){
-    return this.toast('alert',text,moreOptions)
+  toastAlert(text, moreOptions = null) {
+    return this.toast('alert', text, moreOptions)
   },
-  
- removeAllToast(toastQueue){
-  toastQueue.map((toast) =>{ 
-      if(toast){
-          toast.close()
+
+  removeAllToast(toastQueue) {
+    toastQueue.map((toast) => {
+      if (toast) {
+        toast.close()
       }
-  })
-},
+    })
+  },
 
-  confirm(text,okCb=null,noCb=null){
+  confirm(text, okCb = null, noCb = null) {
     return new Noty({
       text: text,
       layout: 'center',
-      theme:'sunset',
+      theme: 'sunset',
       buttons: [
-          Noty.button('예', 'btn btn-ok', function (n) {
-            if(okCb){  
-            okCb()
+        Noty.button(
+          '예',
+          'btn btn-ok',
+          function (n) {
+            if (okCb) {
+              okCb()
             }
-              n.close();
-          }, {id: 'button1', 'data-status': 'ok'}),
-  
-          Noty.button('아니오', 'btn btn-no', function (n) {
-            if(noCb){
-              noCb()
-            }
-              n.close();
-          })
+            n.close()
+          },
+          { id: 'button1', 'data-status': 'ok' }
+        ),
+
+        Noty.button('아니오', 'btn btn-no', function (n) {
+          if (noCb) {
+            noCb()
+          }
+          n.close()
+        })
       ]
-  }).show();
-  
+    }).show()
   }
 }
 

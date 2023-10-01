@@ -1,6 +1,6 @@
 <script setup>
 import { provide ,onBeforeMount ,onMounted, ref } from 'vue'
-import { RouterLink, RouterView,useRouter } from 'vue-router'
+import {  RouterView,useRouter } from 'vue-router'
 import axios from 'axios'
 import Cmmn from './common';
 import spinner from './components/common/spinner.vue';
@@ -97,10 +97,12 @@ axios.interceptors.response.use(
     loadingCnt.value--;
     if (error.response && error.response.status === 403) {
       if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {showAlertAndRedirect('토큰이 만료되었습니다. 재 로그인 해 주세요.')}, 500); 
+      debounceTimer = setTimeout(() => {showAlertAndRedirect('토큰이 만료되었습니다. 재 로그인 해 주세요.')}, 500);
+      //TODO 웹소켓 연결 종료
     }else if( error.response && error.response.status === 500){
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {showAlertAndRedirect('유효하지 않은 토큰입니다.')}, 500); 
+      //TODO 웹소켓 연결 종료
     }
     return Promise.reject(error);
   }

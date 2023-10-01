@@ -3,7 +3,7 @@ import Post from '../components/Post.vue'
 import PostAddModal from '../components/Post-AddModal.vue'
 import MemoAddModal from '../components/Memo-AddModal.vue'
 import HamburgerBtn from '../components/common/Hamburger-btn.vue'
-import { ref, onMounted, computed, inject } from 'vue'
+import { ref, onMounted, onUnmounted, computed, inject } from 'vue'
 import eventMapper from '../eventHandler';
 
 const axios = inject('axios')
@@ -11,6 +11,8 @@ const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
 const wsUrl = Cmmn.wsUrl;
+let ws = null;                                   //웹소켓 객체
+let reConnect = true;                            //웹소켓 재접속 여부
 
 const curDt = ref(new Date())
 const isActive = ref(false)
@@ -21,10 +23,10 @@ const timer = setInterval(() => {
 }, 500)
 
 const initialCnt = {                              //게시물 박스 카운트 초기화
-    recentPost:0,
-    acting:0,
-    pending:0,
-    emergency:0,
+    recentPost: 0,
+    acting: 0,
+    pending: 0,
+    emergency: 0,
 }
 
 const posts = ref(null)
@@ -40,10 +42,10 @@ let connectState = true;
 
 
 onMounted(() => {
-    connectWs() //웹소켓 연결시 리프레시 수행
+    ws = connectWs() //웹소켓 연결시 리프레시 수행
 })
 
-const refresh = async () => {                       
+const refresh = async () => {
     lastRefreshTime.value = new Date()
     axios.all([
         axios.get(`${url}/posts/tree`),      //게시물
@@ -60,7 +62,6 @@ const refresh = async () => {
         })
 
 }
-
 
 //웹소켓 연결
 function connectWs() {
@@ -92,31 +93,37 @@ function connectWs() {
             let evtData = data.data
             console.log("server event : ", evtData)
 
-            //이벤트가 오면 무조건 리프레시 TODO 분기처리.
             refresh();
-            
             eventMapper(evtData)
         }
     }
 
 
-ws.onclose = async (e) => {
-    if (connectState == true) {
-        console.log('서버와의 연결이 종료되었습니다.')
-        connectState = false;
+    ws.onclose = async (e) => {
+        if (connectState == true) {
+            console.log('서버와의 연결이 종료되었습니다.')
+            connectState = false;
+        }
+        if (reConnect == true) {
+            setTimeout(() => {
+                console.log('reconnecting to server...')
+                connectWs();
+            }, 1000)
+        }
     }
-    setTimeout(() => {
-        console.log('reconnecting to server...')
-        connectWs();
-    }, 1000)
-}
+    return ws
 };
 
-
+onUnmounted(() => {
+    reConnect = false;
+    if(ws){
+        ws.close();
+    }
+})
 
 
 function togglePostAddModal() {
-    
+    console.log('aa')
     postAddModalVisible.value = !postAddModalVisible.value;
 }
 
@@ -138,13 +145,13 @@ function changeFilter(stateCd) {
 
 //게시글 필터링
 const actingFilter = (() => {
-    return posts.value.filter((p) => p.BRD_PRGSS_TF  == 1)
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 1)
 })
 const emergencyFilter = (() => {
     return posts.value.filter((p) => p.BRD_PRGSS_TF == 1 && p.BRD_POST_CD == 2)
 })
-const pendingFilter = (()=> {
-    return posts.value.filter((p) => p.BRD_PRGSS_TF == 2 )
+const pendingFilter = (() => {
+    return posts.value.filter((p) => p.BRD_PRGSS_TF == 2)
 })
 
 const filteredList = computed(() => {
@@ -154,7 +161,7 @@ const filteredList = computed(() => {
     else if (postFilter.value == 2) {
         return emergencyFilter()
     }
-    else if(postFilter.value == 3){
+    else if (postFilter.value == 3) {
         return pendingFilter()
     }
     else {
@@ -190,14 +197,15 @@ const filteredList = computed(() => {
     <section>
         <div class="container">
             <div class="sidebar">
-                <div class="box"><button class="box-text" @click="changeFilter(0)" :class="{ active: postFilter == 0 }">최근 1주일
+                <div class="box"><button class="box-text" @click="changeFilter(0)" :class="{ active: postFilter == 0 }">최근
+                        1주일
                         접수<span class=strong>{{ postsCount?.recentPost }}</span></button> </div>
                 <div class="box inProg"><button class="box-text" @click="changeFilter(1)"
                         :class="{ active: postFilter == 1 }">처리 중<span class=strong>{{ postsCount?.acting
                         }}</span></button></div>
                 <div class="box delay"><button class="box-text" @click="changeFilter(3)"
-                :class="{ active: postFilter == 3 }">처리 대기 중<span class="strong">{{ postsCount?.pending
-                }}</span></button></div>
+                        :class="{ active: postFilter == 3 }">처리 대기 중<span class="strong">{{ postsCount?.pending
+                        }}</span></button></div>
                 <div class="box alert"><button class="box-text" @click="changeFilter(2)"
                         :class="{ active: postFilter == 2 }">긴급 처리 중<span class="strong">{{ postsCount?.emergency
                         }}</span></button></div>
@@ -234,7 +242,8 @@ const filteredList = computed(() => {
                 <div class="modal-bg">
                     <MemoAddModal :postSeq="postSeqForMemo" @closeModal="toggleMemoAddModal" />
                 </div>
-        </template>
-        <!-- 구간 end -->
-    </div>
-</section></template>
+            </template>
+            <!-- 구간 end -->
+        </div>
+    </section>
+</template>

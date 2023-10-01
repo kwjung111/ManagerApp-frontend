@@ -1,8 +1,13 @@
 #env
 .env
+.env.production
+
+#cert
+/certs
 
 #build
 /dist
+
 
 # Logs
 logs

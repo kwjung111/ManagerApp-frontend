@@ -6,8 +6,7 @@
   placeholder   = 기본 placeholder 텍스트. 
 */
 
-import { onBeforeMount, ref, inject, watch } from 'vue';
-import { v4 as uuidv4 } from 'uuid'
+import { onBeforeMount, onMounted, ref, inject, watch, computed } from 'vue';
 
 const props = defineProps({
     cd: {
@@ -18,6 +17,9 @@ const props = defineProps({
     },
     selected: {
         type: Number
+    },
+    selector: {
+        type: String
     }
 })
 
@@ -25,24 +27,33 @@ const emit = defineEmits(['changeOptEvt'])
 
 const Cmmn = inject('Cmmn')
 const cmcdOptions = ref([]);
-const elmId = uuidv4();
 const selectedVal = ref('')
 const isActive = ref(false)
+//const selectedText = ref('')
+const elmId = computed(() => {
+    return props.selector
+})
 const changeOpt = (selectedVal) => {
     emit(`changeOptEvt`, selectedVal)
 }
 
 onBeforeMount(async () => {
     cmcdOptions.value = await Cmmn.getCmcd(props.cd);
+
 })
 
-watch(() => props.selected, (newValue) => {
-    selectedVal.value = newValue;
-});
+onMounted(() => {
+    
+})
+
+watch(
+    () => props.selected,(newValue) => {
+        selectedVal.value = newValue;
+    }
+)
 
 function toggleSelect() {
     isActive.value = !isActive.value
-    console.log(selectedVal.value)
 }
 
 function selectOption(e) {
@@ -58,12 +69,14 @@ function selectOption(e) {
 </script>
 
 <template>
-    <select  v-if="cmcdOptions.length" v-model="selectedVal" @change="changeOpt(selectedVal)">
+    <select :id="elmId" v-if="cmcdOptions.length" v-model="selectedVal" @change="changeOpt(selectedVal)">
+        <option value="" disabled selected >{{ props.placeholder}}</option>
         <option v-for="(code, idx) of cmcdOptions" :key="idx" :value="code.CM_ITM_CD">{{ code.CM_ITM_NM }}</option>
     </select>
-    <div class="selectbox" :id="elmId">
+    <div class="selectbox">
         <div class="label" @click="toggleSelect" :class="{active : isActive}">
-            <span>{{ props.placeholder }}</span>
+            <span v-if="selectedVal != 0">{{ cmcdOptions[selectedVal-1]?.CM_ITM_NM }}</span>
+            <span v-else>{{ props.placeholder }}</span>
             <i class="fa-solid fa-caret-down"></i>
         </div>
         <ul class="select-list">

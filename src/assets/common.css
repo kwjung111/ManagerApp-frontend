@@ -542,6 +542,9 @@ input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
 }
 
 /* selectbox */
+select{
+    display: none;
+}
 .selectbox{
     width: calc(100% - 65px);
     position: relative;
@@ -578,7 +581,7 @@ input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
     top: 100%;
     left: 0;
     width: 100%;
-    max-height: 200px;
+    max-height: 195px;
     overflow-y: auto;
     background: #fff;
     border-radius: 5px;
@@ -607,8 +610,9 @@ input[name="postCtg"]:checked + span, input[name="followUp"]:checked + span{
     border-radius: 5px;
 }
 .selectbox .select-list .option{
-    padding: 8px 15px;
-    font-size: 14px;
+    padding: 5px 15px;
+    font-size: 13px;
+    color: #333;
     border-bottom: 1px dotted var(--main-border-color);
     cursor: pointer;
 }

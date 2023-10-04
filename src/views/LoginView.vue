@@ -63,6 +63,8 @@ function signUp(){
     axios.post(`${url}/auth/signUp`,param)
     .then((ret) => {
         if(ret.data.ok == true){
+            id.value = signUpId.value
+            pwd.value =signUpPwd.value
             isSignUp.value = false;
             usableId.value = false;
             signUpId.value = ''
@@ -75,12 +77,9 @@ function signUp(){
         }
     })
 
-    axios.post(`${url}/auth/sendMailForSignUp`,{id:signUpId.value}).then((ret) => {
-        console.log(ret)
+    axios.post(`${url}/auth/sendMailForSignUp`,{id:signUpId.value,email:signUpEmail.value}).then((ret) => {
         emailSent.value = true
-    }).then((ret)=>{
-      cmmn.toastSuccess('가입 성공. 이메일로 인증 링크가 발송되었습니다.')
-      emailSent.value = true
+        cmmn.toastSuccess('가입 성공. 이메일로 인증 링크가 발송되었습니다.')
     })
 
 }

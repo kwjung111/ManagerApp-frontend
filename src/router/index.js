@@ -16,18 +16,24 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginView.vue'),
       beforeEnter: (to, from, next) => {
-        axios.get(`${cmmn.url}/auth/chkToken`).then((res) => {
-          if (res.data.ok == true) {
-            if (res.data.result.code == '00') {
-              next({name:'srList'});
-            }else{
-              next();
+        if (!cmmn.getCookie('jwt')) {
+          next()
+        } 
+        else 
+        {
+          axios.get(`${cmmn.url}/auth/chkToken`).then((res) => {
+            if (res.data.ok == true) {
+              if (res.data.result.code == '00') {
+                next({ name: 'srList' })
+              } else {
+                next()
+              }
+            } else {
+              next()
+              cmmn.toastError('서버와 통신 실패. 접속 상태를 확인해 주세요')
             }
-          } else {
-            next();
-            cmmn.toastError('서버와 통신 실패. 접속 상태를 확인해 주세요')
-          }
-        })
+          })
+        }
       }
     },
 
@@ -48,7 +54,7 @@ const router = createRouter({
       name: 'ScheduleAll',
       component: () => import('../views/ScheduleView-All.vue') //code splitting 최적화
     },
-    
+
     //테스트용 페이지
     {
       path: '/test',

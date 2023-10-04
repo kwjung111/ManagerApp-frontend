@@ -4,7 +4,6 @@ import {  RouterView,useRouter } from 'vue-router'
 import axios from 'axios'
 import Cmmn from './common';
 import spinner from './components/common/spinner.vue';
-import cmmn from './common';
 
 //전역변수 설정
 provide('axios',axios)
@@ -74,7 +73,7 @@ axios.interceptors.request.use(function(config){    //로딩바 있는 기본 ax
 
   let token
   if(cookie){
-    token = cmmn.getCookie('jwt');
+    token = Cmmn.getCookie('jwt');
   }
 
   if (token) {
@@ -111,7 +110,7 @@ axios.interceptors.response.use(
 function showAlertAndRedirect(msg){
   if (!isAlertShown) {
     isAlertShown = true;
-    cmmn.toastError(msg)
+    Cmmn.toastError(msg)
     router.push('/login').finally(() => {
       isAlertShown = false;
     });

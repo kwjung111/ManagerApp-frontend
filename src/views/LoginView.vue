@@ -20,6 +20,7 @@ const signUpPwd = ref('')
 const signUpNm = ref('')
 const signUpEmail = ref('')
 const usableId = ref(false)
+const emailSent = ref(false)
 
 function doLogin(){
     const idVal = id.value
@@ -35,13 +36,13 @@ axios.post(`${url}/auth/login`,{
         router.push('/srList')  //로그인 성공 시 리디렉션
         }
         else if(res.data.result.code == "01"){
-            console.log('id failure')
-            failMsg.value = "id failure"
+            failMsg.value = "일치하는 ID가 없습니다"
         }
         else if(res.data.result.code =="02"){
-            console.log('pwd failure')
-            failMsg.value = "pwd failure"
-        }   
+            failMsg.value = "비밀번호가 일치하지 않습니다"
+        }else if(res.data.result.code =="03"){
+            failMsg.value = "인증이 필요한 계정입니다."
+        }
     }else{
         Cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
     }
@@ -62,7 +63,6 @@ function signUp(){
     axios.post(`${url}/auth/signUp`,param)
     .then((ret) => {
         if(ret.data.ok == true){
-            cmmn.toastSuccess('가입 성공!')
             isSignUp.value = false;
             usableId.value = false;
             signUpId.value = ''
@@ -70,6 +70,17 @@ function signUp(){
             signUpNm.value = ''
             signUpEmail.value = ''
         }
+        else{
+          cmmn.toastError('유효성 검사에 실패했습니다.')
+        }
+    })
+
+    axios.post(`${url}/auth/sendMailForSignUp`,{id:signUpId.value}).then((ret) => {
+        console.log(ret)
+        emailSent.value = true
+    }).then((ret)=>{
+      cmmn.toastSuccess('가입 성공. 이메일로 인증 링크가 발송되었습니다.')
+      emailSent.value = true
     })
 
 }
@@ -90,11 +101,6 @@ function idChk(id){
 })
 }
 
-function sendMail(){
-    axios.get(`${url}/auth/sendMailForSignUp`).then((ret) => {
-        console.log(ret)
-    })
-}
 const signUpAble = computed(() => {
     return (usableId.value && 
     (signUpPwd.value.length >=   5) &&
@@ -120,6 +126,11 @@ const signUpAble = computed(() => {
       <section v-if="failMsg">
         <p class="error-message">{{ failMsg }}</p>
       </section>
+      <section v-if="emailSent">
+        <p>이메일로 인증 링크가 발송되었습니다.
+            <br> 인증 후 로그인 해 주세요!
+            <br> 인증 링크는 3분동안만 유효합니다.</p>
+      </section>
       <section v-if="isSignUp" class="signup-section">
         <p>아이디,비밀번호는 일단 5자 이상으로 입력해주세요.</p>
         <div class="input-group2">
@@ -137,10 +148,9 @@ const signUpAble = computed(() => {
         </div>
         <div class="input-group2">
           <label for="signUpUserEmail">email:</label>
-          <input id="signUpUserEmail" type="text" v-model="signUpEmail">
+          <input id="signUpUserEmail" type="text" v-model="signUpEmail">@businessinsight.co.kr
         </div>
         <button :disabled="!signUpAble" @click="signUp()">가입하기</button>
-        <button @click="sendMail()">메일테스트</button>
       </section>
     </div>
   </template>

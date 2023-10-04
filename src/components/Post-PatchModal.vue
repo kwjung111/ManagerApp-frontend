@@ -23,6 +23,8 @@ const followUpCd = ref(1)        //후속게시물 긴급여부
 const followUpCntns = ref ('')   //후속게시물 내용
 const followUpPostNo = ref(null) //후속게시물 번호
 
+const dataLoaded = ref(false)    //데이터 로딩 여부.
+
 const props = defineProps({
     postSeq : Number,
 })
@@ -34,6 +36,7 @@ const emit = defineEmits(['closeModal'])
 
 axios.get(`${url}/posts/${postSeq}`,)
     .then((res) =>{
+        if(res.data.ok == true){
         const [data] = res.data.result 
         console.log(data)
         
@@ -55,6 +58,12 @@ axios.get(`${url}/posts/${postSeq}`,)
             followUpPostNo.value = data.FOLLOWUP_POST_BRD_NO
             followUp.value = 2     // 후속 게시물번호 있음
         }
+        dataLoaded.value = true
+    }
+    else{
+        cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
+        closeModal()
+    }
     })
 
 
@@ -287,7 +296,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
 <template>
     <div class="modal-overlay">
-        <div class="modal" @click.stop=""> <!--이벤트 버블링 방지-->
+        <div class="modal" @click.stop="" v-if="dataLoaded"> <!--이벤트 버블링 방지-->
             <div class="input-wrap">
                 <div class="input-group">
                     <span class="input-label"> 긴급여부 </span>

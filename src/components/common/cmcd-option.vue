@@ -41,11 +41,6 @@ onBeforeMount(async () => {
 })
 
 onBeforeUnmount(() => {
-    const selectbox = document.querySelector('.ux-select')
-
-    if (selectbox) {
-        selectbox.remove()
-    }
 })
 
 /* ux-select 관련 코드
@@ -75,6 +70,7 @@ onUpdated(() => {
 */
 
 watch(() => props.selected, (newValue) => {
+    console.log(selectedVal.value)
     selectedVal.value = newValue;
 });
 

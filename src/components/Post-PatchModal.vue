@@ -296,7 +296,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
 <template>
     <div class="modal-overlay">
-        <div class="modal" @click.stop="" v-if="dataLoaded"> <!--이벤트 버블링 방지-->
+        <div class="modal" @click.stop="" v-show="dataLoaded"> <!--이벤트 버블링 방지-->
             <div class="input-wrap">
                 <div class="input-group">
                     <span class="input-label"> 긴급여부 </span>
@@ -348,7 +348,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
                         <div class="label-text">
-                            <cmcdOption :cd="'02'" :placeholder="'시스템 구분'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
+                            <cmcdOption :cd="'1'" :placeholder="'시스템 구분'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
@@ -365,10 +365,10 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
                         <div class="label-text" v-show="postCtg == 1"> <!-- v-show 와 v-if의 차이 -->
-                            <cmcdOption :cd="'01'" :placeholder="'상세 유형'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
+                            <cmcdOption :cd="'2'" :placeholder="'상세 유형'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
                         </div>
                         <div class="label-text" v-show="postCtg == 2">
-                            <cmcdOption :cd="'03'" :placeholder="'장애/에러상세 유형'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
+                            <cmcdOption :cd="'3'" :placeholder="'장애/에러상세 유형'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">

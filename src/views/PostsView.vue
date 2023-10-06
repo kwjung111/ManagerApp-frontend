@@ -123,7 +123,6 @@ onUnmounted(() => {
 
 
 function togglePostAddModal() {
-    console.log('aa')
     postAddModalVisible.value = !postAddModalVisible.value;
 }
 

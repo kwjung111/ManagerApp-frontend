@@ -47,7 +47,7 @@ const router = createRouter({
     {
       path: '/Schedule',
       name: 'Schedule',
-      component: () => import('../views/ScheduleView-Personal.vue') //code splitting 최적화
+      component: () => import('../views/ScheduleView-Personal-Calendar.vue') //code splitting 최적화
     },
 
     {

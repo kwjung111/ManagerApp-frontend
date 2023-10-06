@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, inject } from 'vue'
 import HamburgerBtn from '../components/common/Hamburger-btn.vue';
+import scheduleAddModal from '../components/schedule/schedule-AddModal.vue';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -8,12 +9,14 @@ const Cmmn = inject('Cmmn')
 const curDt = ref(new Date())
 const scheduleFilter = ref(0)
 
+const scheduleAddModalVisible = ref(false)
+
 const timer = setInterval(() => {
     curDt.value = new Date()
 }, 500)
 
-const toggleScheduleModal = () => {
-    console.log("modal mock")
+const toggleScheduleAddModal =  () => {
+    scheduleAddModalVisible.value = !scheduleAddModalVisible.value
 }
 
 const changeFilter = (stateCd) =>{
@@ -42,7 +45,7 @@ const changeFilter = (stateCd) =>{
             <HamburgerBtn></HamburgerBtn>
         </div>
         <div class="btn-post-wrap">
-            <button class="btn-post btn-common positive" @click="toggleScheduleModal()" title="신규 개인스케줄 등록">
+            <button class="btn-post btn-common positive" @click="toggleScheduleAddModal()" title="신규 개인스케줄 등록">
                 <i class="fa-pen-to-square"></i>
             </button>
         </div>
@@ -79,12 +82,13 @@ const changeFilter = (stateCd) =>{
                 </div>
             </div>
             <!-- 리팩토링 필요 구간 start-->
-            <!--
-            <template v-if="postAddModalVisible">
+            
+            <template v-if="scheduleAddModalVisible">
                 <div class="modal-bg">
-                    <PostAddModal @closeModal="togglePostAddModal" />
+                    <scheduleAddModal @closeModal="toggleScheduleAddModal" />
                 </div>
             </template>
+            <!--
             <template v-if="memoAddModalVisible">
                 <div class="modal-bg">
                     <MemoAddModal :postSeq="postSeqForMemo" @closeModal="toggleMemoAddModal" />

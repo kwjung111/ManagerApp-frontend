@@ -30,6 +30,7 @@ const initialCnt = {                              //게시물 박스 카운트 �
 }
 
 const posts = ref(null)
+const notFinPosts = ref(null)                     //미처리 게시물들
 const postsCount = ref(initialCnt)
 const postSeqForMemo = ref(null)                  //메모를 삽입할 게시물번호
 const postAddModalVisible = ref(false)
@@ -50,14 +51,17 @@ const refresh = async () => {
     axios.all([
         axios.get(`${url}/posts/tree`),      //게시물
         axios.get(`${url}/posts/Count`),    //게시물수
+        axios.get(`${url}/posts/notFin`)    //미처리 게시물
     ])
         .then((resArr) => {
             const postsData = resArr[0].data.result
             const postsCountData = resArr[1].data.result[0]
+            const notFinPostsData = resArr[2].data.result
 
             posts.value = postsData
             postsCount.value = postsCountData
-
+            notFinPosts.value = notFinPostsData
+        
             console.log(postsData)
 
             lastRefreshTime.value = new Date()
@@ -210,7 +214,7 @@ const filteredList = computed(() => {
                 <div class="box alert"><button class="box-text" @click="changeFilter(2)"
                         :class="{ active: postFilter == 2 }">긴급 처리 중<span class="strong">{{ postsCount?.emergency
                         }}</span></button></div>
-                        <p> 미처리 건수 : 1건</p>
+                        <p> 미처리 건수 : {{ notFinPosts?.length}}건</p>
             </div>
             <div class="table-wrap">
                 <div class="post-table">

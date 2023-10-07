@@ -68,7 +68,7 @@ onBeforeMount(() => {
 axios.interceptors.request.use(function(config){    //로딩바 있는 기본 axios
   loadingCnt.value++;
   config.withCredentials = true; //쿠키 관련 설정
-
+ 
   const cookie = document.cookie
 
   let token
@@ -98,9 +98,13 @@ axios.interceptors.response.use(
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {showAlertAndRedirect('토큰이 만료되었습니다. 재 로그인 해 주세요.')}, 500);
       //TODO 웹소켓 연결 종료
-    }else if( error.response && error.response.status === 500){
+    }else if( error.response && error.response.status === 401){
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {showAlertAndRedirect('유효하지 않은 토큰입니다.')}, 500); 
+      //TODO 웹소켓 연결 종료
+    }else if( error.response && error.response.status === 500){
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {showAlertAndRedirect('서버 에러. 관리자에게 문의해주세요.')}, 500); 
       //TODO 웹소켓 연결 종료
     }
     return Promise.reject(error);

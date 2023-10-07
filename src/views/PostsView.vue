@@ -58,6 +58,8 @@ const refresh = async () => {
             posts.value = postsData
             postsCount.value = postsCountData
 
+            console.log(postsData)
+
             lastRefreshTime.value = new Date()
         })
 
@@ -208,6 +210,7 @@ const filteredList = computed(() => {
                 <div class="box alert"><button class="box-text" @click="changeFilter(2)"
                         :class="{ active: postFilter == 2 }">긴급 처리 중<span class="strong">{{ postsCount?.emergency
                         }}</span></button></div>
+                        <p> 미처리 건수 : 1건</p>
             </div>
             <div class="table-wrap">
                 <div class="post-table">

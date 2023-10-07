@@ -36,6 +36,7 @@ const addPost = async () =>{
         else{
             cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
         }
+        console.log(res)
 
         //작성자 쿠키 저장
         Cmmn.setCookie(wrtrCookieKey,wrtr.value)

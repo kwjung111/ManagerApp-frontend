@@ -72,6 +72,19 @@ const cmmn = {
 
     return `${hr}:${min}:${sec}`
   },
+  getTodayYMD : ()=>{
+    const curDate = dayjs().format('YYYY-MM-DD');
+    return curDate
+  },
+  getCurMonthYMD : ()=>{
+    const curDate = dayjs();
+    const firstDayOfMonth = curDate.startOf('month');
+    return firstDayOfMonth.format('YYYY-MM-DD')
+  },
+  convertToYMD : (date) => {
+    const ymdDate = dayjs(date).format('YYYY-MM-DD');
+    return ymdDate
+  },
   setCookie: (key, val) => {
     document.cookie = `${key} = ${val}`
   },

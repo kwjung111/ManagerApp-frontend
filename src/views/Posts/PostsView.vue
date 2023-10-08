@@ -1,10 +1,10 @@
 <script setup>
-import Post from '../components/Post.vue'
-import PostAddModal from '../components/Post-AddModal.vue'
-import MemoAddModal from '../components/Memo-AddModal.vue'
-import HamburgerBtn from '../components/common/Hamburger-btn.vue'
+import Post from '../../components/Post.vue'
+import PostAddModal from '../../components/Post-AddModal.vue'
+import MemoAddModal from '../../components/Memo-AddModal.vue'
+import HamburgerBtn from '../../components/common/Hamburger-btn.vue'
 import { ref, onMounted, onUnmounted, computed, inject } from 'vue'
-import eventMapper from '../eventHandler';
+import eventMapper from '../../eventHandler';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
@@ -49,20 +49,19 @@ onMounted(() => {
 const refresh = async () => {
     lastRefreshTime.value = new Date()
     axios.all([
-        axios.get(`${url}/posts/tree`),      //게시물
+        axios.get(`${url}/posts/tree`),     //게시물
         axios.get(`${url}/posts/Count`),    //게시물수
-        axios.get(`${url}/posts/notFin`)    //미처리 게시물
+        axios.get(`${url}/posts/notFin`)    //미처리 게시물 
     ])
         .then((resArr) => {
             const postsData = resArr[0].data.result
             const postsCountData = resArr[1].data.result[0]
             const notFinPostsData = resArr[2].data.result
 
-            posts.value = postsData
+            posts.value = [...postsData,...notFinPostsData]// 1주일내 + 미처리
             postsCount.value = postsCountData
             notFinPosts.value = notFinPostsData
-        
-            console.log(postsData)
+
 
             lastRefreshTime.value = new Date()
         })
@@ -214,7 +213,7 @@ const filteredList = computed(() => {
                 <div class="box alert"><button class="box-text" @click="changeFilter(2)"
                         :class="{ active: postFilter == 2 }">긴급 처리 중<span class="strong">{{ postsCount?.emergency
                         }}</span></button></div>
-                        <p> 미처리 건수 : {{ notFinPosts?.length}}건</p>
+                        <p> 1주일 내 미완료 <br>{{ notFinPosts?.length }}건</p>
             </div>
             <div class="table-wrap">
                 <div class="post-table">

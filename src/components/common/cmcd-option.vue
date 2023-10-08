@@ -70,7 +70,6 @@ onUpdated(() => {
 */
 
 watch(() => props.selected, (newValue) => {
-    console.log(selectedVal.value)
     selectedVal.value = newValue;
 });
 

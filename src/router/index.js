@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PostsViewVue from '../views/PostsView.vue'
 import axios from 'axios'
 import cmmn from '../common.js'
 
@@ -41,7 +40,13 @@ const router = createRouter({
     {
       path: '/srList',
       name: 'srList',
-      component: PostsViewVue
+      component: () => import('../views/Posts/PostsView.vue'),
+    },
+
+    {
+      path: '/srListAll',
+      name: 'srListAll',
+      component: () => import('../views/Posts/PostsView-All.vue'),
     },
 
     {

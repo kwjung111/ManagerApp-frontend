@@ -11,6 +11,7 @@ const url = Cmmn.url;
 
 const pagePath = '/srList'        
 
+//modifyOnly -> 삭제 불가, 수정만 가능
 const props = defineProps({
     post: {
         type: Object,
@@ -18,9 +19,12 @@ const props = defineProps({
     lastRefreshTime:{
         type:Date
     },
+    modifyOnly:{
+        type:Boolean
+    }
 })
 
-const emit = defineEmits(['addMemo'])
+const emit = defineEmits(['addMemo', 'doRefresh'])
 
 const addMemo = (seq) =>{
     emit('addMemo',{
@@ -28,14 +32,7 @@ const addMemo = (seq) =>{
     })
 }
 
-/*
-const patchPost = (seq) =>{
-    emit('patchPost',{
-        postSeq : seq
-    })
-
-}
-*/
+const modifyOnly = props.modifyOnly || false;
 
 const post = computed(() =>{
  return props.post})
@@ -129,6 +126,10 @@ function togglePostPatchModal() {
     postPatchModalVisible.value = !postPatchModalVisible.value;
 }
 
+const doRefresh = () => {
+    emit('doRefresh')
+}
+
 </script>
 
 <template>
@@ -152,14 +153,14 @@ function togglePostPatchModal() {
                 <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>
                 <p class="col06">{{ post.BRD_WRTR }}</p> 
                 <div class="col07">
-                    <span class="btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록"><i class="fa-solid fa-reply fa-rotate-180"></i></span>
-                    <span class="btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제"><i class="fa-regular fa-trash-can"></i></span>
+                    <span v-if="!modifyOnly" class="btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록"><i class="fa-solid fa-reply fa-rotate-180"></i></span>
+                    <span v-if="!modifyOnly" class="btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제"><i class="fa-regular fa-trash-can"></i></span>
                 </div>
             </div>
-            <PostMemo v-if="post.memos?.length" :memos="post.memos" />
+            <PostMemo v-if="post.memos?.length" :memos="post.memos"  :readOnly="modifyOnly"/>
             <template v-if="postPatchModalVisible">
                 <div class="modal-bg">
-                    <PostPatch @closeModal="togglePostPatchModal" :postSeq="post.BRD_SEQ" />
+                    <PostPatch @closeModal="togglePostPatchModal" @postPatched="doRefresh" :postSeq="post.BRD_SEQ" />
                 </div>
             </template>
         </li>

@@ -37,7 +37,8 @@ function logout() {
                 </a>
     <div class="gnb">
         <ul class="gnb-ul">
-            <li><router-link to="/srList"><i class="fa-regular fa-calendar"></i>SR LIST</router-link></li>
+            <li><router-link to="/srList"><i class="fa-regular fa-calendar"></i>SR-LIST</router-link></li>
+            <li><router-link to="/srListAll"><i class="fa-regular fa-calendar"></i>SR-지난 게시물</router-link></li>
             <li><router-link to="/Schedule"><i class="fa-regular fa-calendar"></i>개인 스케줄</router-link></li>
             <!-- <li><router-link to="/ScheduleAll"><i class="fa-regular fa-calendar"></i>직원 스케줄</router-link></li> -->
             <!-- <li><a href="" title=""><i class="fa-regular fa-folder"></i>Knowledge Share</a></li>-->

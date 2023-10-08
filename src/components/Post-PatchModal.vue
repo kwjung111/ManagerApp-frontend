@@ -32,7 +32,7 @@ const postSeq = props.postSeq;
 
 const toastQueue =[]
 
-const emit = defineEmits(['closeModal'])
+const emit = defineEmits(['closeModal', 'postPatched'])
 
 axios.get(`${url}/posts/${postSeq}`,)
     .then((res) =>{
@@ -83,6 +83,7 @@ const changePost = async() =>{
     .then((res) =>{
         if(res.data.ok==true){
             cmmn.toastSuccess('수정 완료!')
+            emit('postPatched')
         }
         else{
             cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')

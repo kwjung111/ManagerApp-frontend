@@ -349,7 +349,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
                         <div class="label-text">
-                            <cmcdOption :cd="'1'" :placeholder="'시스템 구분'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
+                            <cmcdOption :selector="'select01'" :cd="'1'" :placeholder="'--시스템 구분 선택--'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
@@ -366,10 +366,10 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
                         <div class="label-text" v-show="postCtg == 1"> <!-- v-show 와 v-if의 차이 -->
-                            <cmcdOption :cd="'2'" :placeholder="'상세 유형'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
+                            <cmcdOption :selector="'select02'" :cd="'2'" :placeholder="'--상세 유형(SR) 선택--'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
                         </div>
                         <div class="label-text" v-show="postCtg == 2">
-                            <cmcdOption :cd="'3'" :placeholder="'장애/에러상세 유형'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
+                            <cmcdOption :selector="'select03'" :cd="'3'" :placeholder="'--상세 유형(장애/에러) 선택--'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">

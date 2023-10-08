@@ -43,7 +43,7 @@ const removeMemo = async (seq) => {
 
 <template>
     <div v-for="(memo,i) in memos" :key="i" class="memo">
-        <p class="col01 arrow"> <span class="material-symbols-outlined txt-gray">subdirectory_arrow_right</span></p>
+        <p class="col01"><i class="fa-solid fa-reply fa-rotate-180"></i></p>
         <p class="txt-blue col04">{{ memo.MEMO_WRTR }}</p>
         <p class="txt-left col03">
             <span class="txt-blue"> {{ memo.MEMO_REG_DTM }} </span> : <span class="memo-cntns"> {{ memo.MEMO_CTNTS }} </span>

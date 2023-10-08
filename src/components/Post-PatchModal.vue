@@ -38,7 +38,6 @@ axios.get(`${url}/posts/${postSeq}`,)
     .then((res) =>{
         if(res.data.ok == true){
         const [data] = res.data.result 
-        console.log(data)
         
         postCd.value = data.BRD_POST_CD
         cntns.value = data.BRD_CTNTS || ''
@@ -349,7 +348,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <div class="input-group">
                         <span class="input-label"> 시스템 구분 </span>
                         <div class="label-text">
-                            <cmcdOption :selector="'select01'" :cd="'1'" :placeholder="'--시스템 구분 선택--'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
+                            <cmcdOption :selectorID="'select01'" :cd="'1'" :placeholder="'--시스템 구분 선택--'" :selected="sysTp" @changeOptEvt="changeSysTp"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">
@@ -366,10 +365,10 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <div class="input-group">
                         <span class="input-label"> 상세 유형 </span>
                         <div class="label-text" v-show="postCtg == 1"> <!-- v-show 와 v-if의 차이 -->
-                            <cmcdOption :selector="'select02'" :cd="'2'" :placeholder="'--상세 유형(SR) 선택--'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
+                            <cmcdOption :selectorID="'select02'" :cd="'2'" :placeholder="'--상세 유형(SR) 선택--'" :selected="srTpDtl" @changeOptEvt="changeSrTpDtl"></cmcdOption>
                         </div>
                         <div class="label-text" v-show="postCtg == 2">
-                            <cmcdOption :selector="'select03'" :cd="'3'" :placeholder="'--상세 유형(장애/에러) 선택--'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
+                            <cmcdOption :selectorID="'select03'" :cd="'3'" :placeholder="'--상세 유형(장애/에러) 선택--'" :selected="errTpDtl" @changeOptEvt="changeErrTpDtl"></cmcdOption>
                         </div>
                     </div>
                     <div class="input-group">

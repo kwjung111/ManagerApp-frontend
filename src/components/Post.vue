@@ -153,7 +153,7 @@ const doRefresh = () => {
                 <p class="col05" v-else>{{ post.BRD_ELAPSED_TIME}}</p>
                 <p class="col06">{{ post.BRD_WRTR }}</p> 
                 <div class="col07">
-                    <span v-if="!modifyOnly" class="btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록"><i class="fa-solid fa-reply fa-rotate-180"></i></span>
+                    <span v-if="!modifyOnly" class="btn-etc btn-addmemo" @click="addMemo(post.BRD_SEQ)" title="코멘트 등록"><i class="fa-solid fa-comment-medical"></i></span>
                     <span v-if="!modifyOnly" class="btn-etc btn-delete" @click="removePost(post.BRD_SEQ,post.BRD_NO)" title="삭제"><i class="fa-regular fa-trash-can"></i></span>
                 </div>
             </div>

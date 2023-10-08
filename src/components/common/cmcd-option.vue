@@ -3,7 +3,11 @@
 /*required 
   cd            = 공통코드 번호
   @changeOptEvt = selectBox 의 값이 바뀔때 이벤트
-  placeholder   = 기본 placeholder 텍스트. 
+  placeholder   = 기본 placeholder 텍스트.
+  
+  option
+  selectorID      = DOM ID
+  selected      = 선택된 코드 번호
 */
 
 import { onBeforeMount, ref, inject, watch, computed } from 'vue';
@@ -18,7 +22,7 @@ const props = defineProps({
     selected: {
         type: Number
     },
-    selector: {
+    selectorID: {
         type: String
     }
 })
@@ -31,7 +35,7 @@ const selectedVal = ref('')
 const isActive = ref(false)
 //const selectedText = ref('')
 const elmId = computed(() => {
-    return props.selector
+    return props.selectorID
 })
 const changeOpt = (selectedVal) => {
     emit(`changeOptEvt`, selectedVal)

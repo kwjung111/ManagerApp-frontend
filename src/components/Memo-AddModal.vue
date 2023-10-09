@@ -54,16 +54,9 @@ const closeModal = () =>{
 }
 
 const validation = () =>{
-    if(checkcntns() && 
-    checkWrtr()){
+    if(checkcntns()){
         return true;
     }
-}
-
-const checkWrtr = () =>{
-    if(wrtr.value) return true;
-    toastQueue.push(cmmn.toastAlert('작성자를 입력해주세요'))
-    return false;
 }
 
 const checkcntns = () =>{
@@ -85,12 +78,6 @@ cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <label class="label-text">
                         <textarea maxlength="100" v-model="cntns"></textarea>
                         <span> {{ cntns.length }}/100 자</span>
-                    </label>
-                </div>
-                <div class="input-group">
-                    <span class="input-label" > 작성자 </span>
-                    <label class="label-text">
-                        <input type="text" maxlength="5" size="40" v-model="wrtr"/>
                     </label>
                 </div>
             </div>

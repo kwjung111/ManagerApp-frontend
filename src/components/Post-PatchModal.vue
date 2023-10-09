@@ -7,11 +7,9 @@ const axios = inject('axios')
 const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
-const wrtrCookieKey = 'writerName';
 
 const postCd = ref(1)            //긴급여부
 const cntns = ref('')            //게시물내용
-const wrtr = ref('')             //작성자
 const postStatus = ref(1)        //게시물 진행상태
 const pendingCntns = ref('')     //대기사유
 const sysTp = ref(null)          //시스템 구분
@@ -30,6 +28,8 @@ const props = defineProps({
 })
 const postSeq = props.postSeq;
 
+let writer;
+
 const toastQueue =[]
 
 const emit = defineEmits(['closeModal', 'postPatched'])
@@ -41,7 +41,7 @@ axios.get(`${url}/posts/${postSeq}`,)
         
         postCd.value = data.BRD_POST_CD
         cntns.value = data.BRD_CTNTS || ''
-        wrtr.value = data.BRD_WRTR 
+        writer = data.WRTR_NM; 
         postStatus.value = data.BRD_PRGSS_TF
         pendingCntns.value = data.BRD_RSN_PNDNG || ''
         sysTp.value = data.BRD_END_SYS_TP 
@@ -74,7 +74,6 @@ const changePost = async() =>{
         postSeq:postSeq
         ,postCd:postCd.value
         ,cntns:cntns.value
-        ,writer:wrtr.value
         ,prgCd:postStatus.value
         ,rsnPndg:pendingCntns.value
         ,UID:UID
@@ -83,14 +82,12 @@ const changePost = async() =>{
         if(res.data.ok==true){
             cmmn.toastSuccess('수정 완료!')
             emit('postPatched')
+            closeModal()
         }
         else{
             cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
         }
 
-        //작성자 쿠키 저장
-        Cmmn.setCookie(wrtrCookieKey,wrtr.value)
-        closeModal()
     })
 }
 
@@ -110,7 +107,6 @@ const endPost = async () =>{
         postSeq:postSeq
         ,postCd:postCd.value
         ,cntns:cntns.value
-        ,writer:wrtr.value
         ,prgCd:'0'              //완료
         ,sysTp:sysTp.value
         ,postCtg:postCtg.value
@@ -126,21 +122,17 @@ const endPost = async () =>{
             if(res.data.result[0].insertId){  //후속게시물 알림등록
                 Cmmn.saveNotificationInfo('posts',res.data.result[0].insertId) 
             }
+            closeModal()
         }
         else{
             cmmn.toastError('실패했습니다. 접속 상태를 확인해 주세요')
         }
-
-        //작성자 쿠키 저장
-        Cmmn.setCookie(wrtrCookieKey,wrtr.value)
-        closeModal()
     })
 }
 
 
 
 const changePostByModalStat = (statCd)=>{
-    console.log(statCd)
     if(!validationByModalStat(statCd)) return
 
     if(statCd == 1){
@@ -169,7 +161,6 @@ const closeModal = () =>{
 //TODO validaiton 공통코드 작성
 const validation = () =>{
     if(!checkcntns()) return false;
-    if(!checkWrtr()) return false;
 
     if(postStatus.value == 2){
         if(!checkPndTxt()) return false;
@@ -196,11 +187,6 @@ const validationWithImprove = () => {
     return true;
 }
 
-const checkWrtr = () =>{
-    if(wrtr.value) return true;
-    toastQueue.push(cmmn.toastAlert('작성자를 입력해주세요'))
-    return false;
-}
 
 const checkcntns = () =>{
     if(cntns.value)return true;
@@ -282,6 +268,7 @@ const changeSysTp = (val) => {
 }
 
 const changeSrTpDtl = (val) => {
+    console.log(val)
     srTpDtl.value = val
 }
 
@@ -289,8 +276,6 @@ const changeErrTpDtl = (val) => {
     errTpDtl.value = val
 }
 
-
-Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
 </script>
 
@@ -319,7 +304,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                 <div class="input-group">
                     <span class="input-label"> 작성자 </span>
                     <label class="label-text">
-                        <input type="text" maxlength="5" size="40" v-model="wrtr"/>
+                        {{ writer}}
                     </label>
                 </div>
                 <div class="input-group input-status">

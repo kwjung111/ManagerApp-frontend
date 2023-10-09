@@ -37,9 +37,6 @@ const isActive = ref(false)
 const elmId = computed(() => {
     return props.selectorID
 })
-const changeOpt = (selectedVal) => {
-    emit(`changeOptEvt`, selectedVal)
-}
 
 onBeforeMount(async () => {
     cmcdOptions.value = await Cmmn.getCmcd(props.cd);
@@ -64,12 +61,13 @@ function selectOption(e) {
     const clickedValue = e.target.getAttribute('data-value')
     label.innerText = text
     selectedVal.value = clickedValue
+    emit(`changeOptEvt`,Number(clickedValue))
 }
 
 </script>
 
 <template>
-    <select :id="elmId" v-if="cmcdOptions.length" v-model="selectedVal" @change="changeOpt(selectedVal)">
+    <select :id="elmId" v-if="cmcdOptions.length" v-model="selectedVal" >
         <option value="" disabled selected >{{ props.placeholder}}</option>
         <option v-for="(code, idx) of cmcdOptions" :key="idx" :value="code.CM_ITM_CD">{{ code.CM_ITM_NM }}</option>
     </select>

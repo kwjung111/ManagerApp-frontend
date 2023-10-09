@@ -72,6 +72,10 @@ const cmmn = {
 
     return `${hr}:${min}:${sec}`
   },
+  getNowYMD : ()=>{
+    const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
+    return now
+  },
   getTodayYMD : ()=>{
     const curDate = dayjs().format('YYYY-MM-DD');
     return curDate

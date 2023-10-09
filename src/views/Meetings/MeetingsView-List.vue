@@ -14,12 +14,12 @@ const wsUrl = Cmmn.wsUrl;
 let ws = null;                                   //웹소켓 객체
 let reConnect = true;                            //웹소켓 재접속 여부
 
-const curDt = ref(Cmmn.getNowYMD())
+const curDt = ref(new Date())
 const isActive = ref(false)
 
 //현재 시각 타이머
 const timer = setInterval(() => {
-    curDt.value = Cmmn.getNowYMD()
+    curDt.value = new Date()
 }, 500)
 
 const initialCnt = {                              //게시물 박스 카운트 초기화
@@ -220,10 +220,10 @@ const filteredList = computed(() => {
                     <ul class="table-head">
                         <li class="col01">NO</li>
                         <li class="col02">등록일시</li>
-                        <li class="col03">SR 내용</li>
+                        <li class="col03">주제/내용</li>
                         <li class="col04">상태</li>
-                        <li class="col05">경과/조치시간</li>
-                        <li class="col06">작성자</li>
+                        <li class="col05">경과시간</li>
+                        <li class="col06">작성자/참여자</li>
                         <li class="col07">비고</li>
                     </ul>
                     <div class="table-body" v-if="filteredList?.length">

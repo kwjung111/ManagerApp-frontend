@@ -61,7 +61,7 @@ function selectDate(data){
         <div class="header-container">
             <div class="header-title">
                 <h1> SR LIST </h1>
-                <h2>지난 게시물</h2>
+                <h2>완료 게시물</h2>
             </div>
             <div class="header-date">
                 <p>{{ fromDate}} ~ {{ toDate}} </p>
@@ -97,7 +97,11 @@ function selectDate(data){
                     </div>
                 </div>
             </div>
-            <DatePickModal v-show="datepickModalVisible" :fromDate="fromDate" :toDate="toDate" @closeModal="toggleDatePickModal" @selectDate="selectDate"></DatePickModal>
+            <template v-if="datepickModalVisible" >
+                <div class="modal-bg">
+            <DatePickModal :fromDate="fromDate" :toDate="toDate" @closeModal="toggleDatePickModal" @selectDate="selectDate"></DatePickModal>
+        </div>
+        </template>
         </div>
     </section>
 </template>

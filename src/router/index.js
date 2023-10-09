@@ -60,6 +60,11 @@ const router = createRouter({
       name: 'ScheduleAll',
       component: () => import('../views/ScheduleView-All.vue') //code splitting 최적화
     },
+    {
+      path: '/Meetings',
+      name: 'Meetings',
+      component: () => import('../views/Meetings/MeetingsView-List.vue') //code splitting 최적화
+    },
 
     //테스트용 페이지
     {

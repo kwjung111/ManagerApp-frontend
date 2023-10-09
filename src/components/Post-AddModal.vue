@@ -25,7 +25,6 @@ const addPost = async () =>{
     axios.post(`${url}/posts`,{
         postCd:postCd.value,
         content:cntns.value,
-        writer:wrtr.value,
         UID:UID
     })
     .then((res) =>{
@@ -50,17 +49,11 @@ const closeModal = () =>{
 }
 
 const validation = () =>{
-    if(checkcntns() && 
-    checkWrtr()){
+    if(checkcntns()){
         return true;
     }
 }
 
-const checkWrtr = () =>{
-    if(wrtr.value) return true;
-    toastQueue.push(cmmn.toastAlert('작성자를 입력해주세요'))
-    return false;
-}
 
 const checkcntns = () =>{
     if(cntns.value )return true;
@@ -77,7 +70,7 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
         <div class="modal" @click.stop=""> <!--이벤트 버블링 방지-->
             <div class="input-wrap">
                 <div class="input-group">
-                    <span class="input-label"> 입력값 </span>
+                    <span class="input-label"> 긴급여부 </span>
                     <label class="label-radio">
                         <input type="radio" name="postCd" value="1" v-model="postCd">
                         <span > 일반</span>
@@ -92,12 +85,6 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     <label class="label-text">
                         <textarea maxlength="50" v-model="cntns"></textarea>
                         <span> {{ cntns.length }}/50 자</span>
-                    </label>
-                </div>
-                <div class="input-group">
-                    <span class="input-label" > 작성자 </span>
-                    <label class="label-text">
-                        <input type="text" maxlength="5" size="40" v-model="wrtr"/>
                     </label>
                 </div>
             </div>

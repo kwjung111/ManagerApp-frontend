@@ -37,9 +37,9 @@ function logout() {
                 </a>
     <div class="gnb">
         <ul class="gnb-ul">
-            <li><router-link to="/srList"><i class="fa-regular fa-calendar"></i>SR-LIST</router-link></li>
-            <li><router-link to="/srListAll"><i class="fa-regular fa-calendar"></i>SR-지난 게시물</router-link></li>
-            <li><router-link to="/Schedule"><i class="fa-regular fa-calendar"></i>개인 스케줄</router-link></li>
+            <li @click="toggleGNB()"><router-link to="/srList"><i class="fa-regular fa-calendar"></i>SR-LIST</router-link></li>
+            <li @click="toggleGNB()"><router-link to="/srListAll"><i class="fa-regular fa-calendar"></i>SR-완료된 게시물</router-link></li>
+            <!-- <li @click="toggleGNB()"><router-link to="/Meetings"><i class="fa-regular fa-calendar"></i>미팅 일정</router-link></li> -->
             <!-- <li><router-link to="/ScheduleAll"><i class="fa-regular fa-calendar"></i>직원 스케줄</router-link></li> -->
             <!-- <li><a href="" title=""><i class="fa-regular fa-folder"></i>Knowledge Share</a></li>-->
             <li @click="logout()"><a title='로그아웃하기'><i class="fa-regular fa-folder"></i>로그아웃</a></li>

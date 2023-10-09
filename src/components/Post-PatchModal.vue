@@ -122,6 +122,7 @@ const endPost = async () =>{
             if(res.data.result[0].insertId){  //후속게시물 알림등록
                 Cmmn.saveNotificationInfo('posts',res.data.result[0].insertId) 
             }
+            emit('postPatched')
             closeModal()
         }
         else{

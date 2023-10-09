@@ -53,27 +53,6 @@ const getElapsedTime = (postTime) => {
     return Cmmn.convertSecToHms(secSum)
 }
 
-
- //상태 변환 및 경과시간 업데이트
-const toggleState = async (seq) => {
-
-    const UID = await Cmmn.getUserIdentifier();
-    
-    axios.patch(`${url}/posts/prgState`, {
-        postSeq:seq,
-        UID:UID
-    }).
-    then((res) => {
-        if(res.data.ok){
-        //
-        }
-        else{
-            Cmmn.toastError(`다시 시도해 주세요`)
-        }
-    })
-
-}
-
 const getTimerClass = (code) => {      //상태 클래스 부여
     if(code == 1){
         return 'active'

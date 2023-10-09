@@ -10,12 +10,9 @@ const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url
 
-const curDt = ref(new Date())
-const isActive = ref(false)
 const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 마지막 refresh 시간을 받음
 
 const posts = ref(null)
-const postSeqForMemo = ref(null)                  //메모를 삽입할 게시물번호
 
 const fromDate = ref(Cmmn.getCurMonthYMD())
 const toDate = ref(Cmmn.getTodayYMD())
@@ -26,8 +23,7 @@ onBeforeMount(() => {
      refresh()
 })
 
-const refresh = async () => {
-
+const refresh = async () => {  
     const queryParams = {
         fromDate : fromDate.value,
         toDate : toDate.value,
@@ -35,12 +31,9 @@ const refresh = async () => {
     axios.get(`${url}/posts/byMonth`,{params:queryParams},
     )
         .then((res) => {
-            console.log(res)
             posts.value = res.data.result
         })
-
 }
-
 
 function toggleDatePickModal() {
     datepickModalVisible.value = !datepickModalVisible.value

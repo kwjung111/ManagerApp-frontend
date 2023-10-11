@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import axios from 'axios'
 import cmmn from '../common.js'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -71,7 +71,11 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: () => import('../views/TestView.vue') //code splitting 최적화
-    }
+    },
+    { 
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: () =>import('../views/NotFoundView.vue') }
 
     /*
     {
@@ -83,7 +87,6 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     }
     */
-  ]
+  ],
 })
-
 export default router

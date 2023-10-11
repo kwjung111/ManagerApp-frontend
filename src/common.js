@@ -174,7 +174,7 @@ const cmmn = {
 
   navigateToSection(sectionId, toUrl) {
     const url = toUrl
-    const baseURL = `${window.location.pathname}`;
+    const baseURL = router.currentRoute.value.path;
     if(baseURL == url){
       this.navigateToAnchor(sectionId)
     }else{
@@ -188,7 +188,7 @@ const cmmn = {
 
   navigateToAnchor(sectionId){
     window.focus()
-    location.hash = `#${sectionId}`
+    router.currentRoute.value.hash = `#${sectionId}`
 
     //비동기화 -> 현재 큐의 비동기 함수 모두 실행 후 실행됨.
     setTimeout(() => {

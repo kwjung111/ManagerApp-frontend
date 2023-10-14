@@ -6,12 +6,17 @@ const axios = inject('axios')
 const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
-const wrtrCookieKey = 'writerName';
 
 const postCd = ref(1)
 const cntns = ref('')
-const wrtr = ref('')
+const inCharge = ref('')
 
+
+if(localStorage.getItem("ROLE") == "TESTER"){
+    inCharge.value = "미담당"
+}else {
+    inCharge.value = localStorage.getItem("NAME")
+}
 
 const toastQueue =  []
 
@@ -37,8 +42,6 @@ const addPost = async () =>{
         }
         console.log(res)
 
-        //작성자 쿠키 저장
-        Cmmn.setCookie(wrtrCookieKey,wrtr.value)
         closeModal()
     })
 }
@@ -61,7 +64,6 @@ const checkcntns = () =>{
     return false;   
 }
 
-Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
 
 </script>
 
@@ -81,12 +83,20 @@ Cmmn.applyCookieVal(wrtrCookieKey,wrtr)
                     </label>
                 </div>
                 <div class="input-group">
+                    <span class="input-label"> 담당자 </span>
+                    <label class="label-text">
+                        <textarea maxlength="8" v-model="inCharge"></textarea>
+                        <span> {{ inCharge?.length || 0 }}/8 자</span>
+                    </label>
+                </div>
+                <div class="input-group">
                     <span class="input-label"> 내용 </span>
                     <label class="label-text">
                         <textarea maxlength="50" v-model="cntns"></textarea>
                         <span> {{ cntns.length }}/50 자</span>
                     </label>
                 </div>
+                
             </div>
             <div class="modal-btn-wrap">
                 <button class="modal-btn btn-common positive" @click="addPost()">등록하기</button>

@@ -33,6 +33,8 @@ axios.post(`${url}/auth/login`,{
     if(res.data.ok == true){
         if(res.data.result.code == "00"){
             Cmmn.toastSuccess('로그인 성공!')
+            localStorage.setItem("ROLE",res.data.result.userData.role) 
+            localStorage.setItem("NAME",res.data.result.userData.name)
         router.push('/srList')  //로그인 성공 시 리디렉션
         }
         else if(res.data.result.code == "01"){

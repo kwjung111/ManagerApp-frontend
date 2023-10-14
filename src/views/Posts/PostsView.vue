@@ -223,7 +223,7 @@ const filteredList = computed(() => {
                         <li class="col03">SR 내용</li>
                         <li class="col04">상태</li>
                         <li class="col05">경과/조치시간</li>
-                        <li class="col06">작성자</li>
+                        <li class="col06">담당자</li>
                         <li class="col07">비고</li>
                     </ul>
                     <div class="table-body" v-if="filteredList?.length">

@@ -2,7 +2,7 @@
 import Post from '../../components/Post.vue'
 import HamburgerBtn from '../../components/common/Hamburger-btn.vue'
 import DatePickModal from '../../components/common/Date-PickModal.vue';
-import { ref, onMounted, onBeforeMount, computed, inject } from 'vue'
+import { ref, onBeforeMount,inject } from 'vue'
 
 
 const axios = inject('axios')
@@ -77,7 +77,7 @@ function selectDate(data){
                         <li class="col03">SR 내용</li>
                         <li class="col04">상태</li>
                         <li class="col05">조치시간</li>
-                        <li class="col06">작성자</li>
+                        <li class="col06">담당자</li>
                         <li class="col07">비고</li>
                     </ul>
                     <div class="table-body" v-if="posts?.length">

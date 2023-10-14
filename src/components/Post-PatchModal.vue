@@ -10,6 +10,7 @@ const url = Cmmn.url;
 
 const postCd = ref(1)            //긴급여부
 const cntns = ref('')            //게시물내용
+const inCharge = ref('')         //담당자
 const postStatus = ref(1)        //게시물 진행상태
 const pendingCntns = ref('')     //대기사유
 const sysTp = ref(null)          //시스템 구분
@@ -26,6 +27,7 @@ const dataLoaded = ref(false)    //데이터 로딩 여부.
 const props = defineProps({
     postSeq : Number,
 })
+
 const postSeq = props.postSeq;
 
 let writer;
@@ -41,6 +43,7 @@ axios.get(`${url}/posts/${postSeq}`,)
         
         postCd.value = data.BRD_POST_CD
         cntns.value = data.BRD_CTNTS || ''
+        inCharge.value = data.BRD_IN_CHRG
         writer = data.WRTR_NM; 
         postStatus.value = data.BRD_PRGSS_TF
         pendingCntns.value = data.BRD_RSN_PNDNG || ''
@@ -74,6 +77,7 @@ const changePost = async() =>{
         postSeq:postSeq
         ,postCd:postCd.value
         ,cntns:cntns.value
+        ,inCharge:inCharge.value
         ,prgCd:postStatus.value
         ,rsnPndg:pendingCntns.value
         ,UID:UID
@@ -107,6 +111,7 @@ const endPost = async () =>{
         postSeq:postSeq
         ,postCd:postCd.value
         ,cntns:cntns.value
+        ,inCharge:inCharge.value
         ,prgCd:'0'              //완료
         ,sysTp:sysTp.value
         ,postCtg:postCtg.value
@@ -306,6 +311,13 @@ const changeErrTpDtl = (val) => {
                     <span class="input-label"> 작성자 </span>
                     <label class="label-text">
                         {{ writer}}
+                    </label>
+                </div>
+                <div class="input-group">
+                    <span class="input-label"> 담당자 </span>
+                    <label class="label-text">
+                        <textarea maxlength="8" v-model="inCharge"></textarea>
+                        <span> {{ inCharge?.length || 0 }}/8 자</span>
                     </label>
                 </div>
                 <div class="input-group input-status">

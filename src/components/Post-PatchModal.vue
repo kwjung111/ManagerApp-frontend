@@ -20,6 +20,7 @@ const errTpDtl = ref(null)       //에러-상세코드            -- 두 상세�
 const followUp = ref(0)          //후속과제여부              -- DB에 들어가는 값은 아님
 const followUpCd = ref(1)        //후속게시물 긴급여부      
 const followUpCntns = ref ('')   //후속게시물 내용
+const followUpInCharge = ref('') //후속게시물 담당자
 const followUpPostNo = ref(null) //후속게시물 번호
 
 const dataLoaded = ref(false)    //데이터 로딩 여부.
@@ -118,6 +119,7 @@ const endPost = async () =>{
         ,postCtgDtl:postCtgDtl.value
         ,followUp:followUp.value
         ,followUpCd:followUpCd.value
+        ,followUpInCharge:followUpInCharge.value
         ,followUpCntns:followUpCntns.value
         ,UID:UID
     })
@@ -316,7 +318,7 @@ const changeErrTpDtl = (val) => {
                 <div class="input-group">
                     <span class="input-label"> 담당자 </span>
                     <label class="label-text">
-                        <textarea maxlength="8" v-model="inCharge"></textarea>
+                        <input type="text" maxlength="8" size="100" v-model="inCharge"/>
                         <span> {{ inCharge?.length || 0 }}/8 자</span>
                     </label>
                 </div>
@@ -403,15 +405,7 @@ const changeErrTpDtl = (val) => {
                             <textarea maxlength="50" v-model="followUpCntns"></textarea>
                             <span> {{ followUpCntns.length }}/50 자</span>
                         </label>
-                    </div>
-                    <!--
-                    <div class="input-group">
-                        <span class="input-label" > 작성자 </span>
-                        <label class="label-text">
-                            <input type="text" maxlength="5" size="40" v-model="AfterWrtr"/>
-                        </label>
-                    </div>
-                -->
+                    </div>    
                 </div>
             </div>
             <div class="modal-btn-wrap">

@@ -94,7 +94,12 @@ axios.interceptors.response.use(
   },
   (error) => {
     loadingCnt.value--;
-    if (error.response && error.response.status === 403) {
+    if (error.response && error.response.status === 400) {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {showAlertAndRedirect(`API 요청이 유효하지 않습니다 : ${error.response.data?.message}`)}, 500);
+      //TODO 웹소켓 연결 종료
+    }
+    else if (error.response && error.response.status === 403) {
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {showAlertAndRedirect('토큰이 만료되었습니다. 재 로그인 해 주세요.')}, 500);
       //TODO 웹소켓 연결 종료

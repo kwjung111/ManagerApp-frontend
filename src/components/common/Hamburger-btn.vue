@@ -39,6 +39,8 @@ function logout() {
         <ul class="gnb-ul">
             <li @click="toggleGNB()"><router-link to="/srList"><i class="fa-regular fa-calendar"></i>SR-LIST</router-link></li>
             <li @click="toggleGNB()"><router-link to="/srListAll"><i class="fa-regular fa-calendar"></i>SR-완료된 게시물</router-link></li>
+            <!--<li @click="toggleGNB()"><router-link to="/Projects"><i class="fa-regular fa-calendar"></i>프로젝트</router-link></li>-->
+            <!--<li @click="toggleGNB()"><router-link to="/ProjectsAll"><i class="fa-regular fa-calendar"></i>완료된 프로젝트</router-link></li>-->
             <!-- <li @click="toggleGNB()"><router-link to="/Meetings"><i class="fa-regular fa-calendar"></i>미팅/회의</router-link></li> -->
             <!-- <li><router-link to="/ScheduleAll"><i class="fa-regular fa-calendar"></i>직원 스케줄</router-link></li> -->
             <!-- <li><a href="" title=""><i class="fa-regular fa-folder"></i>Knowledge Share</a></li>-->

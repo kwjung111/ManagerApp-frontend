@@ -65,6 +65,16 @@ const router = createRouter({
       name: 'Meetings',
       component: () => import('../views/Meetings/MeetingsView-List.vue') //code splitting 최적화
     },
+    {
+      path: '/Projects',
+      name: 'Projects',
+      component: () => import('../views/Projects/ProjectsView.vue') //code splitting 최적화
+    },
+    {
+      path: '/ProjectsAll',
+      name: 'ProjectsAll',
+      component: () => import('../views/Projects/ProjectsView-All.vue') //code splitting 최적화
+    },
 
     //테스트용 페이지
     {

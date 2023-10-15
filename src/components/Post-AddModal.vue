@@ -30,6 +30,7 @@ const addPost = async () =>{
     axios.post(`${url}/posts`,{
         postCd:postCd.value,
         content:cntns.value,
+        inCharge:inCharge.value,
         UID:UID
     })
     .then((res) =>{

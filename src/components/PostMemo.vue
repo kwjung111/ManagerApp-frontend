@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import axios from 'axios'
 import Cmmn from '../common.js'
+import autolinker from 'autolinker'
 
 
 const url = Cmmn.url;
@@ -22,6 +23,7 @@ const memos = computed(() =>{
     return props.memos
 })
 
+
 //코멘트 삭제
 const removeMemo = async (seq) => {
     Cmmn.confirm('코멘트를 삭제하시겠습니까?',
@@ -29,7 +31,7 @@ const removeMemo = async (seq) => {
         axios.delete(`${url}/memos/${seq}`)
         .then((res) => {
             if (res.data.ok) {
-                Cmmn.toastSuccess('삭제 완료!')
+                Cmmn.toastSuccess('삭제되었습니다!')
             }
             else {
                 Cmmn.toastError('다시 시도해 주세요')
@@ -38,7 +40,6 @@ const removeMemo = async (seq) => {
     })
 }
 
-
 </script>
 
 <template>
@@ -46,7 +47,7 @@ const removeMemo = async (seq) => {
         <p class="col01"><i class="fa-solid fa-reply fa-rotate-180"></i></p>
         <p class="txt-blue col04">{{ memo.WRTR }}</p>
         <p class="txt-left col03">
-            <span class="txt-blue"> {{ memo.MEMO_REG_DTM }} </span> : <span class="memo-cntns"> {{ memo.MEMO_CTNTS }} </span>
+            <span class="txt-blue"> {{ memo.MEMO_REG_DTM }} </span> : <span class="memo-cntns" v-html="autolinker.link(memo.MEMO_CTNTS)" > </span>
             <button v-if="!readOnly" class="btn-delete-memo" title="코멘트 삭제" @click="removeMemo(memo.MEMO_SEQ)"><i class="fa-solid fa-xmark"></i></button>
         </p>
     </div>

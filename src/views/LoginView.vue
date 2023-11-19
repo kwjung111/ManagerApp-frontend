@@ -5,6 +5,7 @@ import cmmn from '../common';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
+const websock = inject('websock')
 const url = Cmmn.url;
 const router =useRouter();
 
@@ -17,6 +18,7 @@ const isSignUp = ref(false)
 //회원가입 폼
 const signUpId = ref('')
 const signUpPwd = ref('')
+const signUpPwdChk = ref('')
 const signUpNm = ref('')
 const signUpEmail = ref('')
 const usableId = ref(false)
@@ -35,7 +37,9 @@ axios.post(`${url}/auth/login`,{
             Cmmn.toastSuccess('로그인 성공!')
             localStorage.setItem("ROLE",res.data.result.userData.role) 
             localStorage.setItem("NAME",res.data.result.userData.name)
-        router.push('/srList')  //로그인 성공 시 리디렉션
+        router.push('/srList')    //로그인 성공 시 리디렉션
+        websock.connectWs();      //웹소켓 연결
+        registerSW();             //서비스워커 등록
         }
         else if(res.data.result.code == "01"){
             failMsg.value = "일치하는 ID가 없습니다"
@@ -54,7 +58,11 @@ function signUpVisible(){
     isSignUp.value = !isSignUp.value;
 }
 function signUp(){
-    
+
+    if(!pwdChk()){
+      return;
+    }
+
     let param = {
         id : signUpId.value,
         pwd :signUpPwd.value,
@@ -78,8 +86,8 @@ function signUp(){
           cmmn.toastError('유효성 검사에 실패했습니다.')
         }
     })
-
-    axios.post(`${url}/auth/sendMailForSignUp`,{id:signUpId.value,email:signUpEmail.value}).then((ret) => {
+    
+    axios.post(`${url}/auth/sendMailForSignUp`,{id:signUpId.value,email:signUpEmail.value}).then(() => {
         emailSent.value = true
         cmmn.toastSuccess('가입 성공. 이메일로 인증 링크가 발송되었습니다.')
     })
@@ -102,11 +110,38 @@ function idChk(id){
 })
 }
 
+function pwdChk(){
+  if(signUpPwd.value != signUpPwdChk.value){
+    cmmn.toastError('비밀번호와 확인란이 일치하지 않습니다.')
+  }
+
+}
+
 const signUpAble = computed(() => {
     return (usableId.value && 
     (signUpPwd.value.length >=   5) &&
     signUpNm.value && signUpEmail.value) 
 })
+
+//서비스워커 등록
+async function registerSW(){
+  if ("serviceWorker" in navigator) {
+    try {
+      
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      if (registration.installing) {
+        console.log("Service worker : installing");
+      } else if (registration.waiting) {
+        console.log("Service worker : installed");
+      } else if (registration.active) {
+        console.log("Service worker : active");
+      }
+      return registration
+    } catch (error) {
+      console.error(`Registration failed with ${error}`);
+    }
+  }
+};
 
 </script>
 
@@ -119,7 +154,7 @@ const signUpAble = computed(() => {
       </div>
       <div class="input-group2">
         <label for="userPwd">password</label>
-        <input id="userPwd" type="text" v-model="pwd">
+        <input id="userPwd" type="password" v-model="pwd">
       </div>
       <button @click="doLogin()">로그인</button>
       <button @click="signUpVisible()">회원가입</button>
@@ -141,7 +176,11 @@ const signUpAble = computed(() => {
         </div>
         <div class="input-group2">
           <label for="signUpUserPwd">pwd:</label>
-          <input id="signUpUserPwd" type="text" v-model="signUpPwd">
+          <input id="signUpUserPwd" type="password" v-model="signUpPwd">
+        </div>
+        <div class="input-group2">
+          <label for="signUpUserPwdChk">pwd-Check:</label>
+          <input id="signUpUserPwdChk" type="password" v-model="signUpPwdChk">
         </div>
         <div class="input-group2">
           <label for="signUpUserName">name:</label>

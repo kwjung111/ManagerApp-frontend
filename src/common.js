@@ -10,9 +10,9 @@ const cmmn = {
   //환경변수
   url: import.meta.env.VITE_BACK_URL,
   wsUrl: import.meta.env.VITE_BACK_WSURL,
+  swLoc : import.meta.env.VITE_SW_LOCATION,
   notiImg: import.meta.env.VITE_NOTI_ICON,
-
-
+ 
   deepCopy: (obj) => {
     //깊은복사
     if (obj === null || typeof obj !== 'object') return obj
@@ -23,6 +23,7 @@ const cmmn = {
     }
     return copy
   },
+  
   formatSecondsAsTime: (secs, format) => {
     var hr = Math.floor(secs / 3600)
     var min = Math.floor((secs - hr * 3600) / 60)

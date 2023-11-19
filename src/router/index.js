@@ -15,6 +15,7 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
+      //자동 로그인 로직
       beforeEnter: (to, from, next) => {
         if (!cmmn.getCookie('jwt')) {
           next()
@@ -34,7 +35,7 @@ const router = createRouter({
             }
           })
         }
-      }
+      },
     },
 
     {

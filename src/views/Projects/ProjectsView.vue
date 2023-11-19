@@ -55,10 +55,10 @@ const changeFilter = () => {
                     <ul class="table-head">
                         <li class="col01">NO</li>
                         <li class="col02">등록일시</li>
-                        <li class="col03">SR 내용</li>
+                        <li class="col03">프로젝트 내용</li>
                         <li class="col04">상태</li>
-                        <li class="col05">경과/조치시간</li>
-                        <li class="col06">담당자</li>
+                        <li class="col05">진척률</li>
+                        <li class="col06">참여자</li>
                         <li class="col07">비고</li>
                     </ul>
                     <div class="table-body" v-if="true">

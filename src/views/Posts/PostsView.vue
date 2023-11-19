@@ -10,12 +10,8 @@ const axios = inject('axios')
 const Cmmn = inject('Cmmn')
 
 const url = Cmmn.url;
-const wsUrl = Cmmn.wsUrl;
-let ws = null;                                   //웹소켓 객체
-let reConnect = true;                            //웹소켓 재접속 여부
 
 const curDt = ref(Cmmn.getNowYMD())
-const isActive = ref(false)
 
 //현재 시각 타이머
 const timer = setInterval(() => {
@@ -38,13 +34,6 @@ const memoAddModalVisible = ref(false)
 const lastRefreshTime = ref(new Date())           //타이머 구현을 위해 마지막 refresh 시간을 받음
 const postFilter = ref(0)                         //0 최근 1주일 접수, 1 처리중, 2 긴급 , 3 처리대기중
 
-let connectState = true;
-
-
-
-onMounted(() => {
-    ws = connectWs() //웹소켓 연결시 리프레시 수행
-})
 
 const refresh = async () => {
     lastRefreshTime.value = new Date()
@@ -68,64 +57,23 @@ const refresh = async () => {
 
 }
 
-//웹소켓 연결
-function connectWs() {
-
-    let ws;
-
-    /*
-    const reconnectTimer = setInterval(() => {
-        console.log('reconnecting to server...')
-        connectWs()
-    }, 3000);
-    */
-
-    ws = new WebSocket(wsUrl)
-
-    ws.onopen = async () => {
-        console.log('연결되었습니다')
-        connectState = true;
+//웹소켓 메세지 처리 로직
+onMounted(() => {
+    refresh()
+    window.addEventListener('wsMessage', msgHandler)    
+})
+onUnmounted(() => {
+    window.removeEventListener('wsMessage', msgHandler);
+})
+function msgHandler(e){
+    const type = event.detail.type;
+    const data = event.detail.data;
+    console.log(data)
+    if(type === 'event'){
         refresh()
     }
 
-    ws.onmessage = async (event) => {
-        const data = JSON.parse(event.data)
-        if (data.type === "message") {
-            let msgData = data.data
-            console.log("server message :", msgData);
-        }
-        else if (data.type === "event") {
-            let evtData = data.data
-            console.log("server event : ", evtData)
-
-            refresh();
-            eventMapper(evtData)
-        }
-    }
-
-
-    ws.onclose = async (e) => {
-        if (connectState == true) {
-            console.log('서버와의 연결이 종료되었습니다.')
-            connectState = false;
-        }
-        if (reConnect == true) {
-            setTimeout(() => {
-                console.log('reconnecting to server...')
-                connectWs();
-            }, 1000)
-        }
-    }
-    return ws
-};
-
-onUnmounted(() => {
-    reConnect = false;
-    if(ws){
-        ws.close();
-    }
-})
-
+}
 
 function togglePostAddModal() {
     postAddModalVisible.value = !postAddModalVisible.value;

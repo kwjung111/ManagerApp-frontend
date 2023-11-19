@@ -4,6 +4,7 @@ import { ref,inject } from 'vue';
 
 const axios = inject('axios')
 const Cmmn = inject('Cmmn')
+const websock = inject('websock')
 
 const router = useRouter();
 
@@ -13,10 +14,14 @@ function toggleGNB() {
     hbgActive.value = !hbgActive.value
 }
 
+
+//로그아웃
 function logout() {
     axios.get(`${Cmmn.url}/auth/logout`)
     .then((ret)=>{
         if(ret.data.ok == true){
+            websock.disconnect()    //웹소켓 해제
+            deregisterSW()
             router.push('/login').then(
                 Cmmn.toastSuccess('로그아웃 성공!')
             )
@@ -24,6 +29,19 @@ function logout() {
             Cmmn.toastError('서버와 통신에 실패하였습니다.')
         }
     })
+    }
+
+//서비스워커 해제
+async function deregisterSW(){
+if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (let registration of registrations) {
+            registration.unregister().then(() => {
+              console.log('서비스 워커 해제됨');
+            });
+          }
+        });
+      }
     }
 
 </script>
